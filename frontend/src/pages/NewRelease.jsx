@@ -160,7 +160,7 @@ function NewRelease() {
         ...prevState,
         trackAudio: null,
       }));
-      toast.success("Email Sent");
+      toast.success("Single Created");
       navigate("/profile/singles");
       setShowPopup(false);
     } else {

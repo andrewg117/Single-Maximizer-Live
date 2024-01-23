@@ -7,7 +7,9 @@
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "webhook": "stripe listen --forward-to localhost:5000/api/webhook",
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run webhook\"",
+    "live": "concurrently \"npm run server\" \"npm run webhook\""
   },
   "author": "Andrew",
   "license": "ISC",
@@ -26,7 +28,7 @@
     "mongoose": "^7.3.0",
     "multer": "^1.4.5-lts.1",
     "node-schedule": "^2.1.1",
-    "stripe": "^12.10.0"
+    "stripe": "^12.18.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.0",

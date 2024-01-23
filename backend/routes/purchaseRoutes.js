@@ -6,6 +6,6 @@ const {
 } = require("../controllers/purchaseController");
 const { protect } = require("../middleware/authMiddleware");
 
-router.route("/").post(protect, postDemoPayment);
+router.route("/").post(protect, postPayment);
 
 module.exports = router;

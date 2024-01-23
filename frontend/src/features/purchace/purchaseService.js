@@ -4,7 +4,7 @@ const API_URL = "/api/purchase/";
 
 const makePurchase = async () => {
   let response;
-  response = await axios.post(API_URL, { test: "test" });
+  response = await axios.post(API_URL);
 
   return response.data;
 };

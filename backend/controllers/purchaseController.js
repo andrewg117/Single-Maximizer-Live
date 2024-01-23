@@ -82,7 +82,12 @@ const postDemoPayment = asyncHandler(async (req, res) => {
 // @desc    Post endpoint
 // @route   POST /api/webhook
 // @access  Public
-// Card 4242 4242 4242 4242
+// Test Card 4242 4242 4242 4242
+/* 
+  Run in Stripe CLI:
+  stripe login
+  stripe listen --forward-to localhost:5000/api/webhook
+*/
 const postEndpoint = asyncHandler(async (req, res) => {
   const payload = req.body;
   const sig = req.headers["stripe-signature"];

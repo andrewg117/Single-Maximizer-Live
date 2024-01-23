@@ -16,26 +16,26 @@ const ProductDisplay = () => {
   const navigate = useNavigate();
 
   // TODO: remove stripe link for demo
-  // const onSubmit = (e) => {
-  //   e.preventDefault()
-  //   dispatch(makePurchase())
-  //     .unwrap()
-  //     .then((data) => {
-  //       window.location.href = data
-  //     })
-  // }
-
-  // Demo Submit
   const onSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     dispatch(makePurchase())
       .unwrap()
-      .then(() => {
-        toast.success("Purchase Successful");
-        navigate("/profile/newrelease");
+      .then((data) => {
+        window.location.href = data
       })
-      .catch((err) => console.error(err));
-  };
+  }
+
+  // Demo Submit
+  // const onSubmit = (e) => {
+  //   e.preventDefault();
+  //   dispatch(makePurchase())
+  //     .unwrap()
+  //     .then(() => {
+  //       toast.success("Purchase Successful");
+  //       navigate("/profile/newrelease");
+  //     })
+  //     .catch((err) => console.error(err));
+  // };
 
   return (
     <section id={styles.profile_content_right}>
@@ -55,7 +55,7 @@ const ProductDisplay = () => {
             <h1>Purchase New Single</h1>
             <h5>
               {
-                "The Single Maximizer is $50. When you click ‘Submit Single Maximizer’ you will be taken to a checkout page to complete payment."
+                "The Single Maximizer is $50. When you click ‘Purchase’ you will be taken to a checkout page to complete payment."
               }
             </h5>
           </div>
