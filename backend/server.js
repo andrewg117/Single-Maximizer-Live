@@ -4,6 +4,7 @@ const colors = require("colors");
 const dotenv = require("dotenv").config();
 const schedule = require("node-schedule");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const { sendScheduledEmail } = require("./controllers/emailController");
 const { errorHandler } = require("./middleware/errorMiddleware");
 const connectDB = require("./config/db");
@@ -24,6 +25,18 @@ app.use("/api/webhook", require("./routes/webhookRoutes"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "development"
+        ? `http://localhost:${3000}`
+        : `http://ec2-35-153-192-158.compute-1.amazonaws.com:${3000}`,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    optionsSuccessStatus: 200,
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
 app.use("/api/tracks", require("./routes/trackRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
