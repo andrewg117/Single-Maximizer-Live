@@ -1,6 +1,14 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const imageSchema = mongoose.Schema(
+interface monSchema  {
+  user: mongoose.Schema.Types.ObjectId;
+  trackID: mongoose.Schema.Types.ObjectId;
+  s3ImageURL: String;
+  section: String;
+  file: mongoose.Schema.Types.Mixed;
+}
+
+const imageSchema = new mongoose.Schema<monSchema>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -30,4 +38,4 @@ const imageSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Image", imageSchema);
+export default mongoose.model("Image", imageSchema);

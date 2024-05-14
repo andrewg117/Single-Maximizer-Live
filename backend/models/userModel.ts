@@ -1,6 +1,28 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema(
+interface monSchema  {
+  username: String;
+  googleId?: String;
+  isDefaultPass: Boolean;
+  email: String;
+  password: String;
+  fname: String;
+  lname: String;
+  website?: String;
+  scloud?: String;
+  twitter?: String;
+  igram?: String;
+  fbook?: String;
+  spotify?: String;
+  ytube?: String;
+  tiktok?: String;
+  bio_text?: String;
+  trackAllowance?: Number;
+  isAdmin?: Boolean;
+  stripeID?: String;
+}
+
+const userSchema = new mongoose.Schema<monSchema>(
   {
     username: {
       type: String,
@@ -13,9 +35,19 @@ const userSchema = mongoose.Schema(
       trim: true,
       unique: true,
     },
+    googleId: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     password: {
       type: String,
       required: [true, "Add password"],
+      trim: true,
+    },
+    isDefaultPass: {
+      type: Boolean,
+      default: true,
       trim: true,
     },
     fname: {
@@ -84,4 +116,4 @@ const userSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", userSchema);
+export default mongoose.model("User", userSchema);

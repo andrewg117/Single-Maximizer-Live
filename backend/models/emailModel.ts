@@ -1,6 +1,15 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const emailSchema = mongoose.Schema(
+interface monSchema  {
+  user: mongoose.Schema.Types.ObjectId;
+  trackID: mongoose.Schema.Types.ObjectId;
+  deliveryDate: Date;
+  recipient: String;
+  subject: String;
+  emailMessage: String;
+}
+
+const emailSchema = new mongoose.Schema<monSchema>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -34,4 +43,4 @@ const emailSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Email", emailSchema);
+export default mongoose.model("Email", emailSchema);

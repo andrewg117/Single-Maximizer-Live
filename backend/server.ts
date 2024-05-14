@@ -1,14 +1,16 @@
-const path = require("path");
-const express = require("express");
-const colors = require("colors");
-const dotenv = require("dotenv").config();
-const schedule = require("node-schedule");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const { sendScheduledEmail } = require("./controllers/emailController");
-const { errorHandler } = require("./middleware/errorMiddleware");
-const connectDB = require("./config/db");
-const { route } = require("./routes/webhookRoutes");
+import express from "express";
+import colors from "colors";
+import dotenv from "dotenv";
+dotenv.config();
+import schedule from "cookie-parser";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import connectDB from "./config/db";
+import { sendScheduledEmail } from "./controllers/emailController";
+import errorHandler from "./middleware/errorMiddleware";
+import { route } from "./routes/webhookRoutes";
 const port = process.env.Port || 5000;
 
 connectDB();
@@ -16,9 +18,9 @@ connectDB();
 const app = express();
 
 // Daily function
-schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
-  sendScheduledEmail();
-});
+// schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
+//   sendScheduledEmail();
+// });
 
 app.use("/api/webhook", require("./routes/webhookRoutes"));
 
