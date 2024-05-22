@@ -1,3 +1,4 @@
+import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -7,6 +8,7 @@ import formData from "form-data";
 import Mailgun from "mailgun.js";
 import { generate } from "generate-password";
 import User from "../models/userModel";
+import { ObjectId } from "mongoose";
 const EMAILUSER: string = process.env.EMAILUSER as string;
 const MAILGUN_API: string = process.env.MAILGUN_API as string;
 
@@ -39,6 +41,16 @@ interface urlType {
   code: any;
   redirect_uri: string;
   grant_type: string;
+}
+
+interface JwtPayload {
+  id: string;
+}
+
+declare module "express-session" {
+  export interface SessionData {
+    userID: string;
+  }
 }
 
 // @desc    Register new user
@@ -86,7 +98,7 @@ const registerUser = asyncHandler(async (req, res) => {
     //   res.status(400);
     //   throw new Error("Invalid user data");
     // }
-    req.session.userID = user?._id as string;
+    req.session.userID = user?._id as any;
     res.status(200).end();
   } catch (error) {
     throw new Error(error as string);
@@ -137,7 +149,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password, token } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = (await User.findOne({ email })) as any;
 
     const response = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPT_SECRETKEY}&response=${token}`
@@ -192,7 +204,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error("User does not exists, use a different email or login");
   }
 
-  const token = makeToken(user.email, "10m");
+  const token = makeToken(user.email as string, "10m");
 
   const link = `${API_URL}/home/resetpass/${token}`;
 
@@ -223,8 +235,8 @@ const resetPassword = asyncHandler(async (req, res) => {
   let email;
 
   try {
-    const decoded = decodeToken(token);
-    email = decoded.id; //TODO: Fix JWT for TS
+    const decoded = decodeToken(token) as JwtPayload;
+    email = decoded.id as string; //TODO: Fix JWT for TS
   } catch (error) {
     res.status(401);
     throw new Error(
@@ -241,7 +253,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   let updatedUser;
 
   updatedUser = await User.findByIdAndUpdate(
-    user._id,
+    user?._id as ObjectId,
     { password: hashedPassword },
     {
       new: true,
@@ -256,11 +268,11 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.session.userID);
+    const user = await User.findById(req.session.userID) as any;
 
     if (user) {
       const userBody = {
-        ...user["_doc"],
+        ...user,
       };
       delete userBody["__v"];
       delete userBody["password"];
@@ -306,7 +318,9 @@ const emailData = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(401);
     throw new Error(
-      error === "TokenExpiredError: jwt expired" ? "Login Expired" : error as string
+      error === "TokenExpiredError: jwt expired"
+        ? "Login Expired"
+        : (error as string)
     );
   }
 });

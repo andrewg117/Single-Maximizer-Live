@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface monSchema  {
+interface monSchemaInt extends mongoose.Document {
   username: String;
   googleId?: String;
   isDefaultPass: Boolean;
@@ -22,7 +22,7 @@ interface monSchema  {
   stripeID?: String;
 }
 
-const userSchema = new mongoose.Schema<monSchema>(
+const userSchema = new mongoose.Schema<monSchemaInt>(
   {
     username: {
       type: String,
@@ -116,4 +116,5 @@ const userSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-export default mongoose.model("User", userSchema);
+const User = mongoose.model<monSchemaInt>("User", userSchema);
+export default User;
