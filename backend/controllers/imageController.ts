@@ -1,13 +1,14 @@
-const Image = require("../models/imageModel");
-const Track = require("../models/trackModel");
-const { s3, uploadS3Object, deleteS3Object } = require("../config/s3helper");
-const asyncHandler = require("express-async-handler");
+import session, { SessionData } from "express-session";
+import asyncHandler from "express-async-handler";
+import Image from "../models/imageModel";
+import Track from "../models/trackModel";
+import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
 
 // @desc    Post image
 // @route   POST /api/image
 // @access  Private
 const uploadImage = asyncHandler(async (req, res) => {
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
@@ -19,13 +20,13 @@ const uploadImage = asyncHandler(async (req, res) => {
 
   if (req.body.section === "avatar") {
     image = await Image.create({
-      user: req.user.id,
+      user: req.session.userID,
       section: req.body.section,
       file: req.file,
     });
   } else if (req.body.section === "cover") {
     image = await Image.create({
-      user: req.user.id,
+      user: req.session.userID,
       trackID: req.body.trackID,
       section: req.body.section,
       file: req.file,
@@ -80,7 +81,7 @@ const uploadImage = asyncHandler(async (req, res) => {
 // @route   POST /api/image/press
 // @access  Private
 const uploadPress = asyncHandler(async (req, res) => {
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
@@ -91,7 +92,7 @@ const uploadPress = asyncHandler(async (req, res) => {
     let image;
     // console.log(file.originalname)
     image = await Image.create({
-      user: req.user.id,
+      user: req.session.userID,
       trackID: req.body.trackID,
       section: req.body.section,
       file: file,
@@ -140,7 +141,7 @@ const getImage = asyncHandler(async (req, res) => {
   let image;
 
   if (req.query.section === "avatar") {
-    image = await Image.findOne({ user: req.user.id, section: "avatar" });
+    image = await Image.findOne({ user: req.session.userID, section: "avatar" });
   } else if (req.query.section === "cover") {
     image = await Image.findOne({
       trackID: req.query.trackID,
@@ -153,12 +154,12 @@ const getImage = asyncHandler(async (req, res) => {
     throw new Error("Image not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (image.user.toString() !== req.user.id) {
+  if (image.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -179,12 +180,12 @@ const getPress = asyncHandler(async (req, res) => {
     throw new Error("Image not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (image[0].user.toString() !== req.user.id) {
+  if (image[0].user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -198,7 +199,7 @@ const getPress = asyncHandler(async (req, res) => {
 const updateImage = asyncHandler(async (req, res) => {
   let image = null;
   if (req.body.section === "avatar") {
-    image = await Image.findOne({ user: req.user.id });
+    image = await Image.findOne({ user: req.session.userID });
   } else if (req.body.section === "cover") {
     image = await Image.findOne({ trackID: req.body.trackID });
   }
@@ -208,12 +209,12 @@ const updateImage = asyncHandler(async (req, res) => {
     throw new Error("Image not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (image.user.toString() !== req.user.id) {
+  if (image.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -232,7 +233,7 @@ const updateImage = asyncHandler(async (req, res) => {
 
   const updatedImage = await Image.findByIdAndUpdate(image._id, newBody, {
     new: true,
-  });
+  }) as any;
 
   const updateTrack = await Track.findByIdAndUpdate(
     image.trackID,
@@ -275,17 +276,17 @@ const deleteImage = asyncHandler(async (req, res) => {
     throw new Error("Image not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (image[0].user.toString() !== req.user.id) {
+  if (image[0].user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
 
-  image.forEach(async (item) => {
+  image.forEach(async (item: any) => {
     // console.log(item._id)
     const deleteImage = await Image.findByIdAndDelete(item._id);
 
@@ -307,12 +308,12 @@ const deletePress = asyncHandler(async (req, res) => {
     throw new Error("Image not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (image.user.toString() !== req.user.id) {
+  if (image.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }

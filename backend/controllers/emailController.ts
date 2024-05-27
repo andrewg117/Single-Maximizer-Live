@@ -1,14 +1,15 @@
-const Email = require("../models/emailModel");
-const Track = require("../models/trackModel");
-const User = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
-const formData = require("form-data");
-const Mailgun = require("mailgun.js");
-const axios = require("axios");
+import session, { SessionData } from "express-session";
+import asyncHandler from "express-async-handler";
+import Email from "../models/emailModel";
+import Track from "../models/trackModel";
+import User from "../models/userModel";
+import formData from "form-data";
+import Mailgun from "mailgun.js";
+import axios from "axios";
 // TODO: Get email list for EMAILTO
-const EMAILTO = process.env.EMAILTO;
-const EMAILUSER = process.env.EMAILUSER;
-const MAILGUN_API = process.env.MAILGUN_API;
+const EMAILTO = process.env.EMAILTO as string;
+const EMAILUSER = process.env.EMAILUSER as string;
+const MAILGUN_API = process.env.MAILGUN_API as string;
 
 // Mailgun email setup
 const mailgun = new Mailgun(formData);
@@ -16,10 +17,10 @@ const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain = "mail.trackstarz.com";
 
 // General email
-const generalEmail = async (singleDoc, subjectType) => {
-  let emailContent;
+const generalEmail = async (singleDoc: any, subjectType: any) => {
+  let emailContent: string;
 
-  const userDoc = await User.findById(singleDoc.user);
+  const userDoc = await User.findById(singleDoc.user) as any;
   emailContent = `<p>Artist: ${singleDoc.artist || ""}</p>`;
 
   emailContent += `<p>Featured Artist(s): ${singleDoc.features || ""}</p>`;
@@ -49,7 +50,7 @@ const generalEmail = async (singleDoc, subjectType) => {
 
   let getAttachments = [];
 
-  singleDoc.s3PressURL.forEach(async (press) => {
+  singleDoc.s3PressURL.forEach(async (press: any) => {
     emailContent += `<p>${press.url || ""}</p>`;
 
     const image = await axios.get(press.url, { responseType: "stream" });
@@ -124,8 +125,8 @@ const generalEmail = async (singleDoc, subjectType) => {
 };
 
 // Alternate email
-const altEmail = async (singleDoc, subjectType) => {
-  const userDoc = await User.findById(singleDoc.user);
+const altEmail = async (singleDoc: any, subjectType: any) => {
+  const userDoc = await User.findById(singleDoc.user) as any;
 
   let emailContent = `<p>Artist: ${singleDoc.artist || ""}</p>`;
   emailContent += `<br>`;
@@ -150,7 +151,7 @@ const altEmail = async (singleDoc, subjectType) => {
 
   let getAttachments = [];
 
-  singleDoc.s3PressURL.forEach(async (press) => {
+  singleDoc.s3PressURL.forEach(async (press: any) => {
     emailContent += `<p>${press.url || ""}</p>`;
 
     const image = await axios.get(press.url, { responseType: "stream" });
@@ -262,7 +263,7 @@ const sendEmail = asyncHandler(async (req, res) => {
     recipient: req.body.recipient,
     subject: req.body.subject,
     emailMessage: req.body.emailMessage,
-    user: req.user.id,
+    user: req.session.userID,
     trackID: req.body.trackID,
     deliveryDate: req.body.deliveryDate,
   });
@@ -281,7 +282,7 @@ const sendEmail = asyncHandler(async (req, res) => {
     .then((msg) => console.log(msg))
     .catch((err) => console.log(err));
 
-  console.log("Message sent: %s", info.messageId);
+  // console.log("Message sent: %s", info.messageId);
 
   res.json(email);
   res.status(200);

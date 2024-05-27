@@ -1,13 +1,14 @@
-const Audio = require("../models/audioModel");
-const Track = require("../models/trackModel");
+import session, { SessionData } from "express-session";
+import asyncHandler from "express-async-handler";
+import Audio from "../models/audioModel";
+import Track from "../models/trackModel";
 const { s3, uploadS3Object, deleteS3Object } = require("../config/s3helper");
-const asyncHandler = require("express-async-handler");
 
 // @desc    Post audio
 // @route   GET /api/audio
 // @access  Private
 const uploadAudio = asyncHandler(async (req, res) => {
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
@@ -16,7 +17,7 @@ const uploadAudio = asyncHandler(async (req, res) => {
   // console.log('File: ' + JSON.stringify(req.file))
 
   const audio = await Audio.create({
-    user: req.user.id,
+    user: req.session.userID,
     trackID: req.body.trackID,
     file: req.file,
   });
@@ -74,12 +75,12 @@ const getAudio = asyncHandler(async (req, res) => {
     throw new Error("Audio not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (audio.user.toString() !== req.user.id) {
+  if (audio.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -98,12 +99,12 @@ const updateAudio = asyncHandler(async (req, res) => {
     throw new Error("Tacrk not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (audio.user.toString() !== req.user.id) {
+  if (audio.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -159,12 +160,12 @@ const deleteAudio = asyncHandler(async (req, res) => {
     throw new Error("Audio not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (audio.user.toString() !== req.user.id) {
+  if (audio.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }

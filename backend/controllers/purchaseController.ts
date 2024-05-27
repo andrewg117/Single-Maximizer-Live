@@ -1,8 +1,8 @@
-const e = require("express");
-const asyncHandler = require("express-async-handler");
+import session, { SessionData } from "express-session";
+import asyncHandler from "express-async-handler";
 const stripe = require("stripe")(process.env.SK_TEST);
-const User = require("../models/userModel");
-const Purchase = require("../models/purchaseModel");
+import User from "../models/userModel";
+import Purchase from "../models/purchaseModel";
 
 const YOUR_DOMAIN = "http://localhost:3000/";
 
@@ -49,7 +49,7 @@ const postPayment = asyncHandler(async (req, res) => {
     mode: "payment",
     success_url: `${YOUR_DOMAIN}profile/singles?success=true`,
     cancel_url: `${YOUR_DOMAIN}profile/checkoutpage?canceled=true`,
-    client_reference_id: req.user.id.toString(),
+    client_reference_id: req.session.userID as string,
   });
 
   res.json(session.url);
@@ -59,7 +59,7 @@ const postPayment = asyncHandler(async (req, res) => {
 // @route   POST /api/purchase
 // @access  Private
 const postDemoPayment = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.session.userID);
 
   if (user) {
     // Update User's trackAllowance after purchase is complete

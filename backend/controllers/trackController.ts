@@ -1,12 +1,13 @@
-const asyncHandler = require("express-async-handler");
-const Track = require("../models/trackModel");
-const User = require("../models/userModel");
+import session, { SessionData } from "express-session";
+import asyncHandler from "express-async-handler";
+import Track from "../models/trackModel";
+import User from "../models/userModel";
 
 // @desc    Get tracks
 // @route   GET /api/track
 // @access  Private
 const getTracks = asyncHandler(async (req, res) => {
-  const tracks = await Track.find({ user: req.user.id });
+  const tracks = await Track.find({ user: req.session.userID });
 
   res.json(tracks);
 });
@@ -15,7 +16,7 @@ const getTracks = asyncHandler(async (req, res) => {
 // @route   GET /api/track/:id
 // @access  Private
 const getSingle = asyncHandler(async (req, res) => {
-  const track = await Track.findById(req.params.id);
+  const track = await Track.findById(req.params.id) as any;
 
   if (!track) {
     res.status(400);
@@ -24,12 +25,12 @@ const getSingle = asyncHandler(async (req, res) => {
 
   // const user = await User.findById(req.user.id)
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (track.user.toString() !== req.user.id) {
+  if (track.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -66,7 +67,7 @@ const setTrack = asyncHandler(async (req, res) => {
     pressSum: req.body.pressSum,
     isDelivered: false,
     s3PressURL: [],
-    user: req.user.id,
+    user: req.session.userID,
   });
 
   res.json(track);
@@ -76,19 +77,19 @@ const setTrack = asyncHandler(async (req, res) => {
 // @route   PUT /api/tracks/:id
 // @access  Private
 const updateTrack = asyncHandler(async (req, res) => {
-  const track = await Track.findById(req.params.id);
+  const track = await Track.findById(req.params.id) as any;
 
   if (!track) {
     res.status(400);
     throw new Error("Tacrk not found");
   }
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (track.user.toString() !== req.user.id) {
+  if (track.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -117,20 +118,24 @@ const deleteTrack = asyncHandler(async (req, res) => {
 
   // const user = await User.findById(req.user.id)
 
-  if (!req.user) {
+  if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
   }
 
-  if (track.user.toString() !== req.user.id) {
+  if (track.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
 
-  const deleteTrack = await Track.findByIdAndDelete(req.params.id);
+  interface trackObject {
+    id: String;
+  }
+
+  const deleteTrack: trackObject = await Track.findByIdAndDelete(req.params.id) as any;
 
   const updateUser = await User.findByIdAndUpdate(
-    req.user.id,
+    req.session.userID,
     {
       $inc: { trackAllowance: 1 },
     },
