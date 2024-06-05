@@ -1,22 +1,24 @@
-const {
+import {
   S3Client,
   ListObjectsCommand,
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
-} = require("@aws-sdk/client-s3");
+  GetObjectCommandInput,
+} from "@aws-sdk/client-s3";
 
-const dotenv = require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 const port = process.env.Port || 5000;
 const AWS_ACCESS_KEY_ID = process.env.ACCESS_KEY_ID;
 const AWS_SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY;
 const AWS_DEFAULT_REGION = process.env.DEFAULT_REGION;
 
 let s3 = new S3Client({
-  region: AWS_DEFAULT_REGION,
+  region: AWS_DEFAULT_REGION as string,
   credentials: {
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    accessKeyId: AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY as string,
   },
   // endpoint: "http://localhost:5000",
   // forcePathStyle: true,
@@ -34,14 +36,23 @@ const searchBucket = new ListObjectsCommand({
 // meta-data examples: x-amz-meta-
 // x-amz-meta-userID, x-amz-meta-trackID
 
-const getObject = new GetObjectCommand({
+interface ETagParams extends GetObjectCommandInput {
+  ETag?: string;
+}
+
+const s3Params = {
   Bucket: "singlemax-bucket",
   Key: "hello-s3.txt",
   ETag: "fcefc42e049921a12611b2c421141919",
-  // MaxKeys: 1,
-});
+} as ETagParams;
 
-const uploadS3Object = (fileName, fileBody, mimetype) => {
+const getObject = new GetObjectCommand(s3Params);
+
+const uploadS3Object = (
+  fileName: string,
+  fileBody: string,
+  mimetype: string
+) => {
   return new PutObjectCommand({
     Bucket: "singlemax-bucket",
     Key: fileName,
@@ -50,7 +61,7 @@ const uploadS3Object = (fileName, fileBody, mimetype) => {
   });
 };
 
-const deleteS3Object = (fileName) => {
+const deleteS3Object = (fileName: string) => {
   return new DeleteObjectCommand({
     Bucket: "singlemax-bucket",
     Key: fileName,
@@ -72,9 +83,4 @@ const runS3Commands = async () => {
   }
 };
 
-module.exports = {
-  s3,
-  runS3Commands,
-  uploadS3Object,
-  deleteS3Object,
-};
+export { s3, runS3Commands, uploadS3Object, deleteS3Object };

@@ -1,13 +1,23 @@
+import express, { Request, Response } from "express";
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
+const multer = require("multer");
 import Image from "../models/imageModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
 
+declare module "express" {
+  interface Request {
+    body: any;
+    file?: any;
+    files?: any;
+  }
+}
+
 // @desc    Post image
 // @route   POST /api/image
 // @access  Private
-const uploadImage = asyncHandler(async (req, res) => {
+const uploadImage = asyncHandler(async (req: Request, res: Response) => {
   if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
@@ -34,11 +44,11 @@ const uploadImage = asyncHandler(async (req, res) => {
   }
 
   const uploadedImage = await Image.findByIdAndUpdate(
-    image._id,
+    image?._id,
     {
       $set: {
         s3ImageURL:
-          "https://singlemax-bucket.s3.amazonaws.com/" + image._id.toString(),
+          "https://singlemax-bucket.s3.amazonaws.com/" + image?._id.toString(),
       },
     },
     {
@@ -47,13 +57,13 @@ const uploadImage = asyncHandler(async (req, res) => {
   );
 
   const updateTrack = await Track.findByIdAndUpdate(
-    image.trackID,
+    image?.trackID,
     {
       $set: {
         s3ImageURL: {
-          name: image.file.originalname,
+          name: image?.file?.originalname,
           url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + image._id.toString(),
+            "https://singlemax-bucket.s3.amazonaws.com/" + image?._id.toString(),
         },
       },
     },
@@ -64,7 +74,7 @@ const uploadImage = asyncHandler(async (req, res) => {
 
   const response = await s3.send(
     uploadS3Object(
-      uploadedImage._id.toString(),
+      uploadedImage?._id.toString(),
       req.file.buffer,
       req.file.mimetype
     )
@@ -88,7 +98,9 @@ const uploadPress = asyncHandler(async (req, res) => {
 
   // console.log('Body: ' + JSON.stringify(req.body))
 
-  req.files.forEach(async (file) => {
+  const files = multer.many(req.files, "images");
+
+  files.forEach(async (file: any) => {
     let image;
     // console.log(file.originalname)
     image = await Image.create({
@@ -98,7 +110,7 @@ const uploadPress = asyncHandler(async (req, res) => {
       file: file,
     });
 
-    const updatedImage = await Image.findByIdAndUpdate(
+    const updatedImage = (await Image.findByIdAndUpdate(
       image._id,
       {
         $set: {
@@ -109,7 +121,7 @@ const uploadPress = asyncHandler(async (req, res) => {
       {
         new: true,
       }
-    );
+    )) as any;
 
     const updateTrack = await Track.findByIdAndUpdate(
       req.body.trackID,
@@ -141,7 +153,10 @@ const getImage = asyncHandler(async (req, res) => {
   let image;
 
   if (req.query.section === "avatar") {
-    image = await Image.findOne({ user: req.session.userID, section: "avatar" });
+    image = await Image.findOne({
+      user: req.session.userID,
+      section: "avatar",
+    });
   } else if (req.query.section === "cover") {
     image = await Image.findOne({
       trackID: req.query.trackID,
@@ -196,7 +211,7 @@ const getPress = asyncHandler(async (req, res) => {
 // @desc    Update image
 // @route   PUT /api/image/:file
 // @access  Private
-const updateImage = asyncHandler(async (req, res) => {
+const updateImage = asyncHandler(async (req: Request, res: Response) => {
   let image = null;
   if (req.body.section === "avatar") {
     image = await Image.findOne({ user: req.session.userID });
@@ -231,9 +246,9 @@ const updateImage = asyncHandler(async (req, res) => {
       "https://singlemax-bucket.s3.amazonaws.com/" + image._id.toString(),
   };
 
-  const updatedImage = await Image.findByIdAndUpdate(image._id, newBody, {
+  const updatedImage = (await Image.findByIdAndUpdate(image._id, newBody, {
     new: true,
-  }) as any;
+  })) as any;
 
   const updateTrack = await Track.findByIdAndUpdate(
     image.trackID,
@@ -335,7 +350,7 @@ const deletePress = asyncHandler(async (req, res) => {
   res.json(deleteImage.id);
 });
 
-module.exports = {
+export {
   uploadImage,
   uploadPress,
   getImage,

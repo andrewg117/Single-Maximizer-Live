@@ -27,14 +27,6 @@ const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain = "mail.trackstarz.com";
 
-interface ExRequest extends Request {
-  user?: any;
-}
-
-interface ExResponse extends Response {
-  user?: any;
-}
-
 interface urlType {
   client_id: string;
   client_secret: string;

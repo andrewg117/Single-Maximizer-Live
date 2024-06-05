@@ -1,13 +1,22 @@
+import express, { Request, Response } from "express";
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
 import Audio from "../models/audioModel";
 import Track from "../models/trackModel";
-const { s3, uploadS3Object, deleteS3Object } = require("../config/s3helper");
+import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
+
+declare module "express" {
+  interface Request {
+    body: any;
+    file?: any;
+    files?: any;
+  }
+}
 
 // @desc    Post audio
 // @route   GET /api/audio
 // @access  Private
-const uploadAudio = asyncHandler(async (req, res) => {
+const uploadAudio = asyncHandler(async (req: Request, res: Response) => {
   if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
@@ -22,6 +31,7 @@ const uploadAudio = asyncHandler(async (req, res) => {
     file: req.file,
   });
 
+  // TODO: fix mongodb type error
   const updatedAudio = await Audio.findByIdAndUpdate(
     audio._id,
     {
@@ -53,7 +63,7 @@ const uploadAudio = asyncHandler(async (req, res) => {
 
   const response = await s3.send(
     uploadS3Object(
-      updatedAudio._id.toString(),
+      updatedAudio?._id.toString(),
       req.file.buffer,
       req.file.mimetype
     )
@@ -91,7 +101,7 @@ const getAudio = asyncHandler(async (req, res) => {
 // @desc    Update audio
 // @route   PUT /api/audio/:file
 // @access  Private
-const updateAudio = asyncHandler(async (req, res) => {
+const updateAudio = asyncHandler(async (req: Request, res: Response) => {
   const audio = await Audio.findOne({ trackID: req.body.trackID });
 
   if (!audio) {
@@ -128,7 +138,7 @@ const updateAudio = asyncHandler(async (req, res) => {
     {
       $set: {
         s3AudioURL: {
-          name: req.file.originalname,
+          name: req.file?.originalname,
           url:
             "https://singlemax-bucket.s3.amazonaws.com/" + audio._id.toString(),
         },
@@ -143,7 +153,7 @@ const updateAudio = asyncHandler(async (req, res) => {
   // console.log(delResponse)
 
   const putResponse = await s3.send(
-    uploadS3Object(audio._id.toString(), req.file.buffer, req.file.mimetype)
+    uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
   );
 
   res.json(updatedAudio);
@@ -174,7 +184,7 @@ const deleteAudio = asyncHandler(async (req, res) => {
 
   const response = await s3.send(deleteS3Object(audio._id.toString()));
 
-  res.json(deleteAudio.id);
+  res.json(deleteAudio?.id);
 });
 
 module.exports = {
