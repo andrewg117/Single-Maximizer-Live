@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
-const multer = require("multer");
+import multer from "multer";
 import Image from "../models/imageModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
@@ -100,12 +100,11 @@ const uploadPress = asyncHandler(async (req, res) => {
 
   // console.log('Body: ' + JSON.stringify(req.body))
 
-  const files = multer.many(req.files, "images");
+  const files = req.files as Express.Multer.File[];
 
   files.forEach(async (file: any) => {
-    let image;
     // console.log(file.originalname)
-    image = await Image.create({
+    let image = await Image.create({
       user: req.session.userID,
       trackID: req.body.trackID,
       section: req.body.section,

@@ -1,11 +1,12 @@
-const express = require("express");
-const router = express.Router();
-const {
+import express from "express";
+import {
   postPayment,
   postDemoPayment,
-} = require("../controllers/purchaseController");
-const { protect } = require("../middleware/authMiddleware");
+} from "../controllers/purchaseController";
+import { protect } from "../middleware/authMiddleware";
+
+const router = express.Router();
 
 router.route("/").post(protect, postPayment);
 
-module.exports = router;
+export default router;

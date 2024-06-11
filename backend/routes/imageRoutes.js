@@ -1,6 +1,5 @@
-const express = require("express");
-const router = express.Router();
-const {
+import express from "express";
+import {
   uploadImage,
   getImage,
   updateImage,
@@ -8,9 +7,11 @@ const {
   getPress,
   deleteImage,
   deletePress,
-} = require("../controllers/imageController");
-const { protect } = require("../middleware/authMiddleware");
-const multer = require("multer");
+} from "../controllers/imageController";
+import { protect } from "../middleware/authMiddleware";
+import multer from "multer";
+
+const router = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -20,16 +21,19 @@ router
   .post(protect)
   .post(upload.single("Image"), uploadImage)
   .get(protect, getImage);
+
 router
   .route("/:id")
   .put(protect)
   .put(upload.single("Image"), updateImage)
   .delete(protect, deleteImage);
+
 router
   .route("/press")
   .post(protect)
   .post(upload.array("Press"), uploadPress)
   .get(protect, getPress);
+
 router.route("/press/:id").delete(protect, deletePress);
 
-module.exports = router;
+export default router;

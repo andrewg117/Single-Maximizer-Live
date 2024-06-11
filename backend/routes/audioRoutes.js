@@ -1,13 +1,13 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+import {
   uploadAudio,
   getAudio,
   updateAudio,
   deleteAudio,
-} = require("../controllers/audioController");
-const { protect } = require("../middleware/authMiddleware");
-const multer = require("multer");
+} from "../controllers/audioController";
+import { protect } from "../middleware/authMiddleware";
+import multer from "multer";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -20,4 +20,4 @@ router
   .put(upload.single("trackAudio"), updateAudio)
   .delete(protect, deleteAudio);
 
-module.exports = router;
+export default router;

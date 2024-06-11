@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
+import { postEndpoint } from "../controllers/purchaseController";
+
 const router = express.Router();
-const { postEndpoint } = require("../controllers/purchaseController");
-const bodyParser = require("body-parser");
 
 router.route("").post(express.raw({ type: "application/json" }), postEndpoint);
 
-module.exports = router;
+export default router;

@@ -1,13 +1,14 @@
-const express = require("express");
-const router = express.Router();
-const {
+import express from "express";
+import {
   getTracks,
   getSingle,
   setTrack,
   updateTrack,
   deleteTrack,
-} = require("../controllers/trackController");
-const { protect } = require("../middleware/authMiddleware");
+} from "../controllers/trackController";
+import { protect } from "../middleware/authMiddleware";
+
+const router = express.Router();
 
 router.route("/").get(protect, getTracks).post(protect, setTrack);
 router
@@ -16,4 +17,4 @@ router
   .put(protect, updateTrack)
   .delete(protect, deleteTrack);
 
-module.exports = router;
+export default router;
