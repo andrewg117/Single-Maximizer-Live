@@ -9,23 +9,23 @@ import Mailgun from "mailgun.js";
 import { generate } from "generate-password";
 import User from "../models/userModel";
 import { ObjectId } from "mongoose";
-const EMAILUSER: string = process.env.EMAILUSER as string;
-const MAILGUN_API: string = process.env.MAILGUN_API as string;
+const EMAILUSER = <string>process.env.EMAILUSER;
+const MAILGUN_API = <string>process.env.MAILGUN_API;
 
 dotenv.config();
-const GOOGLE_OATH_SECRET: string = process.env.GOOGLE_OATH_SECRET as string;
-const GOOGLE_CLIENT_ID: string = process.env.GOOGLE_CLIENT_ID as string;
+const GOOGLE_OATH_SECRET = <string>process.env.GOOGLE_OATH_SECRET;
+const GOOGLE_CLIENT_ID = <string>process.env.GOOGLE_CLIENT_ID;
 const REDIRECT_URI: string = "http://localhost:5000/api/users/redirect/google";
 
-const NODE_ENV: string = process.env.NODE_ENV as string;
-const RENDER_STATIC_URL: string = process.env.RENDER_STATIC_URL as string;
+const NODE_ENV = <string>process.env.NODE_ENV;
+const RENDER_STATIC_URL = <string>process.env.RENDER_STATIC_URL;
 const API_URL =
   NODE_ENV === "production" ? RENDER_STATIC_URL : "http://localhost:3000";
 
 // Mailgun email setup
-const mailgun = new Mailgun(formData);
+const mailgun: Mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
-const mgDomain = "mail.trackstarz.com";
+const mgDomain: string = "mail.trackstarz.com";
 
 interface urlType {
   client_id: string;
@@ -90,7 +90,7 @@ const registerUser = asyncHandler(async (req, res) => {
     //   res.status(400);
     //   throw new Error("Invalid user data");
     // }
-    req.session.userID = user?._id as any;
+    req.session.userID = user._id;
     res.status(200).end();
   } catch (error) {
     throw new Error(error as string);

@@ -1,18 +1,27 @@
+import express, { Request, Response } from "express";
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
 const stripe = require("stripe")(process.env.SK_TEST);
 import User from "../models/userModel";
 import Purchase from "../models/purchaseModel";
 
-const YOUR_DOMAIN = "http://localhost:3000/";
+const YOUR_DOMAIN: string = "http://localhost:3000/";
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
-const endpointSecret = process.env.SK_ENDPOINT;
+const endpointSecret = <string>process.env.SK_ENDPOINT;
+
+declare module "express" {
+  interface Request {
+    body: any;
+    headers: any;
+    user?: any;
+  }
+}
 
 // @desc    Post purchase
 // @route   POST /api/purchase
 // @access  Private
-const postPayment = asyncHandler(async (req, res) => {
+const postPayment = asyncHandler(async (req: Request, res: Response) => {
   // Create Stripe Customer
   let userStripeID;
   let customerData;
@@ -58,7 +67,7 @@ const postPayment = asyncHandler(async (req, res) => {
 // @desc    Post demo purchase
 // @route   POST /api/purchase
 // @access  Private
-const postDemoPayment = asyncHandler(async (req, res) => {
+const postDemoPayment = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById(req.session.userID);
 
   if (user) {
@@ -88,7 +97,7 @@ const postDemoPayment = asyncHandler(async (req, res) => {
   stripe login
   stripe listen --forward-to localhost:5000/api/webhook
 */
-const postEndpoint = asyncHandler(async (req, res) => {
+const postEndpoint = asyncHandler(async (req: any, res: any) => {
   const payload = req.body;
   const sig = req.headers["stripe-signature"];
 
@@ -96,7 +105,7 @@ const postEndpoint = asyncHandler(async (req, res) => {
 
   try {
     event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
-  } catch (err) {
+  } catch (err: any) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 

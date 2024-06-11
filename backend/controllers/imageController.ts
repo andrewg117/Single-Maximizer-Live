@@ -26,7 +26,7 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
   // console.log('Body: ' + JSON.stringify(req.body))
   // console.log('File: ' + JSON.stringify(req.file))
 
-  let image;
+  let image: any;
 
   if (req.body.section === "avatar") {
     image = await Image.create({
@@ -44,11 +44,11 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const uploadedImage = await Image.findByIdAndUpdate(
-    image?._id,
+    image._id,
     {
       $set: {
         s3ImageURL:
-          "https://singlemax-bucket.s3.amazonaws.com/" + image?._id.toString(),
+          "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
       },
     },
     {
@@ -57,13 +57,13 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
   );
 
   const updateTrack = await Track.findByIdAndUpdate(
-    image?.trackID,
+    image.trackID,
     {
       $set: {
         s3ImageURL: {
-          name: image?.file?.originalname,
+          name: image.file.originalname,
           url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + image?._id.toString(),
+            "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
         },
       },
     },
@@ -74,7 +74,7 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
 
   const response = await s3.send(
     uploadS3Object(
-      uploadedImage?._id.toString(),
+      uploadedImage._id.toString(),
       req.file.buffer,
       req.file.mimetype
     )
@@ -186,7 +186,7 @@ const getImage = asyncHandler(async (req, res) => {
 // @route   GET /api/image/press
 // @access  Private
 const getPress = asyncHandler(async (req, res) => {
-  let image;
+  let image: any;
 
   image = await Image.find({ trackID: req.query.trackID, section: "press" });
 
@@ -200,7 +200,7 @@ const getPress = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if (image[0].user.toString() !== req.session.userID) {
+  if (image[0].user as string !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -243,7 +243,7 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
     ...req.body,
     file: req.file,
     s3ImageURL:
-      "https://singlemax-bucket.s3.amazonaws.com/" + image._id.toString(),
+      "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
   };
 
   const updatedImage = (await Image.findByIdAndUpdate(image._id, newBody, {
@@ -257,7 +257,7 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
         s3ImageURL: {
           name: req.file.originalname,
           url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + image._id.toString(),
+            "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
         },
       },
     },
@@ -266,13 +266,15 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  const putResponse = await s3.send(
-    uploadS3Object(
-      updatedImage._id.toString(),
-      req.file.buffer,
-      req.file.mimetype
-    )
-  );
+  if(updatedImage) {
+    const response = await s3.send(
+      uploadS3Object(
+        updatedImage?._id.toString(),
+        req.file.buffer as string,
+        req.file.mimetype as string
+      )
+    );
+  }
 
   // console.log("Put: " + JSON.stringify(response))
 
@@ -283,8 +285,7 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
 // @route   DELETE /api/image/
 // @access  Private
 const deleteImage = asyncHandler(async (req, res) => {
-  let image;
-  image = await Image.find({ trackID: req.params.id });
+  let image = await Image.find({ trackID: req.params.id });
 
   if (!image) {
     res.status(400);
@@ -305,7 +306,7 @@ const deleteImage = asyncHandler(async (req, res) => {
     // console.log(item._id)
     const deleteImage = await Image.findByIdAndDelete(item._id);
 
-    const response = await s3.send(deleteS3Object(item._id.toString()));
+    const response = await s3.send(deleteS3Object(item._id as string));
   });
 
   res.json(req.params.id);
@@ -347,7 +348,7 @@ const deletePress = asyncHandler(async (req, res) => {
 
   const response = await s3.send(deleteS3Object(image._id.toString()));
 
-  res.json(deleteImage.id);
+  res.json(deleteImage?.id);
 });
 
 export {

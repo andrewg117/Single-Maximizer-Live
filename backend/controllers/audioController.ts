@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 import Audio from "../models/audioModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
+import { ObjectId } from "mongoose";
 
 declare module "express" {
   interface Request {
@@ -61,13 +62,15 @@ const uploadAudio = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  const response = await s3.send(
-    uploadS3Object(
-      updatedAudio?._id.toString(),
-      req.file.buffer,
-      req.file.mimetype
-    )
-  );
+  if(updatedAudio) {
+    const response = await s3.send(
+      uploadS3Object(
+        updatedAudio?._id.toString(),
+        req.file.buffer as string,
+        req.file.mimetype as string
+      )
+    );
+  }
 
   if (audio) {
     res.json(audio);
