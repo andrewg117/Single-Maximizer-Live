@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface monSchema  {
+interface monSchema extends mongoose.Document {
   user: mongoose.Schema.Types.ObjectId;
   trackID: mongoose.Schema.Types.ObjectId;
   deliveryDate: Date;
@@ -43,4 +43,5 @@ const emailSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-export default mongoose.model("Email", emailSchema);
+const Email = mongoose.model<monSchema>("Email", emailSchema);
+export default Email;

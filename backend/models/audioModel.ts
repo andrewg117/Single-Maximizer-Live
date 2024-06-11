@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface monSchema  {
+interface monSchema extends mongoose.Document {
   user: mongoose.Schema.Types.ObjectId;
   trackID: mongoose.Schema.Types.ObjectId;
   s3AudioURL: String;
@@ -33,4 +33,5 @@ const audioSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-export default mongoose.model("Audio", audioSchema);
+const Audio = mongoose.model<monSchema>("Audio", audioSchema);
+export default Audio;

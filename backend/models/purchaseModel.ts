@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface monSchema  {
+interface monSchema extends mongoose.Document {
   user: mongoose.Schema.Types.ObjectId;
   session: mongoose.Schema.Types.Mixed;
 }
@@ -22,4 +22,5 @@ const purchaseSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-export default mongoose.model("Purchase", purchaseSchema);
+const Purchase = mongoose.model<monSchema>("Purchase", purchaseSchema);
+export default Purchase;

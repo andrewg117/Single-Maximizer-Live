@@ -47,8 +47,8 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
     image._id,
     {
       $set: {
-        s3ImageURL:
-          "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
+        s3ImageURL: ("https://singlemax-bucket.s3.amazonaws.com/" +
+          image._id) as string,
       },
     },
     {
@@ -62,8 +62,8 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
       $set: {
         s3ImageURL: {
           name: image.file.originalname,
-          url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
+          url: ("https://singlemax-bucket.s3.amazonaws.com/" +
+            image._id) as string,
         },
       },
     },
@@ -72,13 +72,15 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  const response = await s3.send(
-    uploadS3Object(
-      uploadedImage._id.toString(),
-      req.file.buffer,
-      req.file.mimetype
-    )
-  );
+  if (uploadedImage) {
+    const response = await s3.send(
+      uploadS3Object(
+        uploadedImage?._id.toString(),
+        req.file.buffer,
+        req.file.mimetype
+      )
+    );
+  }
 
   // console.log("Post: " + response)
 
@@ -200,7 +202,7 @@ const getPress = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if (image[0].user as string !== req.session.userID) {
+  if ((image[0].user as string) !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -242,8 +244,8 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
   const newBody = {
     ...req.body,
     file: req.file,
-    s3ImageURL:
-      "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
+    s3ImageURL: ("https://singlemax-bucket.s3.amazonaws.com/" +
+      image._id) as string,
   };
 
   const updatedImage = (await Image.findByIdAndUpdate(image._id, newBody, {
@@ -256,8 +258,8 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
       $set: {
         s3ImageURL: {
           name: req.file.originalname,
-          url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + image._id as string,
+          url: ("https://singlemax-bucket.s3.amazonaws.com/" +
+            image._id) as string,
         },
       },
     },
@@ -266,7 +268,7 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  if(updatedImage) {
+  if (updatedImage) {
     const response = await s3.send(
       uploadS3Object(
         updatedImage?._id.toString(),

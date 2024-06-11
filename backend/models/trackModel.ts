@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface monSchema  {
+interface monSchema extends mongoose.Document {
   user: mongoose.Schema.Types.ObjectId;
   trackTitle: String;
   artist: String;
@@ -120,4 +120,5 @@ const trackSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-export default mongoose.model("Track", trackSchema);
+const Track = mongoose.model<monSchema>("Track", trackSchema);
+export default Track;

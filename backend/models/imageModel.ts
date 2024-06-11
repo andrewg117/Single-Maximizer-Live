@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface monSchema  {
+interface monSchema extends mongoose.Document {
   user: mongoose.Schema.Types.ObjectId;
   trackID: mongoose.Schema.Types.ObjectId;
   s3ImageURL: String;
@@ -38,4 +38,5 @@ const imageSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-export default mongoose.model("Image", imageSchema);
+const Image = mongoose.model<monSchema>("Image", imageSchema);
+export default Image;
