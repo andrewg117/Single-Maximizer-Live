@@ -39,6 +39,12 @@ const login = async (userData) => {
   return response.data;
 };
 
+const loginGoogle = async (tokenData) => {
+  const response = await axios.post(API_URL + "login/google", tokenData);
+
+  return response.data;
+};
+
 const reset = async (userData) => {
   const response = await axios.put(API_URL + "reset", userData);
 
@@ -96,6 +102,7 @@ const authService = {
   emailUser,
   emailData,
   login,
+  loginGoogle,
   reset,
   getUser,
   update,

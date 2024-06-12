@@ -1,6 +1,8 @@
 import express from "express";
 import {
   loginUser,
+  loginGoogle,
+  redirectGoogle,
   logoutUser,
   registerUser,
   checkRegisterEmail,
@@ -16,6 +18,8 @@ const router = express.Router();
 
 router.post("/", registerUser);
 router.post("/login", loginUser);
+router.post("/login/google", loginGoogle);
+router.get("/redirect/google", redirectGoogle);
 router.post("/logout", logoutUser);
 router.route("/email").post(checkRegisterEmail);
 router.route("/email/:token").get(emailData);

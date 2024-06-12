@@ -75,22 +75,12 @@ const registerUser = asyncHandler(async (req, res) => {
       password: hashedPassword,
     });
 
-    // if (user) {
-    //   generateToken(res, user._id, "10m");
-
-    //   res.status(201).json({
-    //     _id: user.id,
-    //     fname: user.fname,
-    //     lname: user.lname,
-    //     username: user.username,
-    //     email: user.email,
-    //     isAdmin: user.isAdmin,
-    //   });
-    // } else {
-    //   res.status(400);
-    //   throw new Error("Invalid user data");
-    // }
-    req.session.userID = user._id;
+    if (user) {
+      req.session.userID = user._id;
+    } else {
+      res.status(400);
+      throw new Error("Invalid user data");
+    }
     res.status(200).end();
   } catch (error) {
     throw new Error(error as string);
@@ -170,6 +160,109 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+  }
+});
+
+
+// @desc    Authenticate Google user
+// @route   POST /api/users/login
+// @access  Private
+const loginGoogle = asyncHandler(async (req, res) => {
+  try {
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
+
+    // TODO: use IP to limit login attempts
+    // console.log(req.ip);
+    // console.log(req.socket.remoteAddress);
+    const { token } = req.body;
+
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPT_SECRETKEY}&response=${token}`
+    );
+
+    if (response.data.success) {
+      res.json(url);
+    } else {
+      throw new Error("Captcha Failed");
+    }
+  } catch (error) {
+    throw new Error("Login Expired: " + error);
+  }
+});
+
+
+// @desc    Authenticate a Google user
+// @route   GET /redirect/google
+// @access  Private
+const redirectGoogle = asyncHandler(async (req, res) => {
+  const { code } = req.query;
+
+  try {
+    const searchParams: urlType = {
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_OATH_SECRET,
+      code,
+      redirect_uri: REDIRECT_URI,
+      grant_type: "authorization_code",
+    };
+
+    // Exchange authorization code for access token
+    const { data } = await axios.post(
+      "https://oauth2.googleapis.com/token",
+      searchParams
+    );
+
+    const { access_token, id_token } = data;
+    // Use access_token or id_token to fetch user profile
+    const { data: profile } = await axios.get(
+      "https://www.googleapis.com/oauth2/v1/userinfo",
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+      }
+    );
+
+    // Code to handle user authentication and retrieval using the profile data
+
+    const userExists = await User.findOne({ email: profile.email });
+
+    interface userDoc extends Document {
+      _id?: string;
+    }
+
+    if (userExists) {
+      const user: any = await User.findOne({ email: profile.email }) as Document;
+      req.session.userID = user?._id.toString();
+      const userBody = {
+        ...user["_doc"],
+      };
+      delete userBody["__v"];
+
+      req.session.userID = user._id;
+
+      res.redirect("http://localhost:3000/profile");
+    } else {
+      const salt = await bcrypt.genSalt(10);
+      const defaulPass = generate({
+        length: 12,
+        numbers: true,
+        symbols: true,
+      });
+      const hashedPassword = await bcrypt.hash(defaulPass, salt);
+
+      const user = await User.create({
+        username: profile.name,
+        name: profile.given_name,
+        password: hashedPassword,
+        email: profile.email,
+        googleId: profile.id,
+      });
+
+      req.session.userID = user._id.toString();
+      res.redirect("http://localhost:3000/profile");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.redirect("http://localhost:3000/signin");
   }
 });
 
@@ -260,7 +353,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.session.userID) as any;
+    const user = (await User.findById(req.session.userID)) as any;
 
     if (user) {
       const userBody = {
@@ -366,6 +459,8 @@ export {
   registerUser,
   checkRegisterEmail,
   loginUser,
+  loginGoogle,
+  redirectGoogle,
   logoutUser,
   forgotPassword,
   resetPassword,

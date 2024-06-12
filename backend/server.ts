@@ -10,7 +10,6 @@ import MongoStore from "connect-mongo";
 import connectDB from "./config/db";
 import { sendScheduledEmail } from "./controllers/emailController";
 import errorHandler from "./middleware/errorMiddleware";
-import { route } from "./routes/webhookRoutes";
 const port = process.env.Port || 5000;
 
 connectDB();
