@@ -147,8 +147,4 @@ const postEndpoint = asyncHandler(async (req: any, res: any) => {
   res.status(200).end();
 });
 
-module.exports = {
-  postPayment,
-  postDemoPayment,
-  postEndpoint,
-};
+export { postPayment, postDemoPayment, postEndpoint };

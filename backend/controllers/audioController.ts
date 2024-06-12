@@ -190,7 +190,7 @@ const deleteAudio = asyncHandler(async (req, res) => {
   res.json(deleteAudio?.id);
 });
 
-module.exports = {
+export {
   uploadAudio,
   getAudio,
   updateAudio,

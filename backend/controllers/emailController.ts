@@ -233,7 +233,7 @@ const sendScheduledEmail = async () => {
   });
 
   for (const track in tracks) {
-    const singleDoc = tracks[track];
+    const singleDoc: any = tracks[track];
 
     generalEmail(singleDoc, "default");
     // generalEmail(singleDoc, 'Mizfitz')
@@ -288,7 +288,7 @@ const sendEmail = asyncHandler(async (req, res) => {
   res.status(200);
 });
 
-module.exports = {
+export {
   sendEmail,
   sendScheduledEmail,
 };
