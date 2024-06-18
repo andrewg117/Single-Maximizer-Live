@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
-const stripe = require("stripe")(process.env.SK_TEST);
+import stripe from "stripe";
+// const stripe = require("stripe")(process.env.SK_TEST);
 import User from "../models/userModel";
 import Purchase from "../models/purchaseModel";
 

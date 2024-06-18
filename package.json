@@ -7,7 +7,7 @@
   "scripts": {
     "start": "tsc --watch",
     "server": "npx tsx ./backend/server.ts",
-    "client": "npm start --prefix frontend",
+    "client": "npm run dev --prefix client",
     "webhook": "stripe listen --forward-to localhost:5000/api/webhook",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "live": "concurrently \"npm run server\" \"npm run webhook\""

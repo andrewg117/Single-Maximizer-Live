@@ -8,6 +8,13 @@ import cors from "cors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import connectDB from "./config/db";
+import webhookRoutes from "./routes/webhookRoutes";
+import trackRoutes from "./routes/trackRoutes";
+import userRoutes from "./routes/userRoutes";
+import emailRoutes from "./routes/emailRoutes";
+import imageRoutes from "./routes/imageRoutes";
+import audioRoutes from "./routes/audioRoutes";
+// import purchaseRoutes from "./routes/purchaseRoutes";
 import { sendScheduledEmail } from "./controllers/emailController";
 import errorHandler from "./middleware/errorMiddleware";
 const port = process.env.Port || 5000;
@@ -21,7 +28,8 @@ const app = express();
 //   sendScheduledEmail();
 // });
 
-app.use("/api/webhook", require("./routes/webhookRoutes"));
+
+app.use("/api/webhook", webhookRoutes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,12 +47,12 @@ app.use(
   })
 );
 
-app.use("/api/tracks", require("./routes/trackRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/email", require("./routes/emailRoutes"));
-app.use("/api/image", require("./routes/imageRoutes"));
-app.use("/api/audio", require("./routes/audioRoutes"));
-app.use("/api/purchase", require("./routes/purchaseRoutes"));
+app.use("/api/tracks", trackRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/email", emailRoutes);
+app.use("/api/image", imageRoutes);
+app.use("/api/audio", audioRoutes);
+// app.use("/api/purchase", purchaseRoutes);
 
 // if (process.env.NODE_ENV === 'production') {
 //   app.use(express.static(path.join(__dirname, '../frontend/build')))

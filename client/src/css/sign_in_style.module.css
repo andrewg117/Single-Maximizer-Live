@@ -1,0 +1,142 @@
+#sign_in_wrapper {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  width: auto;
+  height: 90vh;
+  background-color: var(--main-cnt-color);
+}
+
+#sign_in_content {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  text-align: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--main-cnt-color);
+}
+
+#block_left {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: darkgray;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+#block_right {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--main-cnt-color);
+  color: #ffff;
+}
+
+#logo {
+  width: 429px;
+  height: auto;
+  justify-self: center;
+}
+
+.signin_form {
+  display: flex;
+}
+
+.signin_form_div {
+  padding: 5rem;
+  text-align: left;
+}
+
+.signin_link {
+  margin: 3em 1em 1em 0;
+  color: #ffff;
+  text-decoration: none;
+}
+
+#f_lname_div {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 5em;
+}
+
+#f_lname_div div {
+  display: grid;
+  align-items: center;
+  width: 100%;
+}
+
+.signin_input {
+  width: 100%;
+  height: 30px;
+  margin: 1em 0 2em 0;
+  display: inline-block;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+  color: #ffff;
+  font-size: 1.2em;
+}
+
+.submit_div {
+  display: grid;
+  justify-content: right;
+  align-items: center;
+  margin-top: 1em;
+}
+
+#signin_submit {
+  background-color: var(--main-btn-color);
+  color: white;
+  text-align: center;
+  padding: 1em 3em;
+  font-size: 1.2em;
+  border: none;
+}
+
+@media (max-width: 700px) {
+  #sign_in_wrapper {
+    margin-top: 0;
+    width: auto;
+  }
+
+  #sign_in_content {
+    grid-template-columns: auto;
+  }
+
+  #block_left {
+    display: none;
+  }
+
+  #logo {
+    width: 80%;
+  }
+
+  .signin_form_div {
+    padding: 2rem;
+    text-align: left;
+  }
+
+  .submit_div {
+    justify-content: center;
+  }
+
+  #signin_submit {
+    font-size: 1rem;
+  }
+}
+
+@media (max-height: 700px) {
+  #block_left {
+    display: none;
+  }
+
+  #sign_in_content {
+    grid-template-columns: 100%;
+  }
+}
