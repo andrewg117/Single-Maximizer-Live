@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "./app/hooks";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
@@ -23,7 +23,7 @@ import TokenCheck from "./components/TokenCheck";
 import styles from "./css/style.module.css";
 
 function MaximizerApp() {
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   return (
     <>
       <Router>
