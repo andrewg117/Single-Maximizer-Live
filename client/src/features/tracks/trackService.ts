@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "/api/tracks/";
 
-const createTrack = async (trackData) => {
+const createTrack = async (trackData: any) => {
   let response;
 
   response = await axios.post(API_URL, trackData);
@@ -18,7 +18,7 @@ const getTrack = async () => {
   return response.data;
 };
 
-const getSingle = async (trackId) => {
+const getSingle = async (trackId: any) => {
   let response;
 
   response = await axios.get(API_URL + trackId);
@@ -26,7 +26,7 @@ const getSingle = async (trackId) => {
   return response.data;
 };
 
-const updateSingle = async (trackID, trackData) => {
+const updateSingle = async (trackID: any, trackData: any) => {
   let response;
 
   response = await axios.put(API_URL + trackID, trackData);
@@ -34,7 +34,7 @@ const updateSingle = async (trackID, trackData) => {
   return response.data;
 };
 
-const deleteTrack = async (trackId) => {
+const deleteTrack = async (trackId: any) => {
   let response;
 
   response = await axios.delete(API_URL + trackId);

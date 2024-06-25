@@ -1,7 +1,7 @@
 import axios from "axios";
 const API_URL = "/api/users/";
 
-const register = async (userData) => {
+const register = async (userData: any) => {
   const response = await axios.post(API_URL, userData);
 
   if (response.data) {
@@ -11,7 +11,7 @@ const register = async (userData) => {
   return response.data;
 };
 
-const emailUser = async (userData) => {
+const emailUser = async (userData: any) => {
   if (userData.type === "reset") {
     const response = await axios.post(API_URL + "reset", userData);
 
@@ -23,13 +23,13 @@ const emailUser = async (userData) => {
   }
 };
 
-const emailData = async (token) => {
+const emailData = async (token: any) => {
   const response = await axios.get(API_URL + "email/" + token.toString());
   // console.log(token)
   return response.data;
 };
 
-const login = async (userData) => {
+const login = async (userData: any) => {
   const response = await axios.post(API_URL + "login", userData);
 
   if (response.data) {
@@ -39,13 +39,13 @@ const login = async (userData) => {
   return response.data;
 };
 
-const loginGoogle = async (tokenData) => {
+const loginGoogle = async (tokenData: any) => {
   const response = await axios.post(API_URL + "login/google", tokenData);
 
   return response.data;
 };
 
-const reset = async (userData) => {
+const reset = async (userData: any) => {
   const response = await axios.put(API_URL + "reset", userData);
 
   return response.data;
@@ -59,7 +59,7 @@ const getUser = async () => {
   return response.data;
 };
 
-const update = async (userData) => {
+const update = async (userData: any) => {
   let response;
 
   response = await axios.put(API_URL + "me", userData);

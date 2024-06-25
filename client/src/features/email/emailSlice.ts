@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import emailService from "./emailService";
 
 const initialState = {
-  email: [],
+  email: <any>Array,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -11,11 +11,11 @@ const initialState = {
 
 export const sendNewTrackEmail = createAsyncThunk(
   "email/newTrack",
-  async (emailData, thunkAPI) => {
+  async (emailData: any, thunkAPI: any) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await emailService.sendEmail(emailData, token);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -32,7 +32,13 @@ export const emailSlice = createSlice({
   name: "email",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: (state) => {
+      state.email = <any>Array;
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -47,7 +53,7 @@ export const emailSlice = createSlice({
       .addCase(sendNewTrackEmail.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       });
   },
 });

@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "/api/email/";
 
-const sendEmail = async (emailData, token) => {
+const sendEmail = async (emailData: any, token: string) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,

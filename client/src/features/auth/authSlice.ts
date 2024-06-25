@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
 
-const user = JSON.parse(localStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("user") as string);
 
 const initialState = {
   user: user ? user : null,
@@ -17,7 +17,7 @@ export const register = createAsyncThunk(
   async (user, thunkAPI) => {
     try {
       return await authService.register(user);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -35,7 +35,7 @@ export const emailUser = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       return await authService.emailUser(userData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -53,7 +53,7 @@ export const emailData = createAsyncThunk(
   async (token, thunkAPI) => {
     try {
       return await authService.emailData(token);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -69,7 +69,7 @@ export const emailData = createAsyncThunk(
 export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
   try {
     return await authService.login(user);
-  } catch (error) {
+  } catch (error: any) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
       error.message ||
@@ -84,7 +84,7 @@ export const loginGoogle = createAsyncThunk(
   async (token, thunkAPI) => {
     try {
       return await authService.loginGoogle(token);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -102,7 +102,7 @@ export const resetPass = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       return await authService.reset(userData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -118,7 +118,7 @@ export const resetPass = createAsyncThunk(
 export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
   try {
     return await authService.getUser();
-  } catch (error) {
+  } catch (error: any) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
       error.message ||
@@ -133,7 +133,7 @@ export const updateUser = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       return await authService.update(userData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -149,7 +149,7 @@ export const updateUser = createAsyncThunk(
 export const getTokenResult = createAsyncThunk("auth/token", (_, thunkAPI) => {
   try {
     return authService.checkToken();
-  } catch (error) {
+  } catch (error: any) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
       error.message ||
@@ -162,7 +162,7 @@ export const getTokenResult = createAsyncThunk("auth/token", (_, thunkAPI) => {
 export const wakeServer = createAsyncThunk("auth/wakeserver", (_, thunkAPI) => {
   try {
     return authService.wakeServer();
-  } catch (error) {
+  } catch (error: any) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
       error.message ||
@@ -200,32 +200,32 @@ export const authSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
         state.user = null;
       })
       .addCase(emailUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(emailUser.fulfilled, (state, action) => {
+      .addCase(emailUser.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(emailUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(emailData.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(emailData.fulfilled, (state, action) => {
+      .addCase(emailData.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(emailData.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(login.pending, (state) => {
         state.isLoading = true;
@@ -238,7 +238,7 @@ export const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
         state.user = null;
       })
       .addCase(loginGoogle.pending, (state) => {
@@ -252,7 +252,7 @@ export const authSlice = createSlice({
       .addCase(loginGoogle.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
         state.user = null;
       })
       .addCase(resetPass.pending, (state) => {
@@ -265,7 +265,7 @@ export const authSlice = createSlice({
       .addCase(resetPass.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getUser.pending, (state) => {
         state.isLoading = true;
@@ -281,7 +281,7 @@ export const authSlice = createSlice({
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
         state.user = null;
       })
       .addCase(updateUser.pending, (state) => {
@@ -298,19 +298,19 @@ export const authSlice = createSlice({
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getTokenResult.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getTokenResult.fulfilled, (state, action) => {
+      .addCase(getTokenResult.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(getTokenResult.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
         state.user = null;
       })
       .addCase(logout.fulfilled, (state) => {
@@ -319,14 +319,14 @@ export const authSlice = createSlice({
       .addCase(wakeServer.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(wakeServer.fulfilled, (state, action) => {
+      .addCase(wakeServer.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
       })
       .addCase(wakeServer.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
         state.user = null;
       });
   },

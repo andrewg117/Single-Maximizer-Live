@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "/api/audio/";
 
-const postAudio = async (audioData) => {
+const postAudio = async (audioData: any) => {
   let response;
 
   response = await axios.post(API_URL, audioData);
@@ -10,7 +10,7 @@ const postAudio = async (audioData) => {
   return response.data;
 };
 
-const getAudio = async (trackId) => {
+const getAudio = async (trackId: any) => {
   let response;
 
   response = await axios.get(API_URL + trackId);
@@ -18,7 +18,7 @@ const getAudio = async (trackId) => {
   return response.data;
 };
 
-const updateAudio = async (audioData) => {
+const updateAudio = async (audioData: any) => {
   let response;
 
   response = await axios.put(API_URL + audioData, audioData);
@@ -26,7 +26,7 @@ const updateAudio = async (audioData) => {
   return response.data;
 };
 
-const deleteAudio = async (trackId) => {
+const deleteAudio = async (trackId: any) => {
   let response;
 
   response = await axios.delete(API_URL + trackId);

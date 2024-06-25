@@ -3,7 +3,7 @@ import imageService from "./imageService";
 
 const initialState = {
   image: null,
-  press: [],
+  press: <any>Array,
   isError: false,
   isSuccess: false,
   isPressSuccess: false,
@@ -16,7 +16,7 @@ export const postImage = createAsyncThunk(
   async (imageData, thunkAPI) => {
     try {
       return await imageService.postImage(imageData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -34,7 +34,7 @@ export const postPress = createAsyncThunk(
   async (pressData, thunkAPI) => {
     try {
       return await imageService.postPress(pressData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -52,7 +52,7 @@ export const getImage = createAsyncThunk(
   async (imageData, thunkAPI) => {
     try {
       return await imageService.getImage(imageData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -70,7 +70,7 @@ export const getPress = createAsyncThunk(
   async (pressData, thunkAPI) => {
     try {
       return await imageService.getPress(pressData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -88,7 +88,7 @@ export const updateImage = createAsyncThunk(
   async (imageData, thunkAPI) => {
     try {
       return await imageService.updateImage(imageData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -106,7 +106,7 @@ export const deleteImage = createAsyncThunk(
   async (trackID, thunkAPI) => {
     try {
       return await imageService.deleteImage(trackID);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -124,7 +124,7 @@ export const deletePress = createAsyncThunk(
   async (trackID, thunkAPI) => {
     try {
       return await imageService.deletePress(trackID);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -141,7 +141,15 @@ export const imageSlice = createSlice({
   name: "image",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: (state) => {
+      state.image = null;
+      state.press = <Object>Array;
+      state.isError = false;
+      state.isSuccess = false;
+      state.isPressSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -156,7 +164,7 @@ export const imageSlice = createSlice({
       .addCase(postImage.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(postPress.pending, (state) => {
         state.isLoading = true;
@@ -169,7 +177,7 @@ export const imageSlice = createSlice({
       .addCase(postPress.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getImage.pending, (state) => {
         state.isLoading = true;
@@ -182,7 +190,7 @@ export const imageSlice = createSlice({
       .addCase(getImage.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getPress.pending, (state) => {
         state.isLoading = true;
@@ -195,7 +203,7 @@ export const imageSlice = createSlice({
       .addCase(getPress.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(updateImage.pending, (state) => {
         state.isLoading = true;
@@ -203,13 +211,13 @@ export const imageSlice = createSlice({
       .addCase(updateImage.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.isExpired = false;
+        // state.isExpired = false;
         state.image = action.payload;
       })
       .addCase(updateImage.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(deleteImage.pending, (state) => {
         state.isLoading = true;
@@ -222,7 +230,7 @@ export const imageSlice = createSlice({
       .addCase(deleteImage.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(deletePress.pending, (state) => {
         state.isLoading = true;
@@ -235,7 +243,7 @@ export const imageSlice = createSlice({
       .addCase(deletePress.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       });
   },
 });

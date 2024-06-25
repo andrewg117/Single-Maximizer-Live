@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import trackService from "./trackService";
 
 const initialState = {
-  tracks: [],
+  tracks: <any>Array,
   single: {},
   isError: false,
   isSuccess: false,
@@ -15,7 +15,7 @@ export const createTrack = createAsyncThunk(
   async (trackData, thunkAPI) => {
     try {
       return await trackService.createTrack(trackData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -33,7 +33,7 @@ export const getTracks = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       return await trackService.getTrack();
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -51,7 +51,7 @@ export const getSingle = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       return await trackService.getSingle(id);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -66,12 +66,12 @@ export const getSingle = createAsyncThunk(
 
 export const updateSingle = createAsyncThunk(
   "tracks/putSingle",
-  async (args, thunkAPI) => {
+  async (args: any, thunkAPI) => {
     try {
       const { trackID, ...trackData } = args;
 
       return await trackService.updateSingle(trackID, trackData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -89,7 +89,7 @@ export const deleteTrack = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       return await trackService.deleteTrack(id);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -106,7 +106,14 @@ export const trackSlice = createSlice({
   name: "tracks",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: (state) => {
+      state.tracks = [];
+      state.single = {};
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -122,7 +129,7 @@ export const trackSlice = createSlice({
       .addCase(createTrack.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getTracks.pending, (state) => {
         state.isLoading = true;
@@ -135,7 +142,7 @@ export const trackSlice = createSlice({
       .addCase(getTracks.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getSingle.pending, (state) => {
         state.isLoading = true;
@@ -148,7 +155,7 @@ export const trackSlice = createSlice({
       .addCase(getSingle.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(updateSingle.pending, (state) => {
         state.isLoading = true;
@@ -156,7 +163,7 @@ export const trackSlice = createSlice({
       .addCase(updateSingle.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.isExpired = false;
+        // state.isExpired = false;
         // console.log(action.payload._id)
         state.single = {
           ...state.single,
@@ -166,7 +173,7 @@ export const trackSlice = createSlice({
       .addCase(updateSingle.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(deleteTrack.pending, (state) => {
         state.isLoading = true;
@@ -175,13 +182,13 @@ export const trackSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.tracks = state.tracks.filter(
-          (track) => track._id !== action.payload
+          (track: any) => track._id !== action.payload
         );
       })
       .addCase(deleteTrack.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       });
   },
 });

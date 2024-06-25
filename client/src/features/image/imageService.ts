@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "/api/image/";
 
-const postImage = async (imageData) => {
+const postImage = async (imageData: any) => {
   let response;
 
   response = await axios.post(API_URL, imageData);
@@ -10,7 +10,7 @@ const postImage = async (imageData) => {
   return response.data;
 };
 
-const postPress = async (pressData) => {
+const postPress = async (pressData: any) => {
   let response;
 
   response = await axios.post(API_URL + "press", pressData);
@@ -18,7 +18,7 @@ const postPress = async (pressData) => {
   return response.data;
 };
 
-const getImage = async (imageData) => {
+const getImage = async (imageData: any) => {
   const config = {
     params: {
       ...imageData,
@@ -31,7 +31,7 @@ const getImage = async (imageData) => {
   return response.data;
 };
 
-const getPress = async (pressData) => {
+const getPress = async (pressData: any) => {
   const config = {
     params: {
       ...pressData,
@@ -44,7 +44,7 @@ const getPress = async (pressData) => {
   return response.data;
 };
 
-const updateImage = async (imageData) => {
+const updateImage = async (imageData: any) => {
   let response;
 
   response = await axios.put(API_URL + imageData, imageData);
@@ -52,7 +52,7 @@ const updateImage = async (imageData) => {
   return response.data;
 };
 
-const deleteImage = async (trackID) => {
+const deleteImage = async (trackID: any) => {
   let response;
 
   response = await axios.delete(API_URL + trackID);
@@ -60,7 +60,7 @@ const deleteImage = async (trackID) => {
   return response.data;
 };
 
-const deletePress = async (trackID) => {
+const deletePress = async (trackID: any) => {
   let response;
 
   response = await axios.delete(API_URL + "press/" + trackID);

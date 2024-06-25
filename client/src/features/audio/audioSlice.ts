@@ -14,7 +14,7 @@ export const postAudio = createAsyncThunk(
   async (audioData, thunkAPI) => {
     try {
       return await audioService.postAudio(audioData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -30,7 +30,7 @@ export const postAudio = createAsyncThunk(
 export const getAudio = createAsyncThunk("audio/get", async (id, thunkAPI) => {
   try {
     return await audioService.getAudio(id);
-  } catch (error) {
+  } catch (error: any) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
       error.message ||
@@ -45,7 +45,7 @@ export const updateAudio = createAsyncThunk(
   async (audioData, thunkAPI) => {
     try {
       return await audioService.updateAudio(audioData);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -63,7 +63,7 @@ export const deleteAudio = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       return await audioService.deleteAudio(id);
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -80,7 +80,13 @@ export const audioSlice = createSlice({
   name: "audio",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: (state) => {
+      state.audio = null;
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -95,7 +101,7 @@ export const audioSlice = createSlice({
       .addCase(postAudio.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getAudio.pending, (state) => {
         state.isLoading = true;
@@ -108,7 +114,7 @@ export const audioSlice = createSlice({
       .addCase(getAudio.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(updateAudio.pending, (state) => {
         state.isLoading = true;
@@ -116,13 +122,13 @@ export const audioSlice = createSlice({
       .addCase(updateAudio.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.isExpired = false;
+        // state.isExpired = false;
         state.audio = action.payload;
       })
       .addCase(updateAudio.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(deleteAudio.pending, (state) => {
         state.isLoading = true;
@@ -135,7 +141,7 @@ export const audioSlice = createSlice({
       .addCase(deleteAudio.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       });
   },
 });

@@ -14,7 +14,7 @@ export const makePurchase = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       return await purchaseService.makePurchase();
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -32,7 +32,7 @@ export const getPurchase = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       return await purchaseService.getPurchase();
-    } catch (error) {
+    } catch (error: any) {
       const message =
         (error.response &&
           error.response.data &&
@@ -49,7 +49,13 @@ export const purchaseSlice = createSlice({
   name: "purchase",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: (state) => {
+      state.purchase = {};
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -63,7 +69,7 @@ export const purchaseSlice = createSlice({
       .addCase(makePurchase.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       })
       .addCase(getPurchase.pending, (state) => {
         state.isLoading = true;
@@ -76,7 +82,7 @@ export const purchaseSlice = createSlice({
       .addCase(getPurchase.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload;
+        state.message = action.payload as string;
       });
   },
 });
