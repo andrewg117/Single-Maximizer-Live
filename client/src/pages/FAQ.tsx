@@ -1,4 +1,3 @@
-import React from "react";
 import InspireImage from "../images/INSPIRE-WITH-YOUR-TALENT-150x150.png.webp";
 import EliminateImage from "../images/ELIMINATE-THE-HUSSLE-150x150.png.webp";
 import ItOnlyImage from "../images/IT-ONLY-TAKES-ONE-150x150.png.webp";
@@ -8,7 +7,15 @@ import DudeImage from "../images/dude-fm-e1647388248275.jpeg";
 import RapzImage from "../images/Rapzilla.com_.jpeg.webp";
 import faq_style from "../css/faq_style.module.css";
 
-const FaqBlock = ({ styles, src, alt, title, info }) => {
+interface FaqBlockProps {
+  styles: any;
+  src: string;
+  alt: string;
+  title: string;
+  info: string;
+}
+
+const FaqBlock = ({ styles, src, alt, title, info }: FaqBlockProps) => {
   return (
     <div className={styles.faq_block}>
       <img
@@ -46,7 +53,11 @@ const outletList = [
   ],
 ];
 
-export const FAQDistro = ({styles}) => {
+interface FAQProps {
+  styles: any;
+}
+
+export const FAQDistro = ({ styles }: FAQProps) => {
   return (
     <section id={styles.faq_wrapper}>
       <section className={styles.content_block}>
@@ -115,7 +126,7 @@ export const FAQDistro = ({styles}) => {
   );
 };
 
-export const FAQSave = ({styles}) => {
+export const FAQSave = ({ styles }: FAQProps) => {
   return (
     <section id={styles.faq_wrapper}>
       <section className={styles.content_block}>
@@ -160,7 +171,7 @@ export const FAQSave = ({styles}) => {
 function FAQ() {
   return (
     <section id={faq_style.faq_wrapper}>
-      <FAQSave styles={faq_style}/>
+      <FAQSave styles={faq_style} />
       <FAQDistro styles={faq_style} />
     </section>
   );

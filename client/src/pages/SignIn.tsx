@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
 import { login, loginGoogle, reset } from "../features/auth/authSlice";
@@ -21,14 +21,14 @@ function SignIn() {
   const { email, password } = formData;
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const captchaRef = useRef(null);
 
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaExpired, setCaptchaExpired] = useState(false);
 
-  const { user, isLoading, isError, message } = useSelector(
+  const { user, isLoading, isError, message } = useAppSelector(
     (state) => state.auth
   );
 
@@ -43,7 +43,7 @@ function SignIn() {
     };
   }, [user, isError, message, navigate, dispatch]);
 
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -54,13 +54,13 @@ function SignIn() {
     setCaptchaChecked((captchaExpired) => !captchaExpired);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: any) => {
     e.preventDefault();
 
     const token = captchaRef.current.getValue();
     captchaRef.current.reset();
 
-    const userData = {
+    const userData: { email: string; password: string; token: string } = {
       email,
       password,
       token,
@@ -76,7 +76,7 @@ function SignIn() {
     }
   };
 
-  const googleButton = (e) => {
+  const googleButton = (e: any) => {
     e.preventDefault();
     const tokenData = { token: captchaRef.current.getValue() };
     captchaRef.current.reset();

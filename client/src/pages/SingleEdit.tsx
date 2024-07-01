@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getSingle,
@@ -33,8 +33,8 @@ import { Buffer } from "buffer";
 import styles from "../css/new_release_style.module.css";
 
 function SingleEdit() {
-  const { user } = useSelector((state) => state.auth);
-  const { single, isLoading, isError, message } = useSelector(
+  const { user } = useAppSelector((state) => state.auth);
+  const { single, isLoading, isError, message } = useAppSelector(
     (state) => state.tracks
   );
   const {
@@ -42,15 +42,15 @@ function SingleEdit() {
     isLoading: imageLoading,
     press,
     isPressSuccess,
-  } = useSelector((state) => state.image);
-  const { audio, isLoading: audioLoading } = useSelector(
+  } = useAppSelector((state) => state.image);
+  const { audio, isLoading: audioLoading } = useAppSelector(
     (state) => state.audio
   );
 
   const [showPopup, setShowPopup] = useState(false);
   const [showDelPopup, setShowDelPopup] = useState(false);
 
-  const { id } = useParams();
+  const { id } = useParams<{id: string}>();
 
   const formRefData = useRef({});
 
@@ -67,9 +67,9 @@ function SingleEdit() {
     formState;
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const convertDate = (date) => {
+  const convertDate = (date: Date | number) => {
     const d = new Date(date);
 
     const year = d.toLocaleString("default", {

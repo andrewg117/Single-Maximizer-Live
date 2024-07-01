@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Link } from "react-router-dom";
 import { getUser, reset as resetUser } from "../features/auth/authSlice";
 import { getImage, reset as resetImage } from "../features/image/imageSlice";
@@ -9,7 +9,13 @@ import { FaUser } from "react-icons/fa";
 import Spinner from "../components/Spinner";
 import styles from "../css/profile_style.module.css";
 
-const ProfileDiv = ({ labelID, text, userData }) => {
+interface ProfileDivProps {
+  labelID: string;
+  text: string;
+  userData: string;
+}
+
+const ProfileDiv = ({ labelID, text, userData }: ProfileDivProps) => {
   return (
     <div>
       <label htmlFor={labelID}>{text}</label>
@@ -24,20 +30,20 @@ const ProfileDiv = ({ labelID, text, userData }) => {
 };
 
 const Profile = () => {
-  const { user, isLoading, isError, message } = useSelector(
+  const { user, isLoading, isError, message } = useAppSelector(
     (state) => state.auth
   );
-  const { image, isLoading: imageLoading } = useSelector(
+  const { image, isLoading: imageLoading } = useAppSelector(
     (state) => state.image
   );
 
   const profileImage = image ? Buffer.from(image.file.buffer, "ascii") : null;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
 
     return () => {

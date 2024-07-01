@@ -6,7 +6,13 @@ import { toast } from "react-toastify";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 
-function AudioUpload({ changeFile, file, fieldname }) {
+interface AudioUploadProps {
+  changeFile: any;
+  file: Blob | MediaSource;
+  fieldname: string;
+}
+
+function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
   const [isEdit, setEdit] = useState(true);
 
   const makeBlob = useCallback(() => {
@@ -34,8 +40,8 @@ function AudioUpload({ changeFile, file, fieldname }) {
         formData.append(fieldname, acceptedFiles[0]);
         let megBytes =
           Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100;
-        megBytes = megBytes.toString();
-        formData.append("size", megBytes);
+        let strBytes = megBytes.toString();
+        formData.append("size", strBytes);
 
         setEdit(false);
 

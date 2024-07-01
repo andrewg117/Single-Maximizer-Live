@@ -1,4 +1,10 @@
-const CheckBox = (props) => {
+interface CheckBoxProps {
+  item: string;
+  list: any[];
+  onChange: any;
+}
+
+const CheckBox = (props: CheckBoxProps) => {
   return (
     <div>
       <p htmlFor={props.item}>{props.item}</p>
@@ -13,10 +19,15 @@ const CheckBox = (props) => {
   );
 };
 
-function GenreCheckBox({ changeList, list }) {
+interface GenreCheckBoxProps {
+  changeList: any;
+  list: any[];
+}
+
+function GenreCheckBox({ changeList, list }: GenreCheckBoxProps) {
   const genreList = ["CHH", "Hip Hop", "Gospel", "R&B", "Pop", "Rock", "CCM"];
 
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     // Add to list if checked
     if (e.target.checked && !list.includes(e.target.value)) {
       changeList((prevState) => ({

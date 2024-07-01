@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Link, useNavigate } from "react-router-dom";
 import { getUser, reset as resetUser } from "../features/auth/authSlice";
 import { getTracks, reset as resetTracks } from "../features/tracks/trackSlice";
@@ -10,19 +10,19 @@ import styles from "../css/singles_style.module.css";
 
 function Singles() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { user, isLoading } = useSelector((state) => state.auth);
+  const { user, isLoading } = useAppSelector((state) => state.auth);
   const {
     tracks,
     isLoading: tracksLoading,
     isError,
     message,
-  } = useSelector((state) => state.tracks);
+  } = useAppSelector((state) => state.tracks);
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
 
     return () => {
@@ -43,13 +43,13 @@ function Singles() {
     };
   }, [dispatch]);
 
-  const editTrack = (e, id) => {
+  const editTrack = (e: any, id: string) => {
     e.preventDefault();
 
     navigate(`/profile/singleedit/${id}`);
   };
   
-  const viewTrack = (e, id) => {
+  const viewTrack = (e: any, id: string) => {
     e.preventDefault();
 
     navigate(`/profile/singleview/${id}`);
@@ -75,7 +75,7 @@ function Singles() {
             </thead>
             <tbody id={styles.singles_content}>
               {tracks.length ? (
-                tracks?.map((track) => (
+                tracks?.map((track: any) => (
                   <tr key={track._id}>
                     <td className={styles.tblhide}>{track.artist}</td>
                     <td>{track.trackTitle}</td>

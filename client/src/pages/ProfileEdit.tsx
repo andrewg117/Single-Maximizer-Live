@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
 import {
   getUser,
@@ -20,13 +20,13 @@ import Spinner from "../components/Spinner";
 import styles from "../css/profile_style.module.css";
 
 function ProfileEdit() {
-  const { user, isLoading, isError, message } = useSelector(
+  const { user, isLoading, isError, message } = useAppSelector(
     (state) => state.auth
   );
 
   const formRefData = useRef({});
 
-  const { image, isLoading: imageLoading } = useSelector(
+  const { image, isLoading: imageLoading } = useAppSelector(
     (state) => state.image
   );
 
@@ -37,13 +37,13 @@ function ProfileEdit() {
   const { profileImage } = formState;
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
 
     return () => {

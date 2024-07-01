@@ -1,7 +1,13 @@
 import { useState } from "react";
 import styles from "../css/confirm_popup.module.css";
 
-const ConfirmAlert = ({ message, onConfirm, onCancel }) => {
+interface ConfirmAlertProps {
+  message: string;
+  onConfirm: any;
+  onCancel: any;
+}
+
+const ConfirmAlert = ({ message, onConfirm, onCancel }: ConfirmAlertProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const handleConfirm = () => {

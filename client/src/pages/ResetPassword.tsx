@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -22,21 +22,21 @@ function ResetPassword() {
 
   const [isReset, setIsReset] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { isLoading, isError, message } = useSelector((state) => state.auth);
+  const { isLoading, isError, message } = useAppSelector((state) => state.auth);
 
-  const { token } = useParams();
+  const { token } = useParams<{token: string}>();
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
-    dispatch(emailData(token))
+    dispatch(emailData(token as string))
       .unwrap()
       .catch((error) => {
-        toast.error("Login Expired", { id: error });
+        toast.error("Login Expired",  error);
         toast.clearWaitingQueue();
         navigate("/home/signin");
       });
@@ -47,20 +47,20 @@ function ResetPassword() {
     };
   }, [isError, message, token, dispatch, navigate]);
 
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: any) => {
     e.preventDefault();
 
     if (password !== password2) {
       toast.error("Passwords do not match");
     } else {
-      const userData = {
+      const userData: {token: string | any, password: string} = {
         token,
         password,
       };
@@ -74,7 +74,7 @@ function ResetPassword() {
     }
   };
 
-  const toSignIn = (e) => {
+  const toSignIn = (e: any) => {
     e.preventDefault();
     navigate("/home/signin");
   };

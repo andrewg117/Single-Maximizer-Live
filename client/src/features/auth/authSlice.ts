@@ -14,7 +14,16 @@ const initialState = {
 
 export const register = createAsyncThunk(
   "auth/register",
-  async (user, thunkAPI) => {
+  async (
+    user: {
+      fname: string;
+      lname: string;
+      username: string;
+      email: string;
+      password: string;
+    },
+    thunkAPI
+  ) => {
     try {
       return await authService.register(user);
     } catch (error: any) {
@@ -32,7 +41,7 @@ export const register = createAsyncThunk(
 
 export const emailUser = createAsyncThunk(
   "auth/emailUser",
-  async (userData, thunkAPI) => {
+  async (userData: { email: string; type: string }, thunkAPI) => {
     try {
       return await authService.emailUser(userData);
     } catch (error: any) {
@@ -50,7 +59,7 @@ export const emailUser = createAsyncThunk(
 
 export const emailData = createAsyncThunk(
   "auth/emailData",
-  async (token, thunkAPI) => {
+  async (token: string, thunkAPI) => {
     try {
       return await authService.emailData(token);
     } catch (error: any) {
@@ -66,18 +75,26 @@ export const emailData = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
-  try {
-    return await authService.login(user);
-  } catch (error: any) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
+export const login = createAsyncThunk(
+  "auth/login",
+  async (
+    user: { email: string; password: string; token: string },
+    thunkAPI
+  ) => {
+    try {
+      return await authService.login(user);
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
 
-    return thunkAPI.rejectWithValue(message);
+      return thunkAPI.rejectWithValue(message);
+    }
   }
-});
+);
 
 export const loginGoogle = createAsyncThunk(
   "auth/login/google",
@@ -99,7 +116,7 @@ export const loginGoogle = createAsyncThunk(
 
 export const resetPass = createAsyncThunk(
   "auth/reset",
-  async (userData, thunkAPI) => {
+  async (userData: { token: string; password: string }, thunkAPI) => {
     try {
       return await authService.reset(userData);
     } catch (error: any) {

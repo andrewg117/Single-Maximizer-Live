@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { getSingle, reset as resetSingle } from "../features/tracks/trackSlice";
 import {
@@ -17,7 +17,13 @@ import { Buffer } from "buffer";
 import styles from "../css/singleview_style.module.css";
 import "react-h5-audio-player/lib/styles.css";
 
-const SingleDiv = ({ labelID, text, data }) => {
+interface SingleDivProps {
+  labelID: string;
+  text: string;
+  data: any;
+}
+
+const SingleDiv = ({ labelID, text, data }: SingleDivProps) => {
   return (
     <div>
       <label htmlFor={labelID}>{text}</label>
@@ -33,9 +39,9 @@ const SingleDiv = ({ labelID, text, data }) => {
 
 function SingleView() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { single, isLoading, isError, message } = useSelector(
+  const { single, isLoading, isError, message } = useAppSelector(
     (state) => state.tracks
   );
 
@@ -44,15 +50,15 @@ function SingleView() {
     isLoading: imageLoading,
     press,
     isPressSuccess,
-  } = useSelector((state) => state.image);
+  } = useAppSelector((state) => state.image);
 
-  const { audio, isLoading: audioLoading } = useSelector(
+  const { audio, isLoading: audioLoading } = useAppSelector(
     (state) => state.audio
   );
 
-  const { id } = useParams();
+  const { id } = useParams<{id: string}>();
 
-  const checkDate = (date) => {
+  const checkDate = (date: Date | number) => {
     const check = new Date(date).getUTCFullYear();
     if (check === 1970) {
       return null;
@@ -63,7 +69,7 @@ function SingleView() {
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
 
     return () => {
@@ -72,7 +78,7 @@ function SingleView() {
   }, [isError, message]);
 
   useEffect(() => {
-    dispatch(getSingle(id))
+    dispatch(getSingle(id as string))
       .unwrap()
       .catch((error) => console.error(error));
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../features/auth/authSlice";
 import {
@@ -12,18 +12,18 @@ import SMLogo from "../images/Single-Maximizer-Package-Mockup-1024x616.png.webp"
 import styles from "../css/checkout.module.css";
 
 const ProductDisplay = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  // const navigate = useNavigate();
 
   // TODO: remove stripe link for demo
-  const onSubmit = (e) => {
-    e.preventDefault()
+  const onSubmit = (e: any) => {
+    e.preventDefault();
     dispatch(makePurchase())
       .unwrap()
       .then((data) => {
-        window.location.href = data
-      })
-  }
+        window.location.href = data;
+      });
+  };
 
   // Demo Submit
   // const onSubmit = (e) => {
@@ -71,17 +71,21 @@ const ProductDisplay = () => {
   );
 };
 
-const Message = ({ message }) => (
+interface MessageProps {
+  message: string;
+}
+
+const Message = ({ message }: MessageProps) => (
   <section>
     <p>{message}</p>
   </section>
 );
 
 function CheckoutPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   const [message, setMessage] = useState("");
 

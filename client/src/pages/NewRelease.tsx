@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Link, useNavigate } from "react-router-dom";
 import {
   getUser,
@@ -25,7 +25,7 @@ import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import styles from "../css/new_release_style.module.css";
 
-const convertDate = (date) => {
+const convertDate = (date: Date | number) => {
   const d = new Date(date);
 
   const year = d.toLocaleString("default", {
@@ -60,17 +60,17 @@ function NewRelease() {
     formState;
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { user } = useSelector((state) => state.auth);
-  const { isLoading, isError, message } = useSelector((state) => state.tracks);
+  const { user } = useAppSelector((state) => state.auth);
+  const { isLoading, isError, message } = useAppSelector((state) => state.tracks);
   const [showPopup, setShowPopup] = useState(false);
 
   const formRefData = useRef({});
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
 
     return () => {
@@ -98,7 +98,7 @@ function NewRelease() {
 
   const onSubmit = async () => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
 
     if (
@@ -423,8 +423,8 @@ function NewRelease() {
                   required
                   name="trackSum"
                   id="trackSum"
-                  cols="30"
-                  rows="10"
+                  cols={30}
+                  rows={10}
                   placeholder="Enter your track details here"
                 />
               </div>
@@ -435,8 +435,8 @@ function NewRelease() {
                 <textarea
                   name="pressSum"
                   id="pressSum"
-                  cols="30"
-                  rows="10"
+                  cols={30}
+                  rows={10}
                   placeholder="Enter recent accomplishments"
                 ></textarea>
               </div>

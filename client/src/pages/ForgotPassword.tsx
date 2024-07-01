@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { toast } from "react-toastify";
 import { emailUser } from "../features/auth/authSlice";
 import Spinner from "../components/Spinner";
@@ -16,21 +16,21 @@ function ForgotPassword() {
 
   const [emailSent, setEmailSent] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { isLoading, isError, message } = useSelector((state) => state.auth);
+  const { isLoading, isError, message } = useAppSelector((state) => state.auth);
 
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: any) => {
     e.preventDefault();
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     } else if (email === "") {
       toast.error("Add Email");
     } else {
@@ -43,7 +43,7 @@ function ForgotPassword() {
     }
   };
 
-  const resendEmail = (e) => {
+  const resendEmail = (e: any) => {
     e.preventDefault();
 
     dispatch(emailUser({ email, type: "reset" }))

@@ -4,12 +4,11 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { logout, getTokenResult } from "../features/auth/authSlice";
 import { toast } from "react-toastify";
 
-interface Props {
-  children?: ReactNode
-  // any props that come into the component
+interface TokenCheckProps {
+  children?: ReactNode;
 }
 
-const TokenCheck = ({ children, ...props }: Props) => {
+const TokenCheck = ({ children, ...props }: TokenCheckProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 

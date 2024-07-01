@@ -49,7 +49,7 @@ export const postPress = createAsyncThunk(
 
 export const getImage = createAsyncThunk(
   "image/get",
-  async (imageData, thunkAPI) => {
+  async (imageData: { section: string }, thunkAPI) => {
     try {
       return await imageService.getImage(imageData);
     } catch (error: any) {
