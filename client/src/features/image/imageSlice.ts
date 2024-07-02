@@ -1,9 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import imageService from "./imageService";
 
-const initialState = {
+interface imageType extends Object {
+  trackID: string;
+  s3ImageURL: String;
+  section: String;
+  file: any;
+}
+
+interface initialType {
+  image: imageType | null;
+  press: Array<any>;
+  isError: Boolean;
+  isSuccess: Boolean;
+  isPressSuccess: Boolean;
+  isLoading: Boolean;
+  message: string;
+}
+
+const initialState: initialType = {
   image: null,
-  press: <any>Array,
+  press: [],
   isError: false,
   isSuccess: false,
   isPressSuccess: false,
@@ -13,7 +30,7 @@ const initialState = {
 
 export const postImage = createAsyncThunk(
   "image/post",
-  async (imageData, thunkAPI) => {
+  async (imageData: FormData, thunkAPI) => {
     try {
       return await imageService.postImage(imageData);
     } catch (error: any) {
@@ -85,7 +102,7 @@ export const getPress = createAsyncThunk(
 
 export const updateImage = createAsyncThunk(
   "image/put",
-  async (imageData, thunkAPI) => {
+  async (imageData: FormData, thunkAPI) => {
     try {
       return await imageService.updateImage(imageData);
     } catch (error: any) {
@@ -143,7 +160,7 @@ export const imageSlice = createSlice({
   reducers: {
     reset: (state) => {
       state.image = null;
-      state.press = <Object>Array;
+      state.press = [];
       state.isError = false;
       state.isSuccess = false;
       state.isPressSuccess = false;

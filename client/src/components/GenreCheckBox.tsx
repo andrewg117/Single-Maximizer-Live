@@ -7,7 +7,7 @@ interface CheckBoxProps {
 const CheckBox = (props: CheckBoxProps) => {
   return (
     <div>
-      <p htmlFor={props.item}>{props.item}</p>
+      <label htmlFor={props.item}>{props.item}</label>
       <input
         name={props.item}
         type="checkbox"
@@ -30,7 +30,7 @@ function GenreCheckBox({ changeList, list }: GenreCheckBoxProps) {
   const onChange = (e: any) => {
     // Add to list if checked
     if (e.target.checked && !list.includes(e.target.value)) {
-      changeList((prevState) => ({
+      changeList((prevState: any) => ({
         ...prevState,
         genres: [...list, e.target.value],
       }));
@@ -38,7 +38,7 @@ function GenreCheckBox({ changeList, list }: GenreCheckBoxProps) {
 
     // Remove from list if unchecked
     if (!e.target.checked) {
-      changeList((prevState) => ({
+      changeList((prevState: any) => ({
         ...prevState,
         genres: list.filter((item) => item !== e.target.value),
       }));

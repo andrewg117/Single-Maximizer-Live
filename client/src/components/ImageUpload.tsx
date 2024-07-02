@@ -4,7 +4,14 @@ import { FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
 import styles from "../css/new_release_style.module.css";
 
-const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
+interface ImageUploadProps {
+  changeFile: any;
+  file: any;
+  fieldname: string;
+  altText: string;
+}
+
+const ImageUpload = ({ changeFile, file, fieldname, altText }: ImageUploadProps) => {
   const [isEdit, setEdit] = useState(true);
 
   const makeBlob = useCallback(() => {
@@ -27,14 +34,14 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }) => {
         formData.append("Image", acceptedFiles[0]);
         let megBytes =
           Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100;
-        megBytes = megBytes.toString();
-        formData.append("size", megBytes);
+        let strBytes = megBytes.toString();
+        formData.append("size", strBytes);
 
         setEdit(false);
 
-        getBlob(URL.createObjectURL(formData.get("Image")));
+        getBlob(URL.createObjectURL(formData.get("Image") as Blob));
 
-        changeFile((prevState) => ({
+        changeFile((prevState: any) => ({
           ...prevState,
           [fieldname]: formData,
         }));

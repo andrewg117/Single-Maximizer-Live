@@ -24,7 +24,22 @@ function ProfileEdit() {
     (state) => state.auth
   );
 
-  const formRefData = useRef({});
+  interface userType extends HTMLFormElement {
+    fname?: string;
+    lname?: string;
+    username?: string;
+    website?: string;
+    scloud?: string;
+    twitter?: string;
+    igram?: string;
+    fbook?: string;
+    spotify?: string;
+    ytube?: string;
+    tiktok?: string;
+    bio_text?: string;
+  }
+
+  const formRefData = useRef<HTMLFormElement>(null);
 
   const { image, isLoading: imageLoading } = useAppSelector(
     (state) => state.image
@@ -74,32 +89,52 @@ function ProfileEdit() {
     if (profileImage !== null && user) {
       dispatch(
         updateUser({
-          fname: formRefData.current["fname"].value,
-          lname: formRefData.current["lname"].value,
-          username: formRefData.current["username"].value,
-          website: formRefData.current["website"].value,
-          scloud: formRefData.current["scloud"].value,
-          twitter: formRefData.current["twitter"].value,
-          igram: formRefData.current["igram"].value,
-          fbook: formRefData.current["fbook"].value,
-          spotify: formRefData.current["spotify"].value,
-          ytube: formRefData.current["ytube"].value,
-          tiktok: formRefData.current["tiktok"].value,
-          bio_text: formRefData.current["bio_text"].value,
+          fname: formRefData.current ? formRefData.current["fname"].value : "",
+          lname: formRefData.current ? formRefData.current["lname"].value : "",
+          username: formRefData.current
+            ? formRefData.current["username"].value
+            : "",
+          website: formRefData.current
+            ? formRefData.current["website"].value
+            : "",
+          scloud: formRefData.current
+            ? formRefData.current["scloud"].value
+            : "",
+          twitter: formRefData.current
+            ? formRefData.current["twitter"].value
+            : "",
+          igram: formRefData.current ? formRefData.current["igram"].value : "",
+          fbook: formRefData.current ? formRefData.current["fbook"].value : "",
+          spotify: formRefData.current
+            ? formRefData.current["spotify"].value
+            : "",
+          ytube: formRefData.current ? formRefData.current["ytube"].value : "",
+          tiktok: formRefData.current
+            ? formRefData.current["tiktok"].value
+            : "",
+          bio_text: formRefData.current
+            ? formRefData.current["bio_text"].value
+            : "",
         })
       )
         .unwrap()
         .then(() => {
           if (image === null) {
             let imageData = new FormData();
-            imageData.append("Image", profileImage.get("Image"));
+            let imageObject: { Image: any } = JSON.parse(
+              JSON.stringify(profileImage)
+            );
+            imageData.append("Image", imageObject["Image"]);
             imageData.append("section", "avatar");
             dispatch(postImage(imageData)).catch((error) =>
               console.error(error)
             );
           } else if (profileImage instanceof FormData) {
             let imageData = new FormData();
-            imageData.append("Image", profileImage.get("Image"));
+            let imageObject: { Image: any } = JSON.parse(
+              JSON.stringify(profileImage)
+            );
+            imageData.append("Image", imageObject["Image"]);
             imageData.append("section", "avatar");
             dispatch(updateImage(imageData)).catch((error) =>
               console.error(error)
@@ -222,9 +257,7 @@ function ProfileEdit() {
                 <label htmlFor="email">EMAIL</label>
                 <p
                   className={styles.profile_input}
-                  type="email"
                   id="email"
-                  name="email"
                   style={{ border: "none" }}
                 >
                   {user?.email}
@@ -342,8 +375,8 @@ function ProfileEdit() {
                   required
                   name="bio_text"
                   id="bio_text"
-                  cols="30"
-                  rows="10"
+                  cols={30}
+                  rows={10}
                   placeholder="Enter your artist bio here"
                   defaultValue={user?.bio_text}
                 ></textarea>
