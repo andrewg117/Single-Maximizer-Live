@@ -21,7 +21,6 @@ const ProfileDiv = ({ labelID, text, userData }: ProfileDivProps) => {
       <label htmlFor={labelID}>{text}</label>
       <p
         id={labelID}
-        name={labelID}
       >
         {userData}
       </p>

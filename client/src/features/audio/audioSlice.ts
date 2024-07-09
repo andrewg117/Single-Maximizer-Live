@@ -1,7 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import audioService from "./audioService";
 
-const initialState = {
+interface audioType extends Object {
+  trackID: string;
+  s3AudioURL: String;
+  section: String;
+  file: any;
+}
+
+interface initialType {
+  audio: audioType | null;
+  isError: Boolean;
+  isSuccess: Boolean;
+  isLoading: Boolean;
+  message: string;
+}
+
+const initialState: initialType = {
   audio: null,
   isError: false,
   isSuccess: false,
@@ -27,7 +42,7 @@ export const postAudio = createAsyncThunk(
   }
 );
 
-export const getAudio = createAsyncThunk("audio/get", async (id, thunkAPI) => {
+export const getAudio = createAsyncThunk("audio/get", async (id: string, thunkAPI) => {
   try {
     return await audioService.getAudio(id);
   } catch (error: any) {

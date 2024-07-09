@@ -27,12 +27,7 @@ const SingleDiv = ({ labelID, text, data }: SingleDivProps) => {
   return (
     <div>
       <label htmlFor={labelID}>{text}</label>
-      <p
-        id={labelID}
-        name={labelID}
-      >
-        {data}
-      </p>
+      <p id={labelID}>{data}</p>
     </div>
   );
 };
@@ -56,7 +51,15 @@ function SingleView() {
     (state) => state.audio
   );
 
-  const { id } = useParams<{id: string}>();
+  const ConvertAudio = (audioFile: any) => {
+    const audioBuffer = Buffer.from(audioFile.buffer, "base64");
+    const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
+    const href = URL.createObjectURL(blob);
+
+    return href;
+  };
+
+  const { id } = useParams<{ id: string }>();
 
   const checkDate = (date: Date | number) => {
     const check = new Date(date).getUTCFullYear();
@@ -84,7 +87,7 @@ function SingleView() {
 
     dispatch(
       getImage({
-        trackID: id,
+        trackID: id as string,
         section: "cover",
       })
     )
@@ -93,13 +96,13 @@ function SingleView() {
 
     dispatch(
       getPress({
-        trackID: id,
+        trackID: id as string,
       })
     )
       .unwrap()
       .catch((error) => console.error(error));
 
-    dispatch(getAudio(id))
+    dispatch(getAudio(id as string))
       .unwrap()
       .catch((error) => console.error(error));
 
@@ -110,7 +113,7 @@ function SingleView() {
     };
   }, [id, dispatch]);
 
-  const goBackToSingles = (e) => {
+  const goBackToSingles = (e: any) => {
     e.preventDefault();
     navigate("/profile/singles");
   };
@@ -138,8 +141,7 @@ function SingleView() {
             <div className={styles.file_input_div}>
               <label>AUDIO UPLOAD</label>
               <AudioPlayer
-                src={audio?.s3AudioURL}
-                controls
+                src={audio ? ConvertAudio(audio.file as string) : ""}
                 layout="horizontal"
                 autoPlayAfterSrcChange={false}
                 volume={0.2}
@@ -171,7 +173,7 @@ function SingleView() {
               <SingleDiv
                 labelID="deliveryDate"
                 text="DELIVERY DATE"
-                data={checkDate(single?.deliveryDate)}
+                data={checkDate(single?.deliveryDate as Date)}
               />
               <SingleDiv
                 labelID="spotify"
@@ -219,7 +221,7 @@ function SingleView() {
               <SingleDiv
                 labelID="albumDate"
                 text="ALBUM RELEASE DATE"
-                data={checkDate(single?.albumDate)}
+                data={checkDate(single?.albumDate as Date)}
               />
               <SingleDiv
                 labelID="trackLabel"

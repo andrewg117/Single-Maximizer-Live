@@ -66,7 +66,7 @@ export const postPress = createAsyncThunk(
 
 export const getImage = createAsyncThunk(
   "image/get",
-  async (imageData: { section: string }, thunkAPI) => {
+  async (imageData: { trackID?: string; section: string }, thunkAPI) => {
     try {
       return await imageService.getImage(imageData);
     } catch (error: any) {
@@ -84,7 +84,7 @@ export const getImage = createAsyncThunk(
 
 export const getPress = createAsyncThunk(
   "press/get",
-  async (pressData, thunkAPI) => {
+  async (pressData: { trackID: string }, thunkAPI) => {
     try {
       return await imageService.getPress(pressData);
     } catch (error: any) {

@@ -5,8 +5,15 @@ import { FaBars } from "react-icons/fa";
 import SMLogo from "../images/smLogo.png";
 import styles from "../css/navbar.module.css";
 
+interface NavBarTopProps {
+  menuItems: Array<{name: string, path: string}>;
+  activeLink: string;
+  setActiveLink: any;
+  toggleTopNav: any;
+}
+
 // TODO: Change to popup bar
-const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }) => {
+const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }: NavBarTopProps) => {
   return (
     <div
       className={styles.navbar_left_links}
@@ -35,7 +42,7 @@ function NavBar() {
   const [activeLink, setActiveLink] = useState("HOME");
   const [showTopNav, setTopNav] = useState(false);
 
-  const toggleTopNav = (e) => {
+  const toggleTopNav = () => {
     window.scrollTo(0, 0)
     showTopNav === false ? setTopNav(true) : setTopNav(false);
   };

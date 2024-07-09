@@ -1,9 +1,42 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import trackService from "./trackService";
 
-const initialState = {
-  tracks: <any>Array,
-  single: {},
+interface singleType extends Object {
+  user: string;
+  trackTitle: string;
+  artist: string;
+  deliveryDate?: Date;
+  spotify?: string;
+  features?: string;
+  label?: string;
+  apple?: string;
+  producer?: string;
+  scloud?: string;
+  album?: string;
+  trackLabel?: string;
+  ytube?: string;
+  albumDate?: Date;
+  genres?: Array<string>;
+  trackSum?: string;
+  pressSum?: string;
+  isDelivered?: Boolean;
+  s3ImageURL?: string;
+  s3AudioURL?: string;
+  s3PressURL?: Array<string>;
+}
+
+interface initialType {
+  tracks: Array<any>;
+  single: singleType;
+  isError: Boolean;
+  isSuccess: Boolean;
+  isLoading: Boolean;
+  message: string;
+}
+
+const initialState: initialType = {
+  tracks: [],
+  single: {user:"", trackTitle: "", artist:"", deliveryDate: new Date(Date.now())},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -48,7 +81,7 @@ export const getTracks = createAsyncThunk(
 
 export const getSingle = createAsyncThunk(
   "tracks/single",
-  async (id, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       return await trackService.getSingle(id);
     } catch (error: any) {
@@ -106,14 +139,7 @@ export const trackSlice = createSlice({
   name: "tracks",
   initialState,
   reducers: {
-    reset: (state) => {
-      state.tracks = [];
-      state.single = {};
-      state.isError = false;
-      state.isSuccess = false;
-      state.isLoading = false;
-      state.message = "";
-    },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder
