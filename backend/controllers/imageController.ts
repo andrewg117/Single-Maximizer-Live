@@ -72,15 +72,15 @@ const uploadImage = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  if (uploadedImage) {
-    const response = await s3.send(
-      uploadS3Object(
-        uploadedImage?._id.toString(),
-        req.file.buffer,
-        req.file.mimetype
-      )
-    );
-  }
+  // if (uploadedImage) {
+  //   const response = await s3.send(
+  //     uploadS3Object(
+  //       uploadedImage?._id.toString(),
+  //       req.file.buffer,
+  //       req.file.mimetype
+  //     )
+  //   );
+  // }
 
   // console.log("Post: " + response)
 
@@ -139,9 +139,9 @@ const uploadPress = asyncHandler(async (req, res) => {
       }
     );
 
-    const response = await s3.send(
-      uploadS3Object(updatedImage._id.toString(), file.buffer, file.mimetype)
-    );
+    // const response = await s3.send(
+    //   uploadS3Object(updatedImage._id.toString(), file.buffer, file.mimetype)
+    // );
   });
 
   res.json("Files saved");
@@ -267,15 +267,15 @@ const updateImage = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  if (updatedImage) {
-    const response = await s3.send(
-      uploadS3Object(
-        updatedImage?._id.toString(),
-        req.file.buffer as string,
-        req.file.mimetype as string
-      )
-    );
-  }
+  // if (updatedImage) {
+  //   const response = await s3.send(
+  //     uploadS3Object(
+  //       updatedImage?._id.toString(),
+  //       req.file.buffer as string,
+  //       req.file.mimetype as string
+  //     )
+  //   );
+  // }
 
   // console.log("Put: " + JSON.stringify(response))
 
@@ -307,7 +307,7 @@ const deleteImage = asyncHandler(async (req, res) => {
     // console.log(item._id)
     const deleteImage = await Image.findByIdAndDelete(item._id);
 
-    const response = await s3.send(deleteS3Object(item._id as string));
+    // const response = await s3.send(deleteS3Object(item._id as string));
   });
 
   res.json(req.params.id);
@@ -347,7 +347,7 @@ const deletePress = asyncHandler(async (req, res) => {
 
   const deleteImage = await Image.findByIdAndDelete(req.params.id);
 
-  const response = await s3.send(deleteS3Object(image._id.toString()));
+  // const response = await s3.send(deleteS3Object(image._id.toString()));
 
   res.json(deleteImage?.id);
 });

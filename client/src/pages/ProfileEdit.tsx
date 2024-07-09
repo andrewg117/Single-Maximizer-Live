@@ -25,9 +25,9 @@ function ProfileEdit() {
   );
 
   interface userType extends HTMLFormElement {
-    fname?: string;
-    lname?: string;
-    username?: string;
+    fname: string;
+    lname: string;
+    username: string;
     website?: string;
     scloud?: string;
     twitter?: string;

@@ -62,15 +62,15 @@ const uploadAudio = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  if(updatedAudio) {
-    const response = await s3.send(
-      uploadS3Object(
-        updatedAudio?._id.toString(),
-        req.file.buffer as string,
-        req.file.mimetype as string
-      )
-    );
-  }
+  // if(updatedAudio) {
+  //   const response = await s3.send(
+  //     uploadS3Object(
+  //       updatedAudio?._id.toString(),
+  //       req.file.buffer as string,
+  //       req.file.mimetype as string
+  //     )
+  //   );
+  // }
 
   if (audio) {
     res.json(audio);
@@ -152,12 +152,12 @@ const updateAudio = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
-  const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
+  // const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
   // console.log(delResponse)
 
-  const putResponse = await s3.send(
-    uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
-  );
+  // const putResponse = await s3.send(
+  //   uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
+  // );
 
   res.json(updatedAudio);
 });
@@ -185,7 +185,7 @@ const deleteAudio = asyncHandler(async (req, res) => {
 
   const deleteAudio = await Audio.findByIdAndDelete(audio._id);
 
-  const response = await s3.send(deleteS3Object(audio._id.toString()));
+  // const response = await s3.send(deleteS3Object(audio._id.toString()));
 
   res.json(deleteAudio?.id);
 });
