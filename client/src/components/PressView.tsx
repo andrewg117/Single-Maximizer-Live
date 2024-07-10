@@ -1,7 +1,6 @@
-import React from "react";
 import styles from "../css/new_release_style.module.css";
 
-const ImageFrame = ({ blob }) => {
+const ImageFrame = ({ blob }: { blob: any }) => {
   return (
     <div id={styles.press_frame}>
       <img
@@ -12,7 +11,7 @@ const ImageFrame = ({ blob }) => {
   );
 };
 
-function PressView({ trackPress }) {
+function PressView({ trackPress }: { trackPress: any[] }) {
   return (
     <div id={styles.press_upload}>
       {trackPress.length > 0

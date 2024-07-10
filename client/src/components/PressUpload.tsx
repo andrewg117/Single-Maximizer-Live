@@ -4,7 +4,13 @@ import { toast } from "react-toastify";
 import { FaRegWindowClose } from "react-icons/fa";
 import styles from "../css/new_release_style.module.css";
 
-const ImageFrame = ({ blob, id, removePress }) => {
+interface ImageFrameProps {
+  blob: any;
+  id: string;
+  removePress: (e: any, id: string) => void;
+}
+
+const ImageFrame = ({ blob, id, removePress }: ImageFrameProps) => {
   return (
     <>
       <div id={styles.press_frame}>
@@ -24,8 +30,22 @@ const ImageFrame = ({ blob, id, removePress }) => {
   );
 };
 
-function PressUpload({ changeFile, trackPress }) {
-  const [listSize, setListSize] = useState();
+interface PressUploadProps {
+  changeFile: any;
+  trackPress: Array<any>;
+}
+
+function PressUpload({ changeFile, trackPress }: PressUploadProps) {
+  const [listSize, setListSize] = useState<number>(0);
+
+  interface stateType {
+    genres: Array<string>;
+    trackCover: any;
+    trackAudio: any;
+    trackPress: Array<any>;
+    newPressList: Array<any>;
+    deletePressList: Array<any>;
+  }
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -36,10 +56,10 @@ function PressUpload({ changeFile, trackPress }) {
       formData.append("Press", acceptedFiles[0]);
       let megBytes =
         Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100;
-      formData.append("size", megBytes);
+        formData.append("size", megBytes.toString());
 
       if (listSize + megBytes < 20) {
-        changeFile((prevState) => ({
+        changeFile((prevState: stateType) => ({
           ...prevState,
           trackPress: [...trackPress, formData.get("Press")],
         }));
@@ -63,12 +83,12 @@ function PressUpload({ changeFile, trackPress }) {
     });
   }, [trackPress]);
 
-  const removePress = (e, id) => {
+  const removePress = (e: Event, id: string) => {
     e.preventDefault();
 
-    changeFile((prevState) => ({
+    changeFile((prevState: stateType) => ({
       ...prevState,
-      trackPress: trackPress.filter((item, index) => index !== id),
+      trackPress: trackPress.filter((item, index) => index.toString() !== id),
     }));
   };
 
@@ -80,7 +100,7 @@ function PressUpload({ changeFile, trackPress }) {
               return (
                 <ImageFrame
                   key={index}
-                  id={index}
+                  id={index.toString()}
                   blob={item}
                   removePress={removePress}
                 />

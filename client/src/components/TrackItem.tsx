@@ -1,10 +1,10 @@
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../app/hooks";
 import { deleteTrack } from "../features/tracks/trackSlice";
 
-function TrackItem({ track }) {
-  const dispatch = useDispatch();
+function TrackItem({ track }: {track: any}) {
+  const dispatch = useAppDispatch();
 
-  const onClick = (e) => {
+  const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 
     dispatch(deleteTrack(track._id));

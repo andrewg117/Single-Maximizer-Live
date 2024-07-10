@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useAppDispatch } from "../app/hooks";
 import { createTrack } from "../features/tracks/trackSlice";
 
 function TrackForm() {
@@ -20,9 +20,9 @@ function TrackForm() {
 
   const [deliveryDate, setDeliveryDate] = useState(minDate());
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     dispatch(createTrack({ trackTitle, artist, trackURL, deliveryDate }));

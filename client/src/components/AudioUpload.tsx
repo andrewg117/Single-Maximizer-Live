@@ -6,17 +6,21 @@ import { toast } from "react-toastify";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 
+interface fileType extends FormData {
+  name?: string;
+}
+
 interface AudioUploadProps {
   changeFile: any;
-  file: Blob | MediaSource;
+  file: any | fileType;
   fieldname: string;
 }
 
 function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
   const [isEdit, setEdit] = useState(true);
 
-  const makeBlob = useCallback(() => {
-    if (file && file instanceof FormData && !isEdit) {
+  const makeBlob = useCallback((): string | null => {
+    if (file && !isEdit) {
       return URL.createObjectURL(file.get(fieldname));
     } else if (isEdit === true) {
       const audioBuffer = Buffer.from(file.buffer, "base64");
@@ -28,7 +32,7 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
     }
   }, [file, isEdit, fieldname]);
 
-  const [blob, getBlob] = useState();
+  const [blob, getBlob] = useState<string>();
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -45,8 +49,8 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
 
         setEdit(false);
 
-        getBlob(URL.createObjectURL(formData.get(fieldname)));
-        changeFile((prevState) => ({
+        getBlob(URL.createObjectURL(formData.get(fieldname) as Blob));
+        changeFile((prevState: any) => ({
           ...prevState,
           [fieldname]: formData,
         }));
@@ -59,7 +63,7 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
 
   useEffect(() => {
     return () => {
-      URL.revokeObjectURL(blob);
+      URL.revokeObjectURL(blob as string);
     };
   }, [blob]);
 
@@ -71,8 +75,7 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
             {isEdit === true ? (
               <>
                 <AudioPlayer
-                  src={makeBlob()}
-                  controls
+                  src={makeBlob() as string}
                   layout="horizontal"
                   autoPlayAfterSrcChange={false}
                   volume={0.2}
@@ -82,13 +85,12 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
               <>
                 <AudioPlayer
                   src={blob}
-                  controls
                   layout="horizontal"
                   autoPlayAfterSrcChange={false}
                   volume={0.2}
                 />
                 <p>
-                  {file instanceof FormData ? file.get("trackAudio").name : ""}
+                  {file instanceof FormData && file != null ? file.get("trackAudio")?.toString() : ""}
                 </p>
               </>
             )}
@@ -105,7 +107,8 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
         <p hidden={file}>Drag and drop or click to upload audio</p>
         <div>
           <p>
-            <FaEdit hidden={!file} /> Change Audio
+            {file ? <></> : <><FaEdit /> Change Audio</> }
+            
           </p>
         </div>
       </div>

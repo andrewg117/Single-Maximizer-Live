@@ -57,7 +57,7 @@ export const getAudio = createAsyncThunk("audio/get", async (id: string, thunkAP
 
 export const updateAudio = createAsyncThunk(
   "audio/put",
-  async (audioData, thunkAPI) => {
+  async (audioData: FormData, thunkAPI) => {
     try {
       return await audioService.updateAudio(audioData);
     } catch (error: any) {
@@ -75,7 +75,7 @@ export const updateAudio = createAsyncThunk(
 
 export const deleteAudio = createAsyncThunk(
   "audio/delete",
-  async (id, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       return await audioService.deleteAudio(id);
     } catch (error: any) {

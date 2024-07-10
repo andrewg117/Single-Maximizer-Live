@@ -24,21 +24,6 @@ function ProfileEdit() {
     (state) => state.auth
   );
 
-  interface userType extends HTMLFormElement {
-    fname: string;
-    lname: string;
-    username: string;
-    website?: string;
-    scloud?: string;
-    twitter?: string;
-    igram?: string;
-    fbook?: string;
-    spotify?: string;
-    ytube?: string;
-    tiktok?: string;
-    bio_text?: string;
-  }
-
   const formRefData = useRef<HTMLFormElement>(null);
 
   const { image, isLoading: imageLoading } = useAppSelector(
@@ -86,35 +71,21 @@ function ProfileEdit() {
       toast.error(message);
     }
 
-    if (profileImage !== null && user) {
+    if (profileImage !== null && user && formRefData.current) {
       dispatch(
         updateUser({
-          fname: formRefData.current ? formRefData.current["fname"].value : "",
-          lname: formRefData.current ? formRefData.current["lname"].value : "",
-          username: formRefData.current
-            ? formRefData.current["username"].value
-            : "",
-          website: formRefData.current
-            ? formRefData.current["website"].value
-            : "",
-          scloud: formRefData.current
-            ? formRefData.current["scloud"].value
-            : "",
-          twitter: formRefData.current
-            ? formRefData.current["twitter"].value
-            : "",
-          igram: formRefData.current ? formRefData.current["igram"].value : "",
-          fbook: formRefData.current ? formRefData.current["fbook"].value : "",
-          spotify: formRefData.current
-            ? formRefData.current["spotify"].value
-            : "",
-          ytube: formRefData.current ? formRefData.current["ytube"].value : "",
-          tiktok: formRefData.current
-            ? formRefData.current["tiktok"].value
-            : "",
-          bio_text: formRefData.current
-            ? formRefData.current["bio_text"].value
-            : "",
+          fname: formRefData.current["fname"].value,
+          lname: formRefData.current["lname"].value,
+          username: formRefData.current["username"].value,
+          website: formRefData.current["website"].value,
+          scloud: formRefData.current["scloud"].value,
+          twitter: formRefData.current["twitter"].value,
+          igram: formRefData.current["igram"].value,
+          fbook: formRefData.current["fbook"].value,
+          spotify: formRefData.current["spotify"].value,
+          ytube: formRefData.current["ytube"].value,
+          tiktok: formRefData.current["tiktok"].value,
+          bio_text: formRefData.current["bio_text"].value,
         })
       )
         .unwrap()

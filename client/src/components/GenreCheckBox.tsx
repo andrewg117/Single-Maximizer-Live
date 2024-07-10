@@ -27,10 +27,19 @@ interface GenreCheckBoxProps {
 function GenreCheckBox({ changeList, list }: GenreCheckBoxProps) {
   const genreList = ["CHH", "Hip Hop", "Gospel", "R&B", "Pop", "Rock", "CCM"];
 
-  const onChange = (e: any) => {
+  interface stateType {
+    genres: Array<string>;
+    trackCover: any;
+    trackAudio: any;
+    trackPress: Array<any>;
+    newPressList: Array<any>;
+    deletePressList: Array<any>;
+  }
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Add to list if checked
     if (e.target.checked && !list.includes(e.target.value)) {
-      changeList((prevState: any) => ({
+      changeList((prevState: stateType) => ({
         ...prevState,
         genres: [...list, e.target.value],
       }));
@@ -38,7 +47,7 @@ function GenreCheckBox({ changeList, list }: GenreCheckBoxProps) {
 
     // Remove from list if unchecked
     if (!e.target.checked) {
-      changeList((prevState: any) => ({
+      changeList((prevState: stateType) => ({
         ...prevState,
         genres: list.filter((item) => item !== e.target.value),
       }));

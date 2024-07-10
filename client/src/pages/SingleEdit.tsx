@@ -50,11 +50,20 @@ function SingleEdit() {
   const [showPopup, setShowPopup] = useState(false);
   const [showDelPopup, setShowDelPopup] = useState(false);
 
-  const { id } = useParams<{id: string}>();
+  const { id } = useParams<{ id: string }>();
 
-  const formRefData = useRef({});
+  const formRefData = useRef<HTMLFormElement>(null);
 
-  const [formState, setFormState] = useState({
+  interface stateType {
+    genres: Array<string>;
+    trackCover: any;
+    trackAudio: any;
+    trackPress: Array<any>;
+    newPressList: Array<any>;
+    deletePressList: Array<any>;
+  }
+
+  const [formState, setFormState] = useState<stateType>({
     genres: [],
     trackCover: null,
     trackAudio: null,
@@ -94,7 +103,7 @@ function SingleEdit() {
   const graceDate = convertDate(today.setDate(today.getDate() + 1));
 
   const onSubmit = () => {
-    if (genres.length && user) {
+    if (genres.length && user && formRefData.current) {
       dispatch(
         updateSingle({
           trackID: id,
@@ -119,16 +128,16 @@ function SingleEdit() {
         .then(() => {
           if (trackCover instanceof FormData) {
             let imageData = new FormData();
-            imageData.append("Image", trackCover.get("Image"));
-            imageData.append("trackID", id);
+            imageData.append("Image", trackCover.get("Image") as Blob);
+            imageData.append("trackID", id as string);
             imageData.append("section", "cover");
             dispatch(updateImage(imageData));
           }
 
           if (trackAudio instanceof FormData) {
             let audioData = new FormData();
-            audioData.append("trackAudio", trackAudio.get("trackAudio"));
-            audioData.append("trackID", id);
+            audioData.append("trackAudio", trackAudio.get("trackAudio") as Blob);
+            audioData.append("trackID", id as string);
             dispatch(updateAudio(audioData));
           }
 
@@ -137,13 +146,13 @@ function SingleEdit() {
             newPressList.forEach((item) => {
               pressData.append("Press", item);
             });
-            pressData.append("trackID", id);
+            pressData.append("trackID", id as string);
             pressData.append("section", "press");
             dispatch(postPress(pressData));
           }
           if (deletePressList.length > 0) {
             deletePressList.forEach((item) => {
-              dispatch(deletePress(item._id));
+              dispatch(deletePress(item._id as string));
             });
           }
 
@@ -163,13 +172,13 @@ function SingleEdit() {
   };
 
   const deleteSingle = () => {
-    dispatch(deleteAudio(id))
+    dispatch(deleteAudio(id as string))
       .unwrap()
       .then(() => {
-        dispatch(deleteImage(id))
+        dispatch(deleteImage(id as string))
           .unwrap()
           .then(() => {
-            dispatch(deleteTrack(id))
+            dispatch(deleteTrack(id as string))
               .unwrap()
               .then(() => {
                 toast.success("Single Deleted");
@@ -180,14 +189,14 @@ function SingleEdit() {
       });
   };
 
-  const goBackToSingles = (e) => {
+  const goBackToSingles = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     navigate("/profile/singles");
   };
 
   useEffect(() => {
     if (isError) {
-      toast.error(message, { id: message });
+      toast.error(message);
     }
 
     return () => {
@@ -196,7 +205,7 @@ function SingleEdit() {
   }, [isError, message]);
 
   useEffect(() => {
-    dispatch(getSingle(id))
+    dispatch(getSingle(id as string))
       .unwrap()
       .then((data) => {
         setFormState((prevState) => ({
@@ -217,13 +226,13 @@ function SingleEdit() {
 
     dispatch(
       getPress({
-        trackID: id,
+        trackID: id as string,
       })
     )
       .unwrap()
       .catch((error) => console.error(error));
 
-    dispatch(getAudio(id))
+    dispatch(getAudio(id as string))
       .unwrap()
       .catch((error) => console.error(error));
 
@@ -355,7 +364,7 @@ function SingleEdit() {
                   id="deliveryDate"
                   name="deliveryDate"
                   min={graceDate}
-                  defaultValue={convertDate(single?.deliveryDate)}
+                  defaultValue={convertDate(single?.deliveryDate as Date)}
                 />
               </div>
               <div>
@@ -456,7 +465,7 @@ function SingleEdit() {
                   type="date"
                   id="albumDate"
                   name="albumDate"
-                  defaultValue={convertDate(single?.albumDate)}
+                  defaultValue={convertDate(single?.albumDate as Date)}
                 />
               </div>
               <div>
@@ -499,8 +508,8 @@ function SingleEdit() {
                   required
                   name="trackSum"
                   id="trackSum"
-                  cols="30"
-                  rows="10"
+                  cols={30}
+                  rows={10}
                   placeholder="Enter your track details here"
                   defaultValue={single?.trackSum}
                 ></textarea>
@@ -512,8 +521,8 @@ function SingleEdit() {
                 <textarea
                   name="pressSum"
                   id="pressSum"
-                  cols="30"
-                  rows="10"
+                  cols={30}
+                  rows={10}
                   placeholder="Enter recent accomplishments"
                   defaultValue={single?.pressSum}
                 ></textarea>

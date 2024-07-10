@@ -48,7 +48,7 @@ export const postImage = createAsyncThunk(
 
 export const postPress = createAsyncThunk(
   "press/post",
-  async (pressData, thunkAPI) => {
+  async (pressData: FormData, thunkAPI) => {
     try {
       return await imageService.postPress(pressData);
     } catch (error: any) {
@@ -120,7 +120,7 @@ export const updateImage = createAsyncThunk(
 
 export const deleteImage = createAsyncThunk(
   "image/delete",
-  async (trackID, thunkAPI) => {
+  async (trackID: string, thunkAPI) => {
     try {
       return await imageService.deleteImage(trackID);
     } catch (error: any) {
@@ -138,7 +138,7 @@ export const deleteImage = createAsyncThunk(
 
 export const deletePress = createAsyncThunk(
   "press/delete",
-  async (trackID, thunkAPI) => {
+  async (trackID: string, thunkAPI) => {
     try {
       return await imageService.deletePress(trackID);
     } catch (error: any) {

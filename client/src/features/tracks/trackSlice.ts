@@ -45,7 +45,12 @@ const initialState: initialType = {
 
 export const createTrack = createAsyncThunk(
   "tracks/post",
-  async (trackData, thunkAPI) => {
+  async (trackData: {
+    trackTitle: string;
+    artist: string;
+    trackURL: string;
+    deliveryDate: string;
+  }, thunkAPI) => {
     try {
       return await trackService.createTrack(trackData);
     } catch (error: any) {
@@ -119,7 +124,7 @@ export const updateSingle = createAsyncThunk(
 
 export const deleteTrack = createAsyncThunk(
   "tracks/delete",
-  async (id, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       return await trackService.deleteTrack(id);
     } catch (error: any) {

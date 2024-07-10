@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { logout } from "../features/auth/authSlice";
 import { FaBars } from "react-icons/fa";
 import styles from "../css/profile_nav.module.css";
+
+interface NavBarTopProps {
+  menuItems: Array<{name: string, path: string}>;
+  activeLink: string;
+  setActiveLink: any;
+  onLogout: (e: Event) => void;
+  toggleTopNav: any;
+}
 
 const NavBarTop = ({
   menuItems,
@@ -11,7 +19,7 @@ const NavBarTop = ({
   setActiveLink,
   onLogout,
   toggleTopNav,
-}) => {
+}: NavBarTopProps) => {
   return (
     <div
       className={styles.navbar_left_links}
@@ -23,7 +31,7 @@ const NavBarTop = ({
           to={menu.path}
           className={activeLink === menu.path ? styles.active : styles.inactive}
           onClick={(e) => {
-            menu.name === "LOGOUT" ? onLogout(e) : toggleTopNav();
+            menu.name === "LOGOUT" ? onLogout(e as any) : toggleTopNav();
             setActiveLink(menu.path);
           }}
         >
@@ -36,10 +44,10 @@ const NavBarTop = ({
 
 function NavBarLeft() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   const [activeLink, setActiveLink] = useState("PROFILE");
 
@@ -49,7 +57,7 @@ function NavBarLeft() {
     showTopNav ? setTopNav(false) : setTopNav(true);
   };
 
-  const onLogout = (e) => {
+  const onLogout = (e: Event) => {
     e.preventDefault();
     dispatch(logout());
     navigate("/home");
@@ -96,7 +104,7 @@ function NavBarLeft() {
           menuItems={menuItems}
           activeLink={activeLink}
           setActiveLink={setActiveLink}
-          onLogout={onLogout}
+          onLogout={onLogout as any}
           toggleTopNav={toggleTopNav}
         />
       ) : null}
@@ -135,7 +143,7 @@ function NavBarLeft() {
                   }
                   onClick={(e) =>
                     menu.name === "LOGOUT"
-                      ? onLogout(e)
+                      ? onLogout(e as any)
                       : setActiveLink(menu.path)
                   }
                 >
