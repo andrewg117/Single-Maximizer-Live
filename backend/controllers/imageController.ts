@@ -201,7 +201,7 @@ const getPress = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if ((image[0].user as string) !== req.session.userID) {
+  if (image[0].user.toString() !== req.session.userID.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }

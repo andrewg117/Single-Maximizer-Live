@@ -270,7 +270,6 @@ const redirectGoogle = asyncHandler(async (req, res) => {
 // @route   POST /api/users/logout
 // @access  Public
 const logoutUser = asyncHandler(async (req, res) => {
-  req.session.userID = undefined;
   req.session.destroy(() => {
     res.status(200).json({ message: "Logged out successfully" });
   });

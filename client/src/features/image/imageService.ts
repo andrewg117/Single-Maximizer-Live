@@ -31,7 +31,7 @@ const getImage = async (imageData: any) => {
   return response.data;
 };
 
-const getPress = async (pressData: any) => {
+const getPress = async (pressData: { trackID: string }) => {
   const config = {
     params: {
       ...pressData,

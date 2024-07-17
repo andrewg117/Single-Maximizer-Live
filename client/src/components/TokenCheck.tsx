@@ -1,4 +1,4 @@
-import React, { useEffect, ReactNode } from "react";
+import { useEffect, ReactNode } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { logout, getTokenResult } from "../features/auth/authSlice";
@@ -8,7 +8,7 @@ interface TokenCheckProps {
   children?: ReactNode;
 }
 
-const TokenCheck = ({ children, ...props }: TokenCheckProps) => {
+const TokenCheck = ({ children}: TokenCheckProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -24,7 +24,7 @@ const TokenCheck = ({ children, ...props }: TokenCheckProps) => {
     // toast.clearWaitingQueue()
   }, [user, navigate, dispatch]);
 
-  return <React.Fragment {...props}>{children} </React.Fragment> ?? <Outlet />;
+  return children ?? <Outlet />;
 };
 
 export default TokenCheck;
