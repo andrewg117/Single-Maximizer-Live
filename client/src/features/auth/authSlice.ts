@@ -98,7 +98,7 @@ export const login = createAsyncThunk(
 
 export const loginGoogle = createAsyncThunk(
   "auth/login/google",
-  async (token, thunkAPI) => {
+  async (token: any, thunkAPI) => {
     try {
       return await authService.loginGoogle(token);
     } catch (error: any) {

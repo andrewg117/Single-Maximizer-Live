@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -23,7 +23,7 @@ function SignIn() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const captchaRef = useRef(null);
+  const captchaRef = useRef<any>(null);
 
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaExpired, setCaptchaExpired] = useState(false);
@@ -54,7 +54,7 @@ function SignIn() {
     setCaptchaChecked((captchaExpired) => !captchaExpired);
   };
 
-  const onSubmit = (e: any) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const token = captchaRef.current.getValue();
@@ -76,7 +76,7 @@ function SignIn() {
     }
   };
 
-  const googleButton = (e: any) => {
+  const googleButton = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const tokenData = { token: captchaRef.current.getValue() };
     captchaRef.current.reset();
@@ -143,7 +143,7 @@ function SignIn() {
                 </Link>
                 <div className={styles.submit_div}>
                   <ReCAPTCHA
-                    sitekey={CAPT_SITEKEY.toString()}
+                    sitekey={CAPT_SITEKEY as string}
                     ref={captchaRef}
                     onChange={onCheck}
                     onExpired={() => {
