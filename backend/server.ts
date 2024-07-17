@@ -17,6 +17,8 @@ import audioRoutes from "./routes/audioRoutes";  // Routes for audio-related end
 // import purchaseRoutes from "./routes/purchaseRoutes";  // Routes for purchase-related endpoints 
 import { sendScheduledEmail } from "./controllers/emailController";  // Function to send scheduled emails
 import errorHandler from "./middleware/errorMiddleware";  // Middleware for handling errors
+const MDB_URI: string = process.env.MDB_URI as string;
+const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
 
 const port = process.env.Port || 5000;  // Define the port number, default to 5000
 
@@ -41,10 +43,23 @@ app.use(
     origin:
       process.env.NODE_ENV === "development"
         ? `http://localhost:${3000}`
-        : `http://ec2-35-153-192-158.compute-1.amazonaws.com:${3000}`,  // Allow requests from specific origins based on environment
+        : `serverURL:${3000}`,  // Allow requests from specific origins based on environment
     methods: ["GET", "POST", "PUT", "DELETE"],  // Allow specific HTTP methods
     optionsSuccessStatus: 200,  // Status for successful OPTIONS requests
     allowedHeaders: ["Content-Type"],  // Allow specific headers
+  })
+);
+
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: true,
+    rolling: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 1 * 2 * 60 * 1000 },
+    store: MongoStore.create({
+      mongoUrl: MDB_URI,
+    }),
   })
 );
 

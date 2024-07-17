@@ -9,8 +9,8 @@ import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp
 import signinImage from "../images/signinImage.png";
 import styles from "../css/sign_in_style.module.css";
 
-// const CAPT_SITEKEY = import.meta.env.VITE_CAPT_SITEKEY.toString();
-const CAPT_SITEKEY = process.env.VITE_CAPT_SITEKEY;
+const CAPT_SITEKEY = import.meta.env.VITE_CAPT_SITEKEY.toString();
+// const CAPT_SITEKEY = process.env.VITE_CAPT_SITEKEY;
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -70,7 +70,7 @@ function SignIn() {
       dispatch(login(userData))
         .unwrap()
         .then(() => navigate("/profile"))
-        .catch((error) => toast.error((error = "Invalid Credentials")));
+        .catch((error) => toast.error((error)));
     } else {
       console.log("Captcha Invalid");
     }

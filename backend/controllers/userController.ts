@@ -93,7 +93,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const checkRegisterEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  const userExists = await User.findOne({ email });
+  const userExists = (await User.findOne({ email })) as any;
   // console.log(userExists)
 
   if (userExists) {
@@ -163,7 +163,6 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc    Authenticate Google user
 // @route   POST /api/users/login
 // @access  Private
@@ -189,7 +188,6 @@ const loginGoogle = asyncHandler(async (req, res) => {
     throw new Error("Login Expired: " + error);
   }
 });
-
 
 // @desc    Authenticate a Google user
 // @route   GET /redirect/google
@@ -230,7 +228,9 @@ const redirectGoogle = asyncHandler(async (req, res) => {
     }
 
     if (userExists) {
-      const user: any = await User.findOne({ email: profile.email }) as Document;
+      const user: any = (await User.findOne({
+        email: profile.email,
+      })) as Document;
       req.session.userID = user?._id.toString();
       const userBody = {
         ...user["_doc"],
@@ -270,6 +270,7 @@ const redirectGoogle = asyncHandler(async (req, res) => {
 // @route   POST /api/users/logout
 // @access  Public
 const logoutUser = asyncHandler(async (req, res) => {
+  req.session.userID = undefined;
   req.session.destroy(() => {
     res.status(200).json({ message: "Logged out successfully" });
   });
@@ -413,23 +414,20 @@ const emailData = asyncHandler(async (req, res) => {
 // @desc    Get user data
 // @route   GET /api/users/token
 // @access  Private
-// const checkUserToken = asyncHandler(async (req, res) => {
-//   let token = req.cookies.jwt;
-//   if (token) {
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     const currentTime = Date.now() / 1000;
+const checkUserToken = asyncHandler(async (req, res) => {
+  let token = req.session.userID;
+  if (token) {
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // const currentTime = Date.now() / 1000;
 
-//     const isExpired = decoded.exp < currentTime;
-//     if (isExpired) {
-//       res.status(401).json(401);
-//     } else {
-//       res.status(200).json("Token");
-//     }
-//   } else {
-//     res.status(401).json(401);
-//   }
-//   // res.json(req.user)
-// });
+    // const isExpired = decoded.exp < currentTime;
+
+    res.status(200).json("Token");
+  } else {
+    res.status(401).json(401);
+  }
+  // res.json(req.user)
+});
 
 // @desc    Wake up demo server
 // @route   GET /api/users/wakeserver
@@ -467,4 +465,5 @@ export {
   updateUser,
   getMe,
   emailData,
+  checkUserToken,
 };

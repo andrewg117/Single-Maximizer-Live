@@ -11,6 +11,7 @@ import {
   updateUser,
   getMe,
   emailData,
+  checkUserToken,
 } from "../controllers/userController";
 import { protect } from "../middleware/authMiddleware";
 
@@ -25,5 +26,6 @@ router.route("/email").post(checkRegisterEmail);
 router.route("/email/:token").get(emailData);
 router.route("/reset").post(forgotPassword).put(resetPassword);
 router.route("/me").get(protect, getMe).put(protect, updateUser);
+router.route("/token").get(checkUserToken);
 
 export default router;
