@@ -1,76 +1,62 @@
 import express from "express";
-import colors from "colors";
-import dotenv from "dotenv";
+import colors from "colors";  // For console log colors
+import dotenv from "dotenv";  // To load environment variables from a .env file
 dotenv.config();
 import schedule from "cookie-parser";
 import cookieParser from "cookie-parser";
-import cors from "cors";
+import cors from "cors";  // To enable Cross-Origin Resource Sharing
 import session from "express-session";
-import MongoStore from "connect-mongo";
-import connectDB from "./config/db";
-import webhookRoutes from "./routes/webhookRoutes";
-import trackRoutes from "./routes/trackRoutes";
-import userRoutes from "./routes/userRoutes";
-import emailRoutes from "./routes/emailRoutes";
-import imageRoutes from "./routes/imageRoutes";
-import audioRoutes from "./routes/audioRoutes";
-// import purchaseRoutes from "./routes/purchaseRoutes";
-import { sendScheduledEmail } from "./controllers/emailController";
-import errorHandler from "./middleware/errorMiddleware";
-const port = process.env.Port || 5000;
+import MongoStore from "connect-mongo";  // For storing session data in MongoDB
+import connectDB from "./config/db";  // Function to connect to the database
+import webhookRoutes from "./routes/webhookRoutes";  // Routes for webhook-related endpoints
+import trackRoutes from "./routes/trackRoutes";  // Routes for track-related endpoints
+import userRoutes from "./routes/userRoutes";  // Routes for user-related endpoints
+import emailRoutes from "./routes/emailRoutes";  // Routes for email-related endpoints
+import imageRoutes from "./routes/imageRoutes";  // Routes for image-related endpoints
+import audioRoutes from "./routes/audioRoutes";  // Routes for audio-related endpoints
+// import purchaseRoutes from "./routes/purchaseRoutes";  // Routes for purchase-related endpoints 
+import { sendScheduledEmail } from "./controllers/emailController";  // Function to send scheduled emails
+import errorHandler from "./middleware/errorMiddleware";  // Middleware for handling errors
 
-connectDB();
+const port = process.env.Port || 5000;  // Define the port number, default to 5000
+
+connectDB();  // Connect to the database
 
 const app = express();
 
-// Daily function
+// Daily function to send scheduled emails
+// Uncomment the schedule function to enable daily email sending at 12:00 PM
 // schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
 //   sendScheduledEmail();
 // });
 
+app.use("/api/webhook", webhookRoutes);  // Use webhook routes for /api/webhook path
 
-app.use("/api/webhook", webhookRoutes);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(express.json());  // Middleware to parse JSON bodies
+app.use(express.urlencoded({ extended: true }));  // Middleware to parse URL-encoded bodies
+app.use(cookieParser());  // Middleware to parse cookies
 
 app.use(
   cors({
     origin:
       process.env.NODE_ENV === "development"
         ? `http://localhost:${3000}`
-        : `http://ec2-35-153-192-158.compute-1.amazonaws.com:${3000}`,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    optionsSuccessStatus: 200,
-    allowedHeaders: ["Content-Type"],
+        : `http://ec2-35-153-192-158.compute-1.amazonaws.com:${3000}`,  // Allow requests from specific origins based on environment
+    methods: ["GET", "POST", "PUT", "DELETE"],  // Allow specific HTTP methods
+    optionsSuccessStatus: 200,  // Status for successful OPTIONS requests
+    allowedHeaders: ["Content-Type"],  // Allow specific headers
   })
 );
 
-app.use("/api/tracks", trackRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/email", emailRoutes);
-app.use("/api/image", imageRoutes);
-app.use("/api/audio", audioRoutes);
-// app.use("/api/purchase", purchaseRoutes);
-
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static(path.join(__dirname, '../frontend/build')))
-//   // app.use(express.static('frontend/build'))
-//   // app.use(express.static(process.env.RENDER_STATIC_URL))
-
-//   app.get('*', (req, res) =>
-//     res.sendFile(
-//       path.resolve(__dirname, 'frontend', 'build', 'index.html')
-//       // path.resolve(process.env.RENDER_STATIC_URL, '../', 'frontend', 'build', 'index.html')
-//     )
-//   )
-// } else {
-//   app.get('/', (req, res) => res.send('Set env to production'))
-// }
+app.use("/api/tracks", trackRoutes);  // Use track routes for /api/tracks path
+app.use("/api/users", userRoutes);  // Use user routes for /api/users path
+app.use("/api/email", emailRoutes);  // Use email routes for /api/email path
+app.use("/api/image", imageRoutes);  // Use image routes for /api/image path
+app.use("/api/audio", audioRoutes);  // Use audio routes for /api/audio path
+// app.use("/api/purchase", purchaseRoutes);  // Use purchase routes for /api/purchase path 
 
 app.get("/", (req, res) => {
-  res.json({ Connection: "Success" });
+  res.json({ Connection: "Success" });  // Default route to test server connection
 });
 
-app.listen(port, () => console.log(`Server started on port ${port}`));
+app.listen(port, () => console.log(`Server started on port ${port}`));  // Start the server on the defined port

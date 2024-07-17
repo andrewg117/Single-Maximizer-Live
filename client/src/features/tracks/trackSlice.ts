@@ -48,8 +48,20 @@ export const createTrack = createAsyncThunk(
   async (trackData: {
     trackTitle: string;
     artist: string;
-    trackURL: string;
-    deliveryDate: string;
+    trackURL?: string;
+    deliveryDate?: string;
+    spotify?: string;
+    features?: string;
+    apple?: string;
+    producer?: string;
+    scloud?: string;
+    album?: string;
+    trackLabel?: string;
+    ytube?: string;
+    albumDate?: Date;
+    genres?: Array<string>;
+    trackSum?: string;
+    pressSum?: string;
   }, thunkAPI) => {
     try {
       return await trackService.createTrack(trackData);
@@ -104,7 +116,24 @@ export const getSingle = createAsyncThunk(
 
 export const updateSingle = createAsyncThunk(
   "tracks/putSingle",
-  async (args: any, thunkAPI) => {
+  async (args: {
+    trackID: string;
+    trackTitle: string;
+    artist: string;
+    deliveryDate?: string;
+    spotify?: string;
+    features?: string;
+    apple?: string;
+    producer?: string;
+    scloud?: string;
+    album?: string;
+    trackLabel?: string;
+    ytube?: string;
+    albumDate?: Date;
+    genres?: Array<any>;
+    trackSum?: string;
+    pressSum?: string;
+  }, thunkAPI) => {
     try {
       const { trackID, ...trackData } = args;
 

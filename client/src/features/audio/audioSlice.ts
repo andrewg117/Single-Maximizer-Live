@@ -26,7 +26,7 @@ const initialState: initialType = {
 
 export const postAudio = createAsyncThunk(
   "audio/post",
-  async (audioData, thunkAPI) => {
+  async (audioData: FormData, thunkAPI) => {
     try {
       return await audioService.postAudio(audioData);
     } catch (error: any) {

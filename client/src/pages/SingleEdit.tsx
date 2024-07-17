@@ -106,7 +106,7 @@ function SingleEdit() {
     if (genres.length && user && formRefData.current) {
       dispatch(
         updateSingle({
-          trackID: id,
+          trackID: id as string,
           trackTitle: formRefData.current["trackTitle"].value,
           artist: formRefData.current["artist"].value,
           deliveryDate: formRefData.current["deliveryDate"].value,
@@ -136,7 +136,10 @@ function SingleEdit() {
 
           if (trackAudio instanceof FormData) {
             let audioData = new FormData();
-            audioData.append("trackAudio", trackAudio.get("trackAudio") as Blob);
+            audioData.append(
+              "trackAudio",
+              trackAudio.get("trackAudio") as Blob
+            );
             audioData.append("trackID", id as string);
             dispatch(updateAudio(audioData));
           }
@@ -189,7 +192,9 @@ function SingleEdit() {
       });
   };
 
-  const goBackToSingles = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const goBackToSingles = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
     navigate("/profile/singles");
   };

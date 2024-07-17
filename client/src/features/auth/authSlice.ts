@@ -147,20 +147,24 @@ export const getUser = createAsyncThunk("auth/getUser", async (_, thunkAPI) => {
 
 export const updateUser = createAsyncThunk(
   "auth/update",
-  async (userData: {
-    fname: string,
-    lname: string,
-    username: string,
-    website: string,
-    scloud: string,
-    twitter: string,
-    igram: string,
-    fbook: string,
-    spotify: string,
-    ytube: string,
-    tiktok: string,
-    bio_text: string,
-  }, thunkAPI) => {
+  async (
+    userData: {
+      fname?: string;
+      lname?: string;
+      username?: string;
+      website?: string;
+      scloud?: string;
+      twitter?: string;
+      igram?: string;
+      fbook?: string;
+      spotify?: string;
+      ytube?: string;
+      tiktok?: string;
+      bio_text?: string;
+      trackAllowance?: Number;
+    },
+    thunkAPI
+  ) => {
     try {
       return await authService.update(userData);
     } catch (error: any) {

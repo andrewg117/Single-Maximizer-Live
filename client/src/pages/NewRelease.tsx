@@ -46,8 +46,17 @@ const convertDate = (date: Date | number) => {
 function NewRelease() {
   const today = new Date();
   const graceDate = convertDate(today.setDate(today.getDate() + 1));
+  
+  interface stateType {
+    genres: Array<string>;
+    trackCover: any;
+    trackAudio: any;
+    trackPress: Array<any>;
+    s3ImageURL: string;
+    s3AudioURL: string;
+  }
 
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<stateType>({
     genres: [],
     trackCover: null,
     trackAudio: null,
@@ -56,7 +65,7 @@ function NewRelease() {
     s3AudioURL: "",
   });
 
-  const { genres, trackCover, trackAudio, trackPress, s3ImageURL, s3AudioURL } =
+  const { genres, trackCover, trackAudio, trackPress } =
     formState;
 
   const navigate = useNavigate();
@@ -66,7 +75,7 @@ function NewRelease() {
   const { isLoading, isError, message } = useAppSelector((state) => state.tracks);
   const [showPopup, setShowPopup] = useState(false);
 
-  const formRefData = useRef({});
+  const formRefData = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (isError) {
@@ -106,10 +115,11 @@ function NewRelease() {
       trackAudio !== null &&
       trackPress.length &&
       genres.length &&
-      user
+      user && 
+      formRefData.current
     ) {
       let audioData = new FormData();
-      audioData.append("trackAudio", trackAudio.get("trackAudio"));
+      audioData.append("trackAudio", trackAudio.get("trackAudio") as Blob);
 
       let imageData = new FormData();
       imageData.append("Image", trackCover.get("Image"));
@@ -206,8 +216,6 @@ function NewRelease() {
                   changeFile={setFormState}
                   file={trackCover}
                   fieldname={"trackCover"}
-                  url={s3ImageURL}
-                  urlField={"s3ImageURL"}
                   altText={"Upload Track Cover"}
                 />
                 <p>
@@ -256,8 +264,6 @@ function NewRelease() {
                   changeFile={setFormState}
                   file={trackAudio}
                   fieldname={"trackAudio"}
-                  url={s3AudioURL}
-                  urlField={"s3AudioURL"}
                 />
                 <p>
                   Size Limit: {trackAudio ? trackAudio.get("size") : 0} / 21 MB
