@@ -9,7 +9,7 @@
     "server": "npx tsx ./backend/server.ts",
     "client": "npm run dev --prefix client",
     "webhook": "stripe listen --forward-to localhost:5000/api/webhook",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run webhook\"",
     "live": "concurrently \"npm run server\" \"npm run webhook\""
   },
   "author": "Andrew",

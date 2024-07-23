@@ -1,7 +1,10 @@
 import express, { Request, Response } from "express";
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
-import stripe from "stripe";
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.SK_TEST as string, {
+  apiVersion: '2022-11-15',
+});
 // const stripe = require("stripe")(process.env.SK_TEST);
 import User from "../models/userModel";
 import Purchase from "../models/purchaseModel";
@@ -48,7 +51,7 @@ const postPayment = asyncHandler(async (req: Request, res: Response) => {
 
   // Create Stripe Session Link
   const session = await stripe.checkout.sessions.create({
-    customer: userStripeID ? userStripeID : customerData.id,
+    customer: userStripeID ? userStripeID : customerData?.id,
     line_items: [
       {
         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
@@ -69,7 +72,7 @@ const postPayment = asyncHandler(async (req: Request, res: Response) => {
 // @route   POST /api/purchase
 // @access  Private
 const postDemoPayment = asyncHandler(async (req: Request, res: Response) => {
-  const user = await User.findById(req.session.userID);
+  const user = await User.findById(req.session.userID) as any;
 
   if (user) {
     // Update User's trackAllowance after purchase is complete
@@ -115,8 +118,15 @@ const postEndpoint = asyncHandler(async (req: any, res: any) => {
   // Handle the checkout.session.completed event
   if (event.type === "checkout.session.completed") {
     // Retrieve the session. If you require line items in the res, you may include them by expanding line_items.
+
+    interface stripeObject extends Stripe.Event.Data.Object {
+      id?: string;
+    }
+    
+    const paymentIntent: stripeObject = event.data.object;
+
     const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
-      event.data.object.id,
+      paymentIntent.id as string,
       {
         expand: ["line_items"],
       }
@@ -125,7 +135,6 @@ const postEndpoint = asyncHandler(async (req: any, res: any) => {
 
     // Fulfill the purchase...
     // fulfillOrder(lineItems)
-    // console.log(sessionWithLineItems.client_reference_id)
     if (sessionWithLineItems.client_reference_id) {
       // Update User's trackAllowance after purchase is complete
       updatedUser = await User.findByIdAndUpdate(

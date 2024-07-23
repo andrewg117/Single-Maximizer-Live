@@ -16,6 +16,7 @@ const ProductDisplay = () => {
   // const navigate = useNavigate();
 
   // TODO: remove stripe link for demo
+  // Fix allowance update
   const onSubmit = (e: any) => {
     e.preventDefault();
     dispatch(makePurchase())
