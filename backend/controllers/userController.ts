@@ -221,7 +221,7 @@ const redirectGoogle = asyncHandler(async (req, res) => {
 
     // Code to handle user authentication and retrieval using the profile data
 
-    const userExists = await User.findOne({ email: profile.email });
+    const userExists: any = await User.findOne({ email: profile.email });
 
     interface userDoc extends Document {
       _id?: string;
@@ -271,7 +271,10 @@ const redirectGoogle = asyncHandler(async (req, res) => {
 // @access  Public
 const logoutUser = asyncHandler(async (req, res) => {
   req.session.destroy(() => {
-    res.status(200).json({ message: "Logged out successfully" });
+    res
+      .clearCookie("connect.sid", { path: "/" })
+      .status(200)
+      .json({ message: "Logged out successfully" });
   });
 });
 
@@ -321,7 +324,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
   try {
     const decoded = decodeToken(token) as JwtPayload;
-    email = decoded.id as string; //TODO: Fix JWT for TS
+    email = decoded.id as string;
   } catch (error) {
     res.status(401);
     throw new Error(
@@ -354,7 +357,6 @@ const resetPassword = asyncHandler(async (req, res) => {
 const getMe = asyncHandler(async (req, res) => {
   try {
     const user = (await User.findById(req.session.userID)) as any;
-
     if (user) {
       const userBody = {
         ...user,
@@ -362,7 +364,7 @@ const getMe = asyncHandler(async (req, res) => {
       delete userBody["__v"];
       delete userBody["password"];
       delete userBody["googleId"];
-      res.json(userBody);
+      res.json(userBody["_doc"]);
     }
   } catch (error) {
     throw new Error("Login Expired");
@@ -416,11 +418,6 @@ const emailData = asyncHandler(async (req, res) => {
 const checkUserToken = asyncHandler(async (req, res) => {
   let token = req.session.userID;
   if (token) {
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // const currentTime = Date.now() / 1000;
-
-    // const isExpired = decoded.exp < currentTime;
-
     res.status(200).json("Token");
   } else {
     res.status(401).json(401);

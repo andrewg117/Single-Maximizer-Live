@@ -55,6 +55,7 @@ const getUser = async () => {
   let response;
 
   response = await axios.get(API_URL + "me");
+  console.log(document.cookie);
 
   return response.data;
 };

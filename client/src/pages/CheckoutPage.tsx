@@ -96,6 +96,8 @@ function CheckoutPage() {
       .then((data) => {
         if (data.trackAllowance > 0) {
           navigate("/profile/newrelease");
+        } else {
+          navigate("/profile/checkoutpage");
         }
       })
       .catch((err) => console.error(err));
