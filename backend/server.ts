@@ -26,6 +26,7 @@ connectDB();  // Connect to the database
 
 const app = express();
 
+
 // Daily function to send scheduled emails
 // Uncomment the schedule function to enable daily email sending at 12:00 PM
 // schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
@@ -34,6 +35,9 @@ const app = express();
 
 app.use("/api/webhook", webhookRoutes);  // Use webhook routes for /api/webhook path
 
+
+// Create middleware to handle errors
+app.use(errorHandler);
 app.use(express.json());  // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));  // Middleware to parse URL-encoded bodies
 app.use(cookieParser());  // Middleware to parse cookies

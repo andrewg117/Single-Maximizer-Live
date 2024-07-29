@@ -54,7 +54,7 @@ function NavBarLeft() {
   const [showTopNav, setTopNav] = useState(false);
 
   const toggleTopNav = () => {
-    showTopNav ? setTopNav(false) : setTopNav(true);
+    setTopNav(!showTopNav);
   };
 
   const onLogout = (e: Event) => {
