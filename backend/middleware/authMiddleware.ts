@@ -12,7 +12,7 @@ interface ExResponse extends Response {
 
 declare module "express-session" {
   interface SessionData {
-    userID: string;
+    userID?: string;
   }
 }
 

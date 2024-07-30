@@ -10,7 +10,7 @@ import signinImage from "../images/signinImage.png";
 import styles from "../css/sign_in_style.module.css";
 
 const CAPT_SITEKEY = import.meta.env.VITE_CAPT_SITEKEY.toString();
-// const CAPT_SITEKEY = process.env.VITE_CAPT_SITEKEY;
+// const CAPT_SITEKEY = process.env["VITE_CAPT_SITEKEY"] as string;
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -35,6 +35,13 @@ function SignIn() {
   useEffect(() => {
     if (user) {
       navigate("/profile");
+    }
+
+    
+    const query = new URLSearchParams(window.location.search);
+    if(query){
+      toast.error(query.get('error'));
+      // console.error(query.get('error'));
     }
 
     return () => {
@@ -70,7 +77,7 @@ function SignIn() {
       dispatch(login(userData))
         .unwrap()
         .then(() => navigate("/profile"))
-        .catch((error) => toast.error((error)));
+        .catch(() => toast.error("Login Failed"));
     } else {
       console.log("Captcha Invalid");
     }
@@ -87,9 +94,9 @@ function SignIn() {
         .then((data) => {
           window.location.href = data;
         })
-        .catch((error) => console.error(error));
+        .catch(() => toast.error("Login Failed"));
     } else {
-      console.error("Captcha Invalid");
+      toast.error("Captcha Invalid");
     }
   };
 
@@ -125,6 +132,7 @@ function SignIn() {
                   name="email"
                   value={email}
                   onChange={onChange}
+                  required={true}
                 />
                 <label htmlFor="pword">PASSWORD</label>
                 <input
@@ -134,6 +142,7 @@ function SignIn() {
                   name="password"
                   value={password}
                   onChange={onChange}
+                  required={true}
                 />
                 <Link
                   to={"/home/forgotpass"}
@@ -158,17 +167,17 @@ function SignIn() {
                     SUBMIT
                   </button>
                 </div>
-                <div className={styles.signin_form_div}>
-                  <button
-                    type="submit"
-                    id={styles.signin_submit}
-                    onClick={googleButton}
-                  >
-                    Google Account
-                  </button>
-                </div>
               </div>
             </form>
+            <div className={styles.signin_form_div}>
+              <button
+                type="button"
+                id={styles.signin_submit}
+                onClick={googleButton}
+              >
+                Google Account
+              </button>
+            </div>
           </div>
         </section>
       </section>

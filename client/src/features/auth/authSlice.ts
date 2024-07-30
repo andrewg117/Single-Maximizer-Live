@@ -5,6 +5,7 @@ const user = JSON.parse(localStorage.getItem("user") as string);
 
 const initialState = {
   user: user ? user : null,
+  googleUser: null,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -215,6 +216,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
+      state.googleUser = null;
       state.isError = false;
       state.isSuccess = false;
       state.isLoading = false;
@@ -281,7 +283,7 @@ export const authSlice = createSlice({
       .addCase(loginGoogle.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload;
+        state.googleUser = action.payload;
       })
       .addCase(loginGoogle.rejected, (state, action) => {
         state.isLoading = false;

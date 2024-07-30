@@ -6,6 +6,7 @@ import {
   DeleteObjectCommand,
   GetObjectCommandInput,
 } from "@aws-sdk/client-s3";
+// TODO npm install @aws-sdk/client-s3
 
 import dotenv from "dotenv";
 dotenv.config();

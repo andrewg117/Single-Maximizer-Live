@@ -48,7 +48,7 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
 
   emailContent += `<p>Press Photo Link(s): </p>`;
 
-  let getAttachments = [];
+  let getAttachments: Array<{filename: string; data: any}> = [];
 
   singleDoc.s3PressURL.forEach(async (press: any) => {
     emailContent += `<p>${press.url || ""}</p>`;
@@ -149,7 +149,7 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
   emailContent += `<br>`;
   emailContent += `<p>Press Photos: </p>`;
 
-  let getAttachments = [];
+  let getAttachments: Array<{filename: string; data: any}> = [];
 
   singleDoc.s3PressURL.forEach(async (press: any) => {
     emailContent += `<p>${press.url || ""}</p>`;

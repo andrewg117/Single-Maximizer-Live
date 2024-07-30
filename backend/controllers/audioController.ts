@@ -14,6 +14,12 @@ declare module "express" {
   }
 }
 
+declare module 'express-session' {
+  interface SessionData {
+      userID?: string;
+  }
+}
+
 // @desc    Post audio
 // @route   GET /api/audio
 // @access  Private

@@ -39,7 +39,7 @@ function ForgotPassword() {
         .then(() => {
           setEmailSent(true);
         })
-        .catch((error) => toast.error((error = "Email not registered")));
+        .catch(() => toast.error(("Email not registered")));
     }
   };
 

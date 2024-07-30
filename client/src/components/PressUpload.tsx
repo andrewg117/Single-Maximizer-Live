@@ -88,7 +88,7 @@ function PressUpload({ changeFile, trackPress }: PressUploadProps) {
 
     changeFile((prevState: stateType) => ({
       ...prevState,
-      trackPress: trackPress.filter((item, index) => index.toString() !== id),
+      trackPress: trackPress.filter((_, index) => index.toString() !== id),
     }));
   };
 

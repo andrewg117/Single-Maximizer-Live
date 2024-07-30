@@ -19,11 +19,7 @@ const ProfileDiv = ({ labelID, text, userData }: ProfileDivProps) => {
   return (
     <div>
       <label htmlFor={labelID}>{text}</label>
-      <p
-        id={labelID}
-      >
-        {userData}
-      </p>
+      <p id={labelID}>{userData}</p>
     </div>
   );
 };
@@ -55,7 +51,12 @@ const Profile = () => {
       .unwrap()
       .catch((error) => console.error(error));
 
-    dispatch(getImage({ section: "avatar" }))
+    dispatch(
+      getImage({
+        trackID: "",
+        section: "avatar",
+      })
+    )
       .unwrap()
       .catch((error) => console.error(error));
 

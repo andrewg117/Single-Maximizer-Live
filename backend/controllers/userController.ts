@@ -9,6 +9,7 @@ import Mailgun from "mailgun.js";
 import { generate } from "generate-password";
 import User from "../models/userModel";
 import { ObjectId } from "mongoose";
+import e from "express";
 const EMAILUSER = <string>process.env.EMAILUSER;
 const MAILGUN_API = <string>process.env.MAILGUN_API;
 
@@ -40,8 +41,9 @@ interface JwtPayload {
 }
 
 declare module "express-session" {
-  export interface SessionData {
-    userID: string;
+  interface SessionData {
+    userID?: string;
+    error?: string;
   }
 }
 
@@ -195,75 +197,85 @@ const loginGoogle = asyncHandler(async (req, res) => {
 const redirectGoogle = asyncHandler(async (req, res) => {
   const { code } = req.query;
 
-  try {
-    const searchParams: urlType = {
-      client_id: GOOGLE_CLIENT_ID,
-      client_secret: GOOGLE_OATH_SECRET,
-      code,
-      redirect_uri: REDIRECT_URI,
-      grant_type: "authorization_code",
-    };
+  // try {
+  const searchParams: urlType = {
+    client_id: GOOGLE_CLIENT_ID,
+    client_secret: GOOGLE_OATH_SECRET,
+    code,
+    redirect_uri: REDIRECT_URI,
+    grant_type: "authorization_code",
+  };
 
-    // Exchange authorization code for access token
-    const { data } = await axios.post(
-      "https://oauth2.googleapis.com/token",
-      searchParams
-    );
+  // Exchange authorization code for access token
+  const { data } = await axios.post(
+    "https://oauth2.googleapis.com/token",
+    searchParams
+  );
 
-    const { access_token, id_token } = data;
-    // Use access_token or id_token to fetch user profile
-    const { data: profile } = await axios.get(
-      "https://www.googleapis.com/oauth2/v1/userinfo",
-      {
-        headers: { Authorization: `Bearer ${access_token}` },
-      }
-    );
-
-    // Code to handle user authentication and retrieval using the profile data
-
-    const userExists: any = await User.findOne({ email: profile.email });
-
-    interface userDoc extends Document {
-      _id?: string;
+  const { access_token, id_token } = data;
+  // Use access_token or id_token to fetch user profile
+  const { data: profile } = await axios.get(
+    "https://www.googleapis.com/oauth2/v1/userinfo",
+    {
+      headers: { Authorization: `Bearer ${access_token}` },
     }
+  );
 
-    if (userExists) {
-      const user: any = (await User.findOne({
-        email: profile.email,
-      })) as Document;
-      req.session.userID = user?._id.toString();
-      const userBody = {
-        ...user["_doc"],
-      };
-      delete userBody["__v"];
+  // Code to handle user authentication and retrieval using the profile data
 
-      req.session.userID = user._id;
+  interface userDoc extends Document {
+    _id?: string;
+    googleId?: string;
+  }
+  // console.log(`googleUser: -------- \n ${JSON.stringify(profile)}`);
+
+  await User.findOne({ googleId: profile.id }).then(async (googleUser) => {
+    if (googleUser != null) {
+      // console.log(`googleUser: -------- \n ${JSON.stringify(googleUser)}`);
+
+      req.session.userID = googleUser._id;
 
       res.redirect("http://localhost:3000/profile");
     } else {
-      const salt = await bcrypt.genSalt(10);
-      const defaulPass = generate({
-        length: 12,
-        numbers: true,
-        symbols: true,
-      });
-      const hashedPassword = await bcrypt.hash(defaulPass, salt);
+      await User.findOne({ email: profile.email }).then(async (user) => {
+        // console.log(`user: -------- \n ${JSON.stringify(user)}`);
+        if (user) {
+          console.error("Error: Google email used in another account");
+          // throw new Error("Google email used in another account");
+          res
+            .status(409)
+            .redirect(
+              "http://localhost:3000/home/signin?error=Google email used in another account"
+            );
+        } else {
+          const salt = await bcrypt.genSalt(10);
+          const defaulPass = generate({
+            length: 12,
+            numbers: true,
+            symbols: true,
+          });
+          const hashedPassword = await bcrypt.hash(defaulPass, salt);
 
-      const user = await User.create({
-        username: profile.name,
-        name: profile.given_name,
-        password: hashedPassword,
-        email: profile.email,
-        googleId: profile.id,
-      });
+          const user = await User.create({
+            username: profile.name,
+            fname: profile.given_name,
+            lname: profile.family_name,
+            password: hashedPassword,
+            email: profile.email,
+            googleId: profile.id,
+          });
 
-      req.session.userID = user._id.toString();
-      res.redirect("http://localhost:3000/profile");
+          req.session.userID = user._id.toString();
+          res.redirect("http://localhost:3000/profile");
+        }
+      });
     }
-  } catch (error) {
-    console.error("Error:", error);
-    res.redirect("http://localhost:3000/signin");
-  }
+  });
+
+  // } catch (error) {
+  //   throw new Error("Google user not found");
+  //   // res.redirect("http://localhost:3000/home/signin");
+  // }
 });
 
 // @desc    Logout user / clear cookie
@@ -420,7 +432,7 @@ const checkUserToken = asyncHandler(async (req, res) => {
   if (token) {
     res.status(200).json("Token");
   } else {
-    res.status(401).json(401);
+    res.status(401).json("Invalid Token");
   }
   // res.json(req.user)
 });

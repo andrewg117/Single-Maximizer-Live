@@ -56,7 +56,7 @@ function ProfileEdit() {
       .unwrap()
       .catch((error) => console.error(error));
 
-    dispatch(getImage({ section: "avatar" }))
+    dispatch(getImage({ trackID: "", section: "avatar" }))
       .unwrap()
       .catch((error) => console.error(error));
 

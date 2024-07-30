@@ -22,6 +22,12 @@ declare module "express" {
   }
 }
 
+declare module 'express-session' {
+  interface SessionData {
+      userID?: string;
+  }
+}
+
 // @desc    Post purchase
 // @route   POST /api/purchase
 // @access  Private

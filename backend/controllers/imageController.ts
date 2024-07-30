@@ -151,36 +151,24 @@ const uploadPress = asyncHandler(async (req, res) => {
 // @route   GET /api/image
 // @access  Private
 const getImage = asyncHandler(async (req, res) => {
-  let image;
-
+  console.log(req.query.section);
   if (req.query.section === "avatar") {
-    image = await Image.findOne({
+    await Image.findOne({
       user: req.session.userID,
       section: "avatar",
+    }).then((image) => {
+      res.json(image);
     });
   } else if (req.query.section === "cover") {
-    image = await Image.findOne({
+    await Image.findOne({
       trackID: req.query.trackID,
       section: "cover",
+    }).then((image) => {
+      res.json(image);
     });
+  } else {
+    res.status(300).json("Image not found");
   }
-
-  if (!image) {
-    res.status(400);
-    throw new Error("Image not found");
-  }
-
-  if (!req.session.userID) {
-    res.status(401);
-    throw new Error("User not found");
-  }
-
-  if (image.user.toString() !== req.session.userID) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
-
-  res.json(image);
 });
 
 // @desc    Get press
@@ -213,7 +201,8 @@ const getPress = asyncHandler(async (req, res) => {
 // @route   PUT /api/image/:file
 // @access  Private
 const updateImage = asyncHandler(async (req: Request, res: Response) => {
-  let image = null;
+  let image: { _id: string; user: string; trackID: string } | null = null;
+
   if (req.body.section === "avatar") {
     image = await Image.findOne({ user: req.session.userID });
   } else if (req.body.section === "cover") {

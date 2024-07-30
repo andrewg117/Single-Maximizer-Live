@@ -41,8 +41,8 @@ function EmailSignUp() {
         .then(() => {
           setEmailSent(true);
         })
-        .catch((error) =>
-          toast.error((error = "User exists, use a different email or login"))
+        .catch(() =>
+          toast.error(("User exists, use a different email or login"))
         );
     }
   };

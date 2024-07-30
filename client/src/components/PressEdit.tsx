@@ -108,7 +108,7 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }: Pr
 
     changeFile((prevState: any) => ({
       ...prevState,
-      newPressList: newPressList.filter((item, index) => index.toString() !== id),
+      newPressList: newPressList.filter((_, index) => index.toString() !== id),
     }));
   };
 
