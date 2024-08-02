@@ -9,7 +9,9 @@ import Mailgun from "mailgun.js";
 import { generate } from "generate-password";
 import User from "../models/userModel";
 import { ObjectId } from "mongoose";
-import e from "express";
+import { urlType, JwtPayload } from "../types/controllers/interfaces";
+import  "../types/controllers/modules";
+
 const EMAILUSER = <string>process.env.EMAILUSER;
 const MAILGUN_API = <string>process.env.MAILGUN_API;
 
@@ -27,25 +29,6 @@ const API_URL =
 const mailgun: Mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain: string = "mail.trackstarz.com";
-
-interface urlType {
-  client_id: string;
-  client_secret: string;
-  code: any;
-  redirect_uri: string;
-  grant_type: string;
-}
-
-interface JwtPayload {
-  id: string;
-}
-
-declare module "express-session" {
-  interface SessionData {
-    userID?: string;
-    error?: string;
-  }
-}
 
 // @desc    Register new user
 // @route   POST /api/users

@@ -1,20 +1,8 @@
-import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel";
+import { userType, ExRequest, ExResponse } from "../types/controllers/interfaces";
+import  "../types/controllers/modules";
 
-interface ExRequest extends Request {
-  user?: any;
-}
-
-interface ExResponse extends Response {
-  user?: any;
-}
-
-declare module "express-session" {
-  interface SessionData {
-    userID?: string;
-  }
-}
 
 const protect = asyncHandler(async (req: ExRequest, res: ExResponse, next) => {
   let sessionID = req.session.userID;
@@ -22,7 +10,9 @@ const protect = asyncHandler(async (req: ExRequest, res: ExResponse, next) => {
 
   if (sessionID) {
     try {
-      req.user = await User.findById(sessionID).select("-password");
+      req.user = (await User.findById(sessionID).select(
+        "-password"
+      )) as userType;
 
       next();
     } catch (error) {

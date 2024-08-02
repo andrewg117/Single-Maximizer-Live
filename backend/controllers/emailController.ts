@@ -1,5 +1,6 @@
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
+import  "../types/controllers/modules";
 import Email from "../models/emailModel";
 import Track from "../models/trackModel";
 import User from "../models/userModel";
@@ -15,6 +16,7 @@ const MAILGUN_API = process.env.MAILGUN_API as string;
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain = "mail.trackstarz.com";
+
 
 // General email
 const generalEmail = async (singleDoc: any, subjectType: any) => {

@@ -1,23 +1,15 @@
-import express, { Request, Response } from "express";
-import session, { SessionData } from "express-session";
+import { Response } from "express";
 import asyncHandler from "express-async-handler";
 import multer from "multer";
+import { FileRequest } from "../types/controllers/interfaces";
 import Image from "../models/imageModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
 
-declare module "express" {
-  interface Request {
-    body: any;
-    file?: any;
-    files?: any;
-  }
-}
-
 // @desc    Post image
 // @route   POST /api/image
 // @access  Private
-const uploadImage = asyncHandler(async (req: Request, res: Response) => {
+const uploadImage = asyncHandler(async (req: FileRequest, res: Response) => {
   if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
@@ -151,7 +143,6 @@ const uploadPress = asyncHandler(async (req, res) => {
 // @route   GET /api/image
 // @access  Private
 const getImage = asyncHandler(async (req, res) => {
-  console.log(req.query.section);
   if (req.query.section === "avatar") {
     await Image.findOne({
       user: req.session.userID,
@@ -200,7 +191,7 @@ const getPress = asyncHandler(async (req, res) => {
 // @desc    Update image
 // @route   PUT /api/image/:file
 // @access  Private
-const updateImage = asyncHandler(async (req: Request, res: Response) => {
+const updateImage = asyncHandler(async (req: FileRequest, res: Response) => {
   let image: { _id: string; user: string; trackID: string } | null = null;
 
   if (req.body.section === "avatar") {

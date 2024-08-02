@@ -1,28 +1,7 @@
 import mongoose from "mongoose";
+import { userSchemaTypes } from "../types/models/interfaces";
 
-interface monSchema extends mongoose.Document {
-  username: String;
-  googleId?: String;
-  isDefaultPass: Boolean;
-  email: String;
-  password: String;
-  fname: String;
-  lname: String;
-  website?: String;
-  scloud?: String;
-  twitter?: String;
-  igram?: String;
-  fbook?: String;
-  spotify?: String;
-  ytube?: String;
-  tiktok?: String;
-  bio_text?: String;
-  trackAllowance?: Number;
-  isAdmin?: Boolean;
-  stripeID?: String;
-}
-
-const userSchema = new mongoose.Schema<monSchema>(
+const userSchema = new mongoose.Schema<userSchemaTypes>(
   {
     username: {
       type: String,
@@ -116,5 +95,5 @@ const userSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-const User = mongoose.model<monSchema>("User", userSchema);
+const User = mongoose.model<userSchemaTypes>("User", userSchema);
 export default User;

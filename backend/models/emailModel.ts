@@ -1,15 +1,7 @@
 import mongoose from "mongoose";
+import { emailSchemaTypes } from "../types/models/interfaces";
 
-interface monSchema extends mongoose.Document {
-  user: mongoose.Schema.Types.ObjectId;
-  trackID: mongoose.Schema.Types.ObjectId;
-  deliveryDate: Date;
-  recipient: String;
-  subject: String;
-  emailMessage: String;
-}
-
-const emailSchema = new mongoose.Schema<monSchema>(
+const emailSchema = new mongoose.Schema<emailSchemaTypes>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -43,5 +35,5 @@ const emailSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-const Email = mongoose.model<monSchema>("Email", emailSchema);
+const Email = mongoose.model<emailSchemaTypes>("Email", emailSchema);
 export default Email;

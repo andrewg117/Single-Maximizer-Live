@@ -1,13 +1,7 @@
 import mongoose from "mongoose";
+import {audioSchemaTypes} from "../types/models/interfaces";
 
-interface monSchema extends mongoose.Document {
-  user: mongoose.Schema.Types.ObjectId;
-  trackID: mongoose.Schema.Types.ObjectId;
-  s3AudioURL: String;
-  file: mongoose.Schema.Types.Mixed;
-}
-
-const audioSchema = new mongoose.Schema<monSchema>(
+const audioSchema = new mongoose.Schema<audioSchemaTypes>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -33,5 +27,5 @@ const audioSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-const Audio = mongoose.model<monSchema>("Audio", audioSchema);
+const Audio = mongoose.model<audioSchemaTypes>("Audio", audioSchema);
 export default Audio;

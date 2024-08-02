@@ -1,7 +1,9 @@
-import session, { SessionData } from "express-session";
+// import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
 import Track from "../models/trackModel";
 import User from "../models/userModel";
+// import { UserRequest } from "../types/interfaces";
+
 
 // @desc    Get tracks
 // @route   GET /api/track

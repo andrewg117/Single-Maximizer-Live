@@ -1,29 +1,15 @@
-import express, { Request, Response } from "express";
-import session, { SessionData } from "express-session";
+import express, {  Request, Response } from "express";
 import asyncHandler from "express-async-handler";
+import { FileRequest } from "../types/controllers/interfaces";
 import Audio from "../models/audioModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
 import { ObjectId } from "mongoose";
 
-declare module "express" {
-  interface Request {
-    body: any;
-    file?: any;
-    files?: any;
-  }
-}
-
-declare module 'express-session' {
-  interface SessionData {
-      userID?: string;
-  }
-}
-
 // @desc    Post audio
 // @route   GET /api/audio
 // @access  Private
-const uploadAudio = asyncHandler(async (req: Request, res: Response) => {
+const uploadAudio = asyncHandler(async (req: FileRequest, res: Response) => {
   if (!req.session.userID) {
     res.status(401);
     throw new Error("User not found");
@@ -110,7 +96,7 @@ const getAudio = asyncHandler(async (req, res) => {
 // @desc    Update audio
 // @route   PUT /api/audio/:file
 // @access  Private
-const updateAudio = asyncHandler(async (req: Request, res: Response) => {
+const updateAudio = asyncHandler(async (req: FileRequest, res: Response) => {
   const audio = await Audio.findOne({ trackID: req.body.trackID });
 
   if (!audio) {

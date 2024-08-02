@@ -1,30 +1,7 @@
 import mongoose from "mongoose";
+import { trackSchemaTypes } from "../types/models/interfaces";
 
-interface monSchema extends mongoose.Document {
-  user: mongoose.Schema.Types.ObjectId;
-  trackTitle: String;
-  artist: String;
-  deliveryDate?: Date;
-  spotify?: String;
-  features?: String;
-  label?: String;
-  apple?: String;
-  producer?: String;
-  scloud?: String;
-  album?: String;
-  trackLabel?: String;
-  ytube?: String;
-  albumDate?: Date;
-  genres?: Array<String>;
-  trackSum?: String;
-  pressSum?: String;
-  isDelivered?: Boolean;
-  s3ImageURL?: mongoose.Schema.Types.Mixed;
-  s3AudioURL?: mongoose.Schema.Types.Mixed;
-  s3PressURL?: Array<String>;
-}
-
-const trackSchema = new mongoose.Schema<monSchema>(
+const trackSchema = new mongoose.Schema<trackSchemaTypes>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -120,5 +97,5 @@ const trackSchema = new mongoose.Schema<monSchema>(
   }
 );
 
-const Track = mongoose.model<monSchema>("Track", trackSchema);
+const Track = mongoose.model<trackSchemaTypes>("Track", trackSchema);
 export default Track;
