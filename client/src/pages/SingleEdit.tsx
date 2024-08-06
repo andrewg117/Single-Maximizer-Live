@@ -65,7 +65,7 @@ function SingleEdit() {
 
   const [formState, setFormState] = useState<stateType>({
     genres: [],
-    trackCover: null,
+    trackCover: image ? Buffer.from(image.file.buffer, "ascii") : null,
     trackAudio: null,
     trackPress: [],
     newPressList: [],
@@ -74,7 +74,7 @@ function SingleEdit() {
 
   const { genres, trackCover, trackAudio, newPressList, deletePressList } =
     formState;
-
+  
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -227,6 +227,12 @@ function SingleEdit() {
       })
     )
       .unwrap()
+      .then((data) => {
+        setFormState((prevState) => ({
+          ...prevState,
+          trackCover: Buffer.from(data.file.buffer, "ascii"),
+        }));
+      })
       .catch((error) => console.error(error));
 
     dispatch(
@@ -280,7 +286,7 @@ function SingleEdit() {
                 <label className={styles.required}>COVER ART</label>
                 <ImageUpload
                   changeFile={setFormState}
-                  file={image ? Buffer.from(image.file.buffer, "ascii") : null}
+                  file={trackCover}
                   fieldname={"trackCover"}
                   altText={"Upload Track Cover"}
                 />

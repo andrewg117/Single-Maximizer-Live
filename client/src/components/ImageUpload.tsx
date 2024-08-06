@@ -4,9 +4,12 @@ import { FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
 import styles from "../css/new_release_style.module.css";
 
+interface fileType extends FormData {
+  name?: string;
+}
 interface ImageUploadProps {
   changeFile: any;
-  file: any;
+  file: any | fileType;
   fieldname: string;
   altText: string;
 }

@@ -1,9 +1,14 @@
 import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
-import  "../types/controllers/modules";
+import { Buffer } from "buffer";
+import iconv from "iconv-lite";
+import fs from "fs";
+import "../types/controllers/modules";
 import Email from "../models/emailModel";
 import Track from "../models/trackModel";
 import User from "../models/userModel";
+import Image from "../models/imageModel";
+import Audio from "../models/audioModel";
 import formData from "form-data";
 import Mailgun from "mailgun.js";
 import axios from "axios";
@@ -17,12 +22,11 @@ const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain = "mail.trackstarz.com";
 
-
 // General email
 const generalEmail = async (singleDoc: any, subjectType: any) => {
   let emailContent: string;
 
-  const userDoc = await User.findById(singleDoc.user) as any;
+  const userDoc = (await User.findById(singleDoc.user)) as any;
   emailContent = `<p>Artist: ${singleDoc.artist || ""}</p>`;
 
   emailContent += `<p>Featured Artist(s): ${singleDoc.features || ""}</p>`;
@@ -50,17 +54,32 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
 
   emailContent += `<p>Press Photo Link(s): </p>`;
 
-  let getAttachments: Array<{filename: string; data: any}> = [];
+  let getAttachments: Array<{ filename: string; data: any }> = [];
+
+  await Image.find({ trackID: singleDoc._id, section: "press" }).then(
+    (press) => {
+      press.forEach((image: any) => {
+        let buffer = Buffer.from(
+          image.file.buffer.toString("base64"),
+          "base64"
+        );
+        getAttachments.push({
+          filename: image.file.originalname,
+          data: buffer,
+        });
+      });
+    }
+  );
 
   singleDoc.s3PressURL.forEach(async (press: any) => {
     emailContent += `<p>${press.url || ""}</p>`;
 
-    const image = await axios.get(press.url, { responseType: "stream" });
+    // const image = await axios.get(press.url, { responseType: "stream" });
 
-    getAttachments.push({
-      filename: press.name,
-      data: image.data,
-    });
+    // getAttachments.push({
+    //   filename: press.name,
+    //   data: image.data,
+    // });
   });
 
   let subjectLine;
@@ -78,26 +97,38 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
       subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`;
   }
 
-  const audioURL = singleDoc.s3AudioURL
-    ? await axios.get(singleDoc.s3AudioURL.url, { responseType: "stream" })
-    : null;
-  const imageURL = singleDoc.s3ImageURL
-    ? await axios.get(singleDoc.s3ImageURL.url, { responseType: "stream" })
-    : null;
+  // const audioURL = singleDoc.s3AudioURL
+  //   ? await axios.get(singleDoc.s3AudioURL.url, { responseType: "stream" })
+  //   : null;
+  // const imageURL = singleDoc.s3ImageURL
+  //   ? await axios.get(singleDoc.s3ImageURL.url, { responseType: "stream" })
+  //   : null;
 
-  audioURL
-    ? getAttachments.push({
-        filename: singleDoc.s3AudioURL.name,
-        data: audioURL.data,
-      })
-    : null;
+  // audioURL
+  //   ? getAttachments.push({
+  //       filename: singleDoc.s3AudioURL.name,
+  //       data: audioURL.data,
+  //     })
+  //   : null;
+  let audioFile: any = await Audio.findOne({ trackID: singleDoc._id });
+  let audioBuffer = Buffer.from(audioFile.file.buffer.toString("base64"), "base64");
+  getAttachments.push({
+    filename: audioFile.file.originalname,
+    data: audioBuffer,
+  });
 
-  imageURL
-    ? getAttachments.push({
-        filename: singleDoc.s3ImageURL.name,
-        data: imageURL.data,
-      })
-    : null;
+  let trackCover: any = await Image.findOne({ trackID: singleDoc._id, section: "cover" });
+  let coverBuffer = Buffer.from(trackCover.file.buffer.toString("base64"), "base64");
+  getAttachments.push({
+    filename: trackCover.file.originalname,
+    data: coverBuffer,
+  });
+  // imageURL
+  //   ? getAttachments.push({
+  //       filename: singleDoc.s3ImageURL.name,
+  //       data: imageURL.data,
+  //     })
+  //   : null;
 
   // setup email data with unicode symbols
   const mailOptions = {
@@ -128,7 +159,7 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
 
 // Alternate email
 const altEmail = async (singleDoc: any, subjectType: any) => {
-  const userDoc = await User.findById(singleDoc.user) as any;
+  const userDoc = (await User.findById(singleDoc.user)) as any;
 
   let emailContent = `<p>Artist: ${singleDoc.artist || ""}</p>`;
   emailContent += `<br>`;
@@ -151,7 +182,7 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
   emailContent += `<br>`;
   emailContent += `<p>Press Photos: </p>`;
 
-  let getAttachments: Array<{filename: string; data: any}> = [];
+  let getAttachments: Array<{ filename: string; data: any }> = [];
 
   singleDoc.s3PressURL.forEach(async (press: any) => {
     emailContent += `<p>${press.url || ""}</p>`;
@@ -290,7 +321,4 @@ const sendEmail = asyncHandler(async (req, res) => {
   res.status(200);
 });
 
-export {
-  sendEmail,
-  sendScheduledEmail,
-};
+export { sendEmail, sendScheduledEmail };

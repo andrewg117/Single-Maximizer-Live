@@ -2,7 +2,7 @@ import express from "express";
 import colors from "colors"; // For console log colors
 import dotenv from "dotenv"; // To load environment variables from a .env file
 dotenv.config();
-import schedule from "cookie-parser";
+import schedule from "node-schedule";
 import cookieParser from "cookie-parser";
 import cors from "cors"; // To enable Cross-Origin Resource Sharing
 import session from "express-session";
@@ -58,7 +58,7 @@ app.use(
     resave: true,
     rolling: true,
     saveUninitialized: true,
-    cookie: { maxAge: 1 * 2 * 60 * 1000 },
+    cookie: { maxAge: 1 * 10 * 60 * 1000 },
     store: MongoStore.create({
       mongoUrl: MDB_URI,
     }),
