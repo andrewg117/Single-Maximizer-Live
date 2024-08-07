@@ -72,9 +72,9 @@ function SingleEdit() {
     deletePressList: [],
   });
 
-  const { genres, trackCover, trackAudio, newPressList, deletePressList } =
+  const { genres, trackCover, trackAudio, trackPress, newPressList, deletePressList } =
     formState;
-  
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -235,12 +235,19 @@ function SingleEdit() {
       })
       .catch((error) => console.error(error));
 
+    // TODO: Fix press
     dispatch(
       getPress({
         trackID: id as string,
       })
     )
       .unwrap()
+      .then((data) => {
+        setFormState((prevState) => ({
+          ...prevState,
+          trackPress: data,
+        }))
+      })
       .catch((error) => console.error(error));
 
     dispatch(getAudio(id as string))
@@ -351,7 +358,7 @@ function SingleEdit() {
               {isPressSuccess ? (
                 <PressEdit
                   changeFile={setFormState}
-                  trackPress={press ? press : []}
+                  trackPress={trackPress ? trackPress : []}
                   newPressList={newPressList}
                   deletePressList={deletePressList}
                 />

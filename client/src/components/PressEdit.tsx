@@ -5,7 +5,7 @@ import { FaRegWindowClose } from "react-icons/fa";
 import styles from "../css/new_release_style.module.css";
 
 interface FrameProps {
-  blob: any;
+  blob: any | Blob;
   id: string;
   removePress: (e: any, id: string) => void;
 }
@@ -20,7 +20,7 @@ const ImageFrame = ({ blob, id, removePress }: FrameProps) => {
         />
         <FaRegWindowClose
           id={styles.remove_press}
-          onClick={(e: React.MouseEvent<SVGElement, MouseEvent>) => removePress(e, id)}
+          onClick={(e: any) => removePress(e, id)}
         />
       </div>
     </>
@@ -38,16 +38,23 @@ const NewImageFrame = ({ blob, id, removePress }: FrameProps) => {
             URL.revokeObjectURL(blob);
           }}
         />
-        <p
+        <FaRegWindowClose
           id={styles.remove_press}
-          onClick={(e: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => removePress(e, id)}
-        >
-          X
-        </p>
+          onClick={(e: any) => removePress(e, id)}
+        />
       </div>
     </>
   );
 };
+
+interface stateType {
+  genres: Array<string>;
+  trackCover: any;
+  trackAudio: any;
+  trackPress: Array<any>;
+  newPressList: Array<any>;
+  deletePressList: Array<any>;
+}
 
 interface PressEditProps {
   changeFile: any;
@@ -56,17 +63,13 @@ interface PressEditProps {
   deletePressList: Array<any>;
 }
 
-function PressEdit({ changeFile, trackPress, newPressList, deletePressList }: PressEditProps) {
+function PressEdit({
+  changeFile,
+  trackPress,
+  newPressList,
+  deletePressList,
+}: PressEditProps) {
   const [listSize, setListSize] = useState<number>(0);
-
-  interface stateType {
-    genres: Array<string>;
-    trackCover: any;
-    trackAudio: any;
-    trackPress: Array<any>;
-    newPressList: Array<any>;
-    deletePressList: Array<any>;
-  }
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -95,10 +98,10 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }: Pr
 
     changeFile((prevState: stateType) => ({
       ...prevState,
-      trackPress: trackPress.filter((item) => item._id as string !== id),
+      trackPress: trackPress.filter((item) => item._id.toString() !== id),
       deletePressList: [
         ...deletePressList,
-        trackPress.find((item) => item._id === id),
+        trackPress.find((item) => item._id.toString() === id),
       ],
     }));
   };
@@ -106,7 +109,7 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }: Pr
   const removeNewPress = (e: Event, id: string) => {
     e.preventDefault();
 
-    changeFile((prevState: any) => ({
+    changeFile((prevState: stateType) => ({
       ...prevState,
       newPressList: newPressList.filter((_, index) => index.toString() !== id),
     }));
@@ -139,7 +142,7 @@ function PressEdit({ changeFile, trackPress, newPressList, deletePressList }: Pr
               return (
                 <ImageFrame
                   key={index}
-                  id={item._id}
+                  id={item._id.toString()}
                   blob={item.file.buffer}
                   removePress={removePress}
                 />
