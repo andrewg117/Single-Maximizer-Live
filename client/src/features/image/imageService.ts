@@ -44,7 +44,7 @@ const getPress = async (pressData: { trackID: string }) => {
   return response.data;
 };
 
-const updateImage = async (imageData: any) => {
+const updateImage = async (imageData: FormData) => {
   let response;
 
   response = await axios.put(API_URL + imageData, imageData);

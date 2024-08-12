@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate, useParams } from "react-router-dom";
+import { useImageState } from "../customHooks/imageHooks";
+import { useSingleGenres } from "../customHooks/trackHooks";
 import {
   getSingle,
   updateSingle,
@@ -54,26 +56,24 @@ function SingleEdit() {
 
   const formRefData = useRef<HTMLFormElement>(null);
 
+  const { imageState: trackCover, setImage, changeImageFile } = useImageState();
+
+  const { genres, setGenres, changeGenreList } = useSingleGenres();
+
   interface stateType {
-    genres: Array<string>;
-    trackCover: any;
     trackAudio: any;
-    trackPress: Array<any>;
     newPressList: Array<any>;
     deletePressList: Array<any>;
   }
 
   const [formState, setFormState] = useState<stateType>({
-    genres: [],
-    trackCover: image ? Buffer.from(image.file.buffer, "ascii") : null,
+    // trackCover: image ? Buffer.from(image.file.buffer, "ascii") : null,
     trackAudio: null,
-    trackPress: [],
     newPressList: [],
     deletePressList: [],
   });
 
-  const { genres, trackCover, trackAudio, trackPress, newPressList, deletePressList } =
-    formState;
+  const { trackAudio, newPressList, deletePressList } = formState;
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -103,7 +103,7 @@ function SingleEdit() {
   const graceDate = convertDate(today.setDate(today.getDate() + 1));
 
   const onSubmit = () => {
-    if (genres.length && user && formRefData.current) {
+    if (user && formRefData.current) {
       dispatch(
         updateSingle({
           trackID: id as string,
@@ -119,7 +119,7 @@ function SingleEdit() {
           trackLabel: formRefData.current["trackLabel"].value,
           ytube: formRefData.current["ytube"].value,
           albumDate: formRefData.current["albumDate"].value,
-          genres,
+          genres: genres.length > 0 ? genres : single.genres,
           trackSum: formRefData.current["trackSum"].value,
           pressSum: formRefData.current["pressSum"].value,
         })
@@ -212,12 +212,6 @@ function SingleEdit() {
   useEffect(() => {
     dispatch(getSingle(id as string))
       .unwrap()
-      .then((data) => {
-        setFormState((prevState) => ({
-          ...prevState,
-          genres: data.genres,
-        }));
-      })
       .catch((error) => console.error(error));
 
     dispatch(
@@ -235,7 +229,6 @@ function SingleEdit() {
       })
       .catch((error) => console.error(error));
 
-    // TODO: Fix press
     dispatch(
       getPress({
         trackID: id as string,
@@ -246,7 +239,7 @@ function SingleEdit() {
         setFormState((prevState) => ({
           ...prevState,
           trackPress: data,
-        }))
+        }));
       })
       .catch((error) => console.error(error));
 
@@ -260,7 +253,16 @@ function SingleEdit() {
       dispatch(resetAudio());
       setShowPopup(false);
     };
-  }, [id, dispatch]);
+  }, [dispatch, id, setFormState]);
+
+  useEffect(() => {
+    image && setImage(Buffer.from(image.file.buffer, "ascii"));
+  }, [image]);
+
+
+  useEffect(() => {
+    single && setGenres(single.genres as Array<string>);
+  }, [single]);
 
   if (isLoading || imageLoading || audioLoading) {
     return <Spinner />;
@@ -292,9 +294,8 @@ function SingleEdit() {
               <div id={styles.image_div}>
                 <label className={styles.required}>COVER ART</label>
                 <ImageUpload
-                  changeFile={setFormState}
+                  changeFile={changeImageFile}
                   file={trackCover}
-                  fieldname={"trackCover"}
                   altText={"Upload Track Cover"}
                 />
                 <p>
@@ -358,7 +359,7 @@ function SingleEdit() {
               {isPressSuccess ? (
                 <PressEdit
                   changeFile={setFormState}
-                  trackPress={trackPress ? trackPress : []}
+                  trackPress={press}
                   newPressList={newPressList}
                   deletePressList={deletePressList}
                 />
@@ -508,8 +509,8 @@ function SingleEdit() {
                 </label>
                 <section id={styles.checkboxlist}>
                   <GenreCheckBox
-                    changeList={setFormState}
-                    list={genres}
+                    changeList={changeGenreList}
+                    list={genres ? genres : []}
                   />
                 </section>
               </div>

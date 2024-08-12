@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
+import { useImageState } from "../customHooks/imageHooks";
 import {
   getUser,
   updateUser,
@@ -30,11 +31,7 @@ function ProfileEdit() {
     (state) => state.image
   );
 
-  const [formState, setFormState] = useState({
-    profileImage: image ? Buffer.from(image.file.buffer, "ascii") : null,
-  });
-
-  const { profileImage } = formState;
+  const { imageState, setImage, changeImageFile } = useImageState();
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -66,12 +63,15 @@ function ProfileEdit() {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    image && setImage(Buffer.from(image.file.buffer, "ascii"));
+  }, [image]);
+
   const onSubmit = () => {
     if (isError) {
       toast.error(message);
     }
-
-    if (profileImage !== null && user && formRefData.current) {
+    if (imageState !== null && user && formRefData.current) {
       dispatch(
         updateUser({
           fname: formRefData.current["fname"].value,
@@ -93,19 +93,17 @@ function ProfileEdit() {
           if (image === null) {
             let imageData = new FormData();
             let imageObject: { Image: any } = JSON.parse(
-              JSON.stringify(profileImage)
+              JSON.stringify(imageState)
             );
             imageData.append("Image", imageObject["Image"]);
             imageData.append("section", "avatar");
             dispatch(postImage(imageData)).catch((error) =>
               console.error(error)
             );
-          } else if (profileImage instanceof FormData) {
+          } else if (imageState instanceof FormData) {
             let imageData = new FormData();
-            let imageObject: { Image: any } = JSON.parse(
-              JSON.stringify(profileImage)
-            );
-            imageData.append("Image", imageObject["Image"]);
+
+            imageData.append("Image", imageState.get("Image") as Blob);
             imageData.append("section", "avatar");
             dispatch(updateImage(imageData)).catch((error) =>
               console.error(error)
@@ -156,14 +154,13 @@ function ProfileEdit() {
               <div id={styles.image_div}>
                 <label>PROFILE AVATAR</label>
                 <ImageUpload
-                  changeFile={setFormState}
-                  file={profileImage}
-                  fieldname={"profileImage"}
+                  changeFile={changeImageFile}
+                  file={imageState}
                   altText={"Upload Profile Image"}
                 />
                 <p>
-                  {profileImage instanceof FormData
-                    ? `Size Limit: ${profileImage.get("size")} / 10 MB`
+                  {imageState instanceof FormData
+                    ? `Size Limit: ${imageState.get("size")} / 10 MB`
                     : null}
                 </p>
               </div>

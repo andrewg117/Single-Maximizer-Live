@@ -10,11 +10,10 @@ interface fileType extends FormData {
 interface ImageUploadProps {
   changeFile: any;
   file: any | fileType;
-  fieldname: string;
   altText: string;
 }
 
-const ImageUpload = ({ changeFile, file, fieldname, altText }: ImageUploadProps) => {
+const ImageUpload = ({ changeFile, file, altText }: ImageUploadProps) => {
   const [isEdit, setEdit] = useState(true);
 
   const makeBlob = useCallback(() => {
@@ -44,10 +43,7 @@ const ImageUpload = ({ changeFile, file, fieldname, altText }: ImageUploadProps)
 
         getBlob(URL.createObjectURL(formData.get("Image") as Blob));
 
-        changeFile((prevState: any) => ({
-          ...prevState,
-          [fieldname]: formData,
-        }));
+        changeFile(formData);
       } else {
         toast.error("File size is too large");
       }

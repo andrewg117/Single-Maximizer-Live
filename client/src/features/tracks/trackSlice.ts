@@ -36,7 +36,7 @@ interface initialType {
 
 const initialState: initialType = {
   tracks: [],
-  single: {user:"", trackTitle: "", artist:"", deliveryDate: new Date(Date.now())},
+  single: {user:"", trackTitle: "", artist:"", deliveryDate: new Date(Date.now()), genres:[]},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -223,8 +223,6 @@ export const trackSlice = createSlice({
       .addCase(updateSingle.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        // state.isExpired = false;
-        // console.log(action.payload._id)
         state.single = {
           ...state.single,
           ...action.payload,

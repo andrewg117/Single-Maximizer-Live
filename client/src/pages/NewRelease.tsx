@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Link, useNavigate } from "react-router-dom";
+import { useImageState } from "../customHooks/imageHooks";
+import { useSingleGenres } from "../customHooks/trackHooks";
 import {
   getUser,
   updateUser,
@@ -46,10 +48,12 @@ const convertDate = (date: Date | number) => {
 function NewRelease() {
   const today = new Date();
   const graceDate = convertDate(today.setDate(today.getDate() + 1));
-  
+
+  const { imageState: trackCover, changeImageFile } = useImageState();
+
+  const { genres, changeGenreList } = useSingleGenres();
+
   interface stateType {
-    genres: Array<string>;
-    trackCover: any;
     trackAudio: any;
     trackPress: Array<any>;
     s3ImageURL: string;
@@ -57,22 +61,21 @@ function NewRelease() {
   }
 
   const [formState, setFormState] = useState<stateType>({
-    genres: [],
-    trackCover: null,
     trackAudio: null,
     trackPress: [],
     s3ImageURL: "",
     s3AudioURL: "",
   });
 
-  const { genres, trackCover, trackAudio, trackPress } =
-    formState;
+  const { trackAudio, trackPress } = formState;
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const { user } = useAppSelector((state) => state.auth);
-  const { isLoading, isError, message } = useAppSelector((state) => state.tracks);
+  const { isLoading, isError, message } = useAppSelector(
+    (state) => state.tracks
+  );
   const [showPopup, setShowPopup] = useState(false);
 
   const formRefData = useRef<HTMLFormElement>(null);
@@ -111,18 +114,18 @@ function NewRelease() {
     }
 
     if (
-      trackCover !== null &&
+      trackCover instanceof FormData &&
       trackAudio !== null &&
       trackPress.length &&
       genres.length &&
-      user && 
+      user &&
       formRefData.current
     ) {
       let audioData = new FormData();
       audioData.append("trackAudio", trackAudio.get("trackAudio") as Blob);
 
       let imageData = new FormData();
-      imageData.append("Image", trackCover.get("Image"));
+      imageData.append("Image", trackCover.get("Image") as Blob);
       imageData.append("section", "cover");
 
       let pressData = new FormData();
@@ -213,13 +216,16 @@ function NewRelease() {
               <div id={styles.image_div}>
                 <label className={styles.required}>COVER ART</label>
                 <ImageUpload
-                  changeFile={setFormState}
+                  changeFile={changeImageFile}
                   file={trackCover}
-                  fieldname={"trackCover"}
                   altText={"Upload Track Cover"}
                 />
                 <p>
-                  Size Limit: {trackCover ? trackCover.get("size") : 0} / 10 MB
+                  Size Limit:{" "}
+                  {trackCover instanceof FormData
+                    ? trackCover.get("size")?.toString()
+                    : "0"}{" "}
+                  / 10 MB
                 </p>
               </div>
               <div className={styles.top_input_div}>
@@ -411,8 +417,8 @@ function NewRelease() {
                 </label>
                 <section id={styles.checkboxlist}>
                   <GenreCheckBox
-                    changeList={setFormState}
-                    list={genres ? genres : []}
+                    changeList={changeGenreList}
+                    list={genres}
                   />
                 </section>
               </div>
