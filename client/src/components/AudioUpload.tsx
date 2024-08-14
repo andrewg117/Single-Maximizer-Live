@@ -1,19 +1,23 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Buffer } from "buffer";
+import { Buffer, File } from "buffer";
 import { FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 
 interface fileType extends FormData {
-  name?: string;
+  name?: string | FormDataEntryValue;
 }
 
 interface AudioUploadProps {
   changeFile: any;
   file: any | fileType;
   fieldname: string;
+}
+
+interface newFileType extends Blob {
+  name?: string;
 }
 
 function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
@@ -41,7 +45,8 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
     onDrop: async (acceptedFiles) => {
       if (acceptedFiles[0]) {
         let formData = new FormData();
-        formData.append(fieldname, acceptedFiles[0]);
+
+        formData.append(fieldname, acceptedFiles[0] as newFileType);
         let megBytes =
           Math.round((acceptedFiles[0].size / 1024 ** 2) * 100) / 100;
         let strBytes = megBytes.toString();
@@ -50,16 +55,23 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
         setEdit(false);
 
         getBlob(URL.createObjectURL(formData.get(fieldname) as Blob));
-        changeFile((prevState: any) => ({
-          ...prevState,
-          [fieldname]: formData,
-        }));
+
+        changeFile(formData);
       } else {
         toast.error("File size is too large");
       }
     },
     maxSize: 21000000,
   });
+
+  const getAudioFileName = () => {
+    if (file instanceof FormData && file != null) {
+      const newFile = file.get("trackAudio") as newFileType;
+      return newFile.name ? newFile.name.toString() : "";
+    } else {
+      return "";
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -90,7 +102,7 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
                   volume={0.2}
                 />
                 <p>
-                  {file instanceof FormData && file != null ? file.get("trackAudio")?.toString() : ""}
+                  {getAudioFileName()}
                 </p>
               </>
             )}
@@ -104,11 +116,16 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
         {...getRootProps()}
       >
         <input {...getInputProps()} />
-        <p hidden={file}>Drag and drop or click to upload audio</p>
+        <p>Drag and drop or click to upload audio</p>
         <div>
           <p>
-            {file ? <></> : <><FaEdit /> Change Audio</> }
-            
+            {file ? (
+              <></>
+            ) : (
+              <>
+                <FaEdit /> Change Audio
+              </>
+            )}
           </p>
         </div>
       </div>

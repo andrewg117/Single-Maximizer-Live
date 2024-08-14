@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { Link, useNavigate } from "react-router-dom";
-import { useImageState } from "../customHooks/imageHooks";
 import { useSingleGenres } from "../customHooks/trackHooks";
+import { useImageState } from "../customHooks/imageHooks";
+import { useAudioState } from "../customHooks/audioHooks";
 import {
   getUser,
   updateUser,
@@ -51,23 +52,19 @@ function NewRelease() {
 
   const { imageState: trackCover, changeImageFile } = useImageState();
 
+  const { audioState: trackAudio, changeAudioFile } = useAudioState();
+
   const { genres, changeGenreList } = useSingleGenres();
 
   interface stateType {
-    trackAudio: any;
     trackPress: Array<any>;
-    s3ImageURL: string;
-    s3AudioURL: string;
   }
 
   const [formState, setFormState] = useState<stateType>({
-    trackAudio: null,
     trackPress: [],
-    s3ImageURL: "",
-    s3AudioURL: "",
   });
 
-  const { trackAudio, trackPress } = formState;
+  const { trackPress } = formState;
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -115,18 +112,20 @@ function NewRelease() {
 
     if (
       trackCover instanceof FormData &&
-      trackAudio !== null &&
+      trackAudio instanceof FormData &&
       trackPress.length &&
       genres.length &&
       user &&
       formRefData.current
     ) {
-      let audioData = new FormData();
-      audioData.append("trackAudio", trackAudio.get("trackAudio") as Blob);
-
       let imageData = new FormData();
       imageData.append("Image", trackCover.get("Image") as Blob);
       imageData.append("section", "cover");
+
+      let audioData = new FormData();
+      trackAudio instanceof FormData
+        ? audioData.append("trackAudio", trackAudio.get("trackAudio") as Blob)
+        : null;
 
       let pressData = new FormData();
       trackPress.forEach((item) => {
@@ -169,10 +168,7 @@ function NewRelease() {
           dispatch(updateUser({ trackAllowance: user.trackAllowance - 1 }));
         });
 
-      setFormState((prevState) => ({
-        ...prevState,
-        trackAudio: null,
-      }));
+      // changeAudioFile(null);
       toast.success("Single Created");
       navigate("/profile/singles");
       setShowPopup(false);
@@ -267,12 +263,16 @@ function NewRelease() {
               <div>
                 <label className={styles.required}>AUDIO UPLOAD</label>
                 <AudioUpload
-                  changeFile={setFormState}
-                  file={trackAudio}
+                  changeFile={changeAudioFile}
+                  file={trackAudio instanceof FormData ? trackAudio : null}
                   fieldname={"trackAudio"}
                 />
                 <p>
-                  Size Limit: {trackAudio ? trackAudio.get("size") : 0} / 21 MB
+                  Size Limit:
+                  {trackAudio instanceof FormData
+                    ? trackAudio.get("size")?.toString()
+                    : "0"}
+                  / 21 MB
                 </p>
               </div>
             </div>
