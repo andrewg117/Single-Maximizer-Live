@@ -3,7 +3,8 @@ import session, { SessionData } from "express-session";
 import asyncHandler from "express-async-handler";
 import Stripe from "stripe";
 const stripe = new Stripe(process.env.SK_TEST as string, {
-  apiVersion: "2022-11-15",
+  apiVersion: "2024-06-20",
+  typescript: true,
 });
 // const stripe = require("stripe")(process.env.SK_TEST);
 import { StripeRequest } from "../types/controllers/interfaces";
@@ -15,6 +16,53 @@ const YOUR_DOMAIN: string = "http://localhost:3000/";
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = <string>process.env.SK_ENDPOINT;
 
+// Create checkout on the same page
+const embeddedCheckout = asyncHandler(
+  async (req: StripeRequest, res: Response) => {
+    // Create Stripe Customer
+    let userStripeID;
+    let customerData;
+    if (req.user.stripeID) {
+      userStripeID = req.user.stripeID;
+    } else {
+      customerData = await stripe.customers.create({
+        email: req.user.email,
+        name: `${req.user.fname} ${req.user.lname}`,
+        metadata: { userID: req.user._id.toString() },
+      });
+
+      const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $set: { stripeID: customerData.id },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+
+    const commands: Stripe.Checkout.SessionCreateParams = {
+      ui_mode: "embedded",
+      customer: userStripeID ? userStripeID : customerData?.id,
+      line_items: [
+        {
+          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+          price: "price_1NNh7rFOk6NyPVsVGSoBA4pY",
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      return_url: `${YOUR_DOMAIN}profile/checkoutpage?session_id={CHECKOUT_SESSION_ID}`,
+      client_reference_id: req.session.userID as string,
+    };
+
+    // Create Stripe Session Link
+    const session = await stripe.checkout.sessions.create(commands);
+
+    res.json(session.url);
+  }
+);
 
 // @desc    Post purchase
 // @route   POST /api/purchase
@@ -65,26 +113,28 @@ const postPayment = asyncHandler(async (req: StripeRequest, res: Response) => {
 // @desc    Post demo purchase
 // @route   POST /api/purchase
 // @access  Private
-const postDemoPayment = asyncHandler(async (req: StripeRequest, res: Response) => {
-  const user = (await User.findById(req.session.userID)) as any;
+const postDemoPayment = asyncHandler(
+  async (req: StripeRequest, res: Response) => {
+    const user = (await User.findById(req.session.userID)) as any;
 
-  if (user) {
-    // Update User's trackAllowance after purchase is complete
-    const updatedUser = await User.findByIdAndUpdate(
-      user._id,
-      {
-        $inc: { trackAllowance: 1 },
-      },
-      {
-        new: true,
-      }
-    );
+    if (user) {
+      // Update User's trackAllowance after purchase is complete
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        {
+          $inc: { trackAllowance: 1 },
+        },
+        {
+          new: true,
+        }
+      );
 
-    res.status(200).json("Purchase Made");
-  } else {
-    res.status(401);
+      res.status(200).json("Purchase Made");
+    } else {
+      res.status(401);
+    }
   }
-});
+);
 
 // @desc    Post endpoint
 // @route   POST /api/webhook
