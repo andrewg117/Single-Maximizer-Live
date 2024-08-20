@@ -27,11 +27,29 @@ export const makePurchase = createAsyncThunk(
   }
 );
 
-export const getPurchase = createAsyncThunk(
-  "purchase/get",
+export const makeEmbeddedPurchase = createAsyncThunk(
+  "purchase/embedded",
   async (_, thunkAPI) => {
     try {
-      return await purchaseService.getPurchase();
+      return await purchaseService.makeEmbeddedPurchase();
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const getCheckoutStatus = createAsyncThunk(
+  "purchase/get",
+  async (session_id: string, thunkAPI) => {
+    try {
+      return await purchaseService.getCheckoutStatus(session_id);
     } catch (error: any) {
       const message =
         (error.response &&
@@ -71,15 +89,27 @@ export const purchaseSlice = createSlice({
         state.isError = true;
         state.message = action.payload as string;
       })
-      .addCase(getPurchase.pending, (state) => {
+      .addCase(makeEmbeddedPurchase.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getPurchase.fulfilled, (state, action) => {
+      .addCase(makeEmbeddedPurchase.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(makeEmbeddedPurchase.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
+      })
+      .addCase(getCheckoutStatus.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getCheckoutStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.purchase = action.payload;
       })
-      .addCase(getPurchase.rejected, (state, action) => {
+      .addCase(getCheckoutStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload as string;

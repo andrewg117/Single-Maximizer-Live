@@ -40,6 +40,7 @@ export interface StripeRequest extends Request {
   body: any;
   headers: any;
   user?: any;
+  session_id?: string;
 }
 
 export interface urlType {

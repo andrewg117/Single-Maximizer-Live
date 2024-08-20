@@ -1,29 +1,80 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
-import { getUser } from "../features/auth/authSlice";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  EmbeddedCheckoutProvider,
+  EmbeddedCheckout,
+} from "@stripe/react-stripe-js";
+import { getUser, reset as resetUser } from "../features/auth/authSlice";
 import {
   makePurchase,
-  getPurchase,
+  getCheckoutStatus,
+  makeEmbeddedPurchase,
   reset as resetPurchase,
 } from "../features/purchace/purchaseSlice";
 import { toast } from "react-toastify";
 import SMLogo from "../images/Single-Maximizer-Package-Mockup-1024x616.png.webp";
 import styles from "../css/checkout.module.css";
 
-const ProductDisplay = () => {
+const pk_key = import.meta.env.VITE_STRIPE_PKKEY.toString();
+const stripePromise = loadStripe(pk_key);
+
+const CheckoutForm = () => {
   const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
+  const [clientSecret, setClientSecret] = useState("");
+
+  useEffect(() => {
+    dispatch(makeEmbeddedPurchase())
+      .unwrap()
+      .then((data) => {
+        setClientSecret(data.clientSecret);
+      });
+    return () => {
+      dispatch(resetUser());
+      dispatch(resetPurchase());
+    };
+  }, [dispatch]);
+
+  // const fetchClientSecret = useCallback(() => {
+  //   // Create a Checkout Session
+  //   return fetch("/api/purchase/checkout", {
+  //     method: "POST",
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => data.clientSecret);
+  // }, []);
+
+  // const options = { clientSecret };
+
+  return (
+    <div
+      id="checkout"
+      className={styles.embedded}
+    >
+      <EmbeddedCheckoutProvider
+        stripe={stripePromise}
+        options={{ clientSecret }}
+      >
+        <EmbeddedCheckout />
+      </EmbeddedCheckoutProvider>
+    </div>
+  );
+};
+
+const ProductDisplay = () => {
+  const [showCheckout, setShowCheckout] = useState(false);
 
   // TODO: remove stripe link for demo
   // Fix allowance update
   const onSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(makePurchase())
-      .unwrap()
-      .then((data) => {
-        window.location.href = data;
-      });
+    setShowCheckout(true);
+    // dispatch(makePurchase())
+    //   .unwrap()
+    //   .then((data) => {
+    //     window.location.href = data;
+    //   });
   };
 
   // Demo Submit
@@ -40,34 +91,43 @@ const ProductDisplay = () => {
 
   return (
     <section id={styles.profile_content_right}>
-      <div className={styles.div_item}>
-        <img
-          src={SMLogo}
-          alt="Single Maximizer"
-          id={styles.logo}
-        />
-      </div>
-      <div className={styles.div_item}>
-        <form
-          id={styles.checkout_form}
-          onSubmit={onSubmit}
-        >
-          <div id={styles.description}>
-            <h1>Purchase New Single</h1>
-            <h5>
-              {
-                "The Single Maximizer is $50. When you click ‘Purchase’ you will be taken to a checkout page to complete payment."
-              }
-            </h5>
+      {showCheckout ? (
+        <>
+          <CheckoutForm />
+          <button id={styles.submit} onClick={() => setShowCheckout(false)}>CANCEL</button>
+        </>
+      ) : (
+        <>
+          <div className={styles.div_item}>
+            <img
+              src={SMLogo}
+              alt="Single Maximizer"
+              id={styles.logo}
+            />
           </div>
-          <button
-            type="submit"
-            id={styles.submit}
-          >
-            Purchase
-          </button>
-        </form>
-      </div>
+          <div className={styles.div_item}>
+            <form
+              id={styles.checkout_form}
+              onSubmit={onSubmit}
+            >
+              <div id={styles.description}>
+                <h1>Purchase New Single</h1>
+                <h5>
+                  {
+                    "The Single Maximizer is $50. When you click ‘Purchase’ you will be taken to a checkout page to complete payment."
+                  }
+                </h5>
+              </div>
+              <button
+                type="submit"
+                id={styles.submit}
+              >
+                PURCHASE
+              </button>
+            </form>
+          </div>
+        </>
+      )}
     </section>
   );
 };
@@ -88,8 +148,6 @@ function CheckoutPage() {
 
   const { user } = useAppSelector((state) => state.auth);
 
-  const [message, setMessage] = useState("");
-
   useEffect(() => {
     dispatch(getUser())
       .unwrap()
@@ -104,21 +162,27 @@ function CheckoutPage() {
 
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
+    const session_id = query.get("session_id");
 
-    if (query.get("success")) {
-      dispatch(getPurchase());
-      setMessage("Order placed! You will receive an email confirmation.");
-    }
+    session_id
+      ? dispatch(getCheckoutStatus(session_id as string))
+          .unwrap()
+          .then((data) => {
+            if (data.status === "complete") {
+              navigate("/profile/newrelease");
+            } else {
+              navigate("/profile/checkoutpage");
+            }
+          })
+      : null;
 
-    if (query.get("canceled")) {
-      toast.info("Order canceled");
-    }
     return () => {
+      dispatch(resetUser());
       dispatch(resetPurchase());
     };
   }, [dispatch, navigate, user?.trackAllowance]);
 
-  return message ? <Message message={message} /> : <ProductDisplay />;
+  return <ProductDisplay />;
 }
 
 export default CheckoutPage;

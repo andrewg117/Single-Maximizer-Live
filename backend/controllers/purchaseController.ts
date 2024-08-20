@@ -8,17 +8,23 @@ const stripe = new Stripe(process.env.SK_TEST as string, {
 });
 // const stripe = require("stripe")(process.env.SK_TEST);
 import { StripeRequest } from "../types/controllers/interfaces";
+import "../types/controllers/modules";
 import User from "../models/userModel";
 import Purchase from "../models/purchaseModel";
+
 
 const YOUR_DOMAIN: string = "http://localhost:3000/";
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = <string>process.env.SK_ENDPOINT;
 
+// @desc    Post embeddedCheckout
+// @route   POST /api/purchase/checkout
+// @access  Private
 // Create checkout on the same page
 const embeddedCheckout = asyncHandler(
   async (req: StripeRequest, res: Response) => {
+
     // Create Stripe Customer
     let userStripeID;
     let customerData;
@@ -60,9 +66,21 @@ const embeddedCheckout = asyncHandler(
     // Create Stripe Session Link
     const session = await stripe.checkout.sessions.create(commands);
 
-    res.json(session.url);
+    res.send({clientSecret: session.client_secret});
   }
 );
+
+// @desc    Get SessionStatus
+// @route   GET /api/purchase/checkout/:session_id
+// @access  Private
+const checkSessionStatus = asyncHandler(async (req: StripeRequest, res: Response) => {
+  const session = await stripe.checkout.sessions.retrieve(req.params.session_id);
+
+  res.send({
+    status: session.status,
+    customer_email: session.customer_details?.email
+  });
+});
 
 // @desc    Post purchase
 // @route   POST /api/purchase
@@ -193,7 +211,7 @@ const postEndpoint = asyncHandler(async (req: StripeRequest, res: any) => {
 
       const savePurchase = await Purchase.create({
         user: sessionWithLineItems.client_reference_id,
-        session: sessionWithLineItems,
+        session: sessionWithLineItems.id,
       });
     }
   }
@@ -201,4 +219,4 @@ const postEndpoint = asyncHandler(async (req: StripeRequest, res: any) => {
   res.status(200).end();
 });
 
-export { postPayment, postDemoPayment, postEndpoint };
+export { postPayment, postDemoPayment, postEndpoint, embeddedCheckout, checkSessionStatus };

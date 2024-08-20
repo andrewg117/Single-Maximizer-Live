@@ -1,6 +1,7 @@
 #profile_content_right {
   display: grid;
   justify-items: center;
+  align-items: center;
   width: 100%;
   height: 100dvh;
   overflow: auto;
@@ -17,6 +18,13 @@
 #logo {
   width: 60%;
   height: auto;
+}
+
+.embedded {
+  display: grid;
+  align-items: center;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 #checkout_form {

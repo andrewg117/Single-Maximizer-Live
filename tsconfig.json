@@ -109,7 +109,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["package.json"],
+  "include": ["package.json", "backend/types/controllers/modules.ts"],
   "exclude": ["node_modules", "client/*"],
   // "files": ["backend/types/types.d.ts", "backend/types/express-session.d.ts"],
 }
