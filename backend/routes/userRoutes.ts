@@ -10,7 +10,7 @@ import {
   resetPassword,
   updateUser,
   getMe,
-  emailData,
+  decodeEmailToken,
   checkUserToken,
 } from "../controllers/userController";
 import { protect } from "../middleware/authMiddleware";
@@ -23,7 +23,7 @@ router.post("/login/google", loginGoogle);
 router.get("/redirect/google", redirectGoogle);
 router.post("/logout", logoutUser);
 router.route("/email").post(checkRegisterEmail);
-router.route("/email/:token").get(emailData);
+router.route("/email/:token").get(decodeEmailToken);
 router.route("/reset").post(forgotPassword).put(resetPassword);
 router.route("/me").get(protect, getMe).put(protect, updateUser);
 router.route("/token").get(checkUserToken);

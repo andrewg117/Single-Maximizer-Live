@@ -58,6 +58,7 @@ export interface userSchemaTypes extends mongoose.Document {
   googleId?: String;
   isDefaultPass: Boolean;
   email: String;
+  encEmail: Object;
   password: String;
   fname: String;
   lname: String;

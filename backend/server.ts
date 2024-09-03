@@ -26,6 +26,14 @@ connectDB(); // Connect to the database
 
 const app = express();
 
+import { EncUserEmails, DecUserEmails, FindUserByEncEmail } from "./utils/encodeData.js";
+
+// EncUserEmails();
+// DecUserEmails();
+// FindUserByEncEmail(" test@email.com ");
+// TODO: Change user login to use username instead of email
+
+
 // Daily function to send scheduled emails
 // Uncomment the schedule function to enable daily email sending at 12:00 PM
 // schedule.scheduleJob({ hour: 12, minute: 0 }, function () {

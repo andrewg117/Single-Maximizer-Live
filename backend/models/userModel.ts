@@ -14,6 +14,12 @@ const userSchema = new mongoose.Schema<userSchemaTypes>(
       trim: true,
       unique: true,
     },
+    encEmail: {
+      type: Object,
+      required: false,
+      trim: true,
+      unique: true,
+    },
     googleId: {
       type: String,
       required: false,

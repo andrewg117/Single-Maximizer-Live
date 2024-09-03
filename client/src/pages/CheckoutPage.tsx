@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js/pure";
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
 import { getUser, reset as resetUser } from "../features/auth/authSlice";
 import {
-  makePurchase,
   getCheckoutStatus,
   makeEmbeddedPurchase,
   reset as resetPurchase,
@@ -16,9 +15,8 @@ import {
 import { toast } from "react-toastify";
 import SMLogo from "../images/Single-Maximizer-Package-Mockup-1024x616.png.webp";
 import styles from "../css/checkout.module.css";
-
 const pk_key = import.meta.env.VITE_STRIPE_PKKEY.toString();
-const stripePromise = loadStripe(pk_key);
+const stripePromise = await loadStripe(pk_key);
 
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
@@ -36,28 +34,17 @@ const CheckoutForm = () => {
     };
   }, [dispatch]);
 
-  // const fetchClientSecret = useCallback(() => {
-  //   // Create a Checkout Session
-  //   return fetch("/api/purchase/checkout", {
-  //     method: "POST",
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => data.clientSecret);
-  // }, []);
-
-  // const options = { clientSecret };
-
   return (
     <div
       id="checkout"
       className={styles.embedded}
     >
-      <EmbeddedCheckoutProvider
+     {stripePromise && <EmbeddedCheckoutProvider
         stripe={stripePromise}
         options={{ clientSecret }}
       >
         <EmbeddedCheckout />
-      </EmbeddedCheckoutProvider>
+      </EmbeddedCheckoutProvider>}
     </div>
   );
 };
@@ -94,7 +81,12 @@ const ProductDisplay = () => {
       {showCheckout ? (
         <>
           <CheckoutForm />
-          <button id={styles.submit} onClick={() => setShowCheckout(false)}>CANCEL</button>
+          <button
+            id={styles.submit}
+            onClick={() => setShowCheckout(false)}
+          >
+            CANCEL
+          </button>
         </>
       ) : (
         <>
@@ -132,16 +124,6 @@ const ProductDisplay = () => {
   );
 };
 
-interface MessageProps {
-  message: string;
-}
-
-const Message = ({ message }: MessageProps) => (
-  <section>
-    <p>{message}</p>
-  </section>
-);
-
 function CheckoutPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -169,8 +151,10 @@ function CheckoutPage() {
           .unwrap()
           .then((data) => {
             if (data.status === "complete") {
+              toast.success("Purchase Successful");
               navigate("/profile/newrelease");
             } else {
+              toast.error("Purchase Unsuccessful");
               navigate("/profile/checkoutpage");
             }
           })

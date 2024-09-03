@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "./app/store";
 import MaximizerApp from "./MaximizerApp";
 import "./css/style.module.css";
+// TODO: Add ErrorBoundary
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);

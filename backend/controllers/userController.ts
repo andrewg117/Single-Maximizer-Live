@@ -79,7 +79,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const userExists = (await User.findOne({ email })) as any;
-  // console.log(userExists)
+  // TODO: Test error handling  
 
   if (userExists) {
     res.status(409);
@@ -391,7 +391,7 @@ const updateUser = asyncHandler(async (req, res) => {
 // @desc    Get email data
 // @route   GET /api/users/email
 // @access  Private
-const emailData = asyncHandler(async (req, res) => {
+const decodeEmailToken = asyncHandler(async (req, res) => {
   const { token } = req.params;
   // console.log(token)
   try {
@@ -455,6 +455,6 @@ export {
   resetPassword,
   updateUser,
   getMe,
-  emailData,
+  decodeEmailToken,
   checkUserToken,
 };
