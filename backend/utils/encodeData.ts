@@ -2,6 +2,34 @@ import crypto from "crypto";
 import User from "../models/userModel";
 const ENCEMAILKEY: string = process.env.ENCEMAILKEY as string;
 
+export const encodeEmail = async (email) => {
+  try {
+    const dataEMKey = Buffer.from(ENCEMAILKEY, "hex");
+    const iv = crypto.randomBytes(16);
+
+    const cipher = crypto.createCipheriv(
+      "aes-256-cbc",
+      Buffer.from(dataEMKey),
+      iv
+    );
+    let encrypted = cipher.update(email.toString());
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const emailEncrypted: { iv: Buffer; encryptedData: Buffer } = {
+      iv: iv,
+      encryptedData: encrypted,
+    };
+    // console.log(
+    //   "Test encrypted: " +
+    //     JSON.stringify(emailEncrypted.encryptedData.toString("hex"))
+    // );
+
+    return emailEncrypted;
+    
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const EncUserEmails = async () => {
   try {
     let userList: Array<{
@@ -58,30 +86,7 @@ interface emailType {
   encryptedData?: any;
 }
 
-export const DecUserEmails = async () => {
-  try {
-    const users = await User.find();
-    users.forEach((user) => {
-      const encEmail: emailType = user.encEmail;
-      // console.log("Encrypted Email: " + Buffer.from(encEmail.iv.toString("binary"), "binary"));
-      const dataEMKey = Buffer.from(ENCEMAILKEY, "hex");
-      let decipher = crypto.createDecipheriv(
-        "aes-256-cbc",
-        Buffer.from(dataEMKey),
-        Buffer.from(encEmail.iv.toString("hex"), "hex")
-      );
-      let decrypted = decipher.update(
-        Buffer.from(encEmail.encryptedData.toString("hex"), "hex")
-      );
-      decrypted = Buffer.concat([decrypted, decipher.final()]);
-      console.log("Email decrypted: " + decrypted.toString());
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const decodeEmail = (encEmail: emailType) => {
+export const decodeEmail = (encEmail: emailType) => {
   const dataEMKey = Buffer.from(ENCEMAILKEY, "hex");
   let decipher = crypto.createDecipheriv(
     "aes-256-cbc",
@@ -95,6 +100,19 @@ const decodeEmail = (encEmail: emailType) => {
   return decrypted.toString();
 };
 
+export const DecUserEmails = async () => {
+  try {
+    const users = await User.find();
+    users.forEach((user) => {
+      console.log(
+        "Email decrypted: " + decodeEmail(user.encEmail as emailType)
+      );
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const FindUserByEncEmail = async (userEmail: string): Promise<void> => {
   try {
     let matchedUser: any;
@@ -106,6 +124,20 @@ export const FindUserByEncEmail = async (userEmail: string): Promise<void> => {
     });
 
     matchedUser ? console.log(matchedUser) : console.log("User not found");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const FindUserByUserName = async (userName: string): Promise<void> => {
+  try {
+    let matchedUser: any;
+    await User.findOne({ username: userName }).then((user) => {
+      matchedUser = user;
+    });
+
+    // matchedUser ? console.log(matchedUser) : console.log("User not found");
+    console.log(decodeEmail(matchedUser.encEmail as emailType));
   } catch (error) {
     console.log(error);
   }
