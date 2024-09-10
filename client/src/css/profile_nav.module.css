@@ -68,11 +68,10 @@
 }
 
 #navbar_top_links {
-  display: grid;
-  grid-template-rows: auto;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 0;
   text-align: center;
+  background-color: var(--main-nv-color);
 }
 
 #top_nav_container {
