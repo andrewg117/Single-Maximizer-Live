@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { useAppSelector } from "./app/hooks";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,11 +27,12 @@ function MaximizerApp() {
   const { user } = useAppSelector((state) => state.auth);
   return (
     <>
-      <Router>
+      {/* <Router> */}
         <section
           id={user === null ? styles.body_wrapper : styles.profile_body_wrapper}
         >
           {user === null ? <NavBar /> : <NavBarLeft />}
+          <Outlet />
           <Routes>
             {user === null ? (
               <Route
@@ -43,7 +45,8 @@ function MaximizerApp() {
                 element={<Profile />}
               />
             )}
-            <Route
+            
+            {/* <Route
               path="/home"
               element={<Home />}
             />
@@ -74,7 +77,7 @@ function MaximizerApp() {
             <Route
               path="/home/resetpass/:token"
               element={<ResetPassword />}
-            />
+            /> */}
             <Route element={<TokenCheck />}>
               <Route
                 path="/profile"
@@ -107,7 +110,7 @@ function MaximizerApp() {
             </Route>
           </Routes>
         </section>
-      </Router>
+      {/* </Router> */}
       <ToastContainer
         autoClose={3000}
         limit={1}
