@@ -29,12 +29,12 @@ function MaximizerApp() {
     <>
       {/* <Router> */}
         <section
-          id={user === null ? styles.body_wrapper : styles.profile_body_wrapper}
+          id={user ? styles.profile_body_wrapper : styles.body_wrapper}
         >
-          {user === null ? <NavBar /> : <NavBarLeft />}
+          {user ? <NavBarLeft /> : <NavBar />}
           <Outlet />
           <Routes>
-            {user === null ? (
+            {/* {user === null ? (
               <Route
                 path="*"
                 element={<Home />}
@@ -44,7 +44,7 @@ function MaximizerApp() {
                 path="*"
                 element={<Profile />}
               />
-            )}
+            )} */}
             
             {/* <Route
               path="/home"

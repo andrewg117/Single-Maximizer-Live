@@ -23,6 +23,7 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <MaximizerApp />,
+    errorElement: <div>Error</div>,
     children: [
       {
         path: "home",

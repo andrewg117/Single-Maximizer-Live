@@ -59,8 +59,9 @@ function NavBarLeft() {
 
   const onLogout = (e: Event) => {
     e.preventDefault();
-    dispatch(logout());
-    navigate("/home");
+    dispatch(logout())
+      .unwrap()
+      .then(() => navigate("/home"));
   };
 
   const menuItems = [
