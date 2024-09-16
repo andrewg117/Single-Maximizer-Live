@@ -58,7 +58,8 @@ app.use(
     resave: true,
     rolling: true,
     saveUninitialized: true,
-    cookie: { maxAge: 1 * 10 * 60 * 1000 },
+    cookie: { maxAge: 1 * 10 * 60 * 1000, sameSite: "strict", secure: "auto" },
+
     store: MongoStore.create({
       mongoUrl: MDB_URI,
     }),

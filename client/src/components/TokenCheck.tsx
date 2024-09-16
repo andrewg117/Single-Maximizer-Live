@@ -19,7 +19,6 @@ const TokenCheck = ({ children}: TokenCheckProps) => {
     if (!user) {
       dispatch(logout());
       toast.error("Login Expired");
-      navigate("/home/signin");
     }
     // toast.clearWaitingQueue()
   }, [user, navigate, dispatch]);

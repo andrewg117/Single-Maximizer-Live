@@ -6,6 +6,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
   Route,
+  Navigate,
 } from "react-router-dom";
 import { store } from "./app/store";
 import MaximizerApp from "./MaximizerApp";
@@ -33,48 +34,59 @@ import "./css/style.module.css";
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
 
+const user = store.getState().auth.user;
+
 const elementRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route
-      path="/"
+      path="*"
       element={<MaximizerApp />}
       errorElement={<div>Error</div>}
     >
+      {/* <Route
+        path="*"
+        element={
+          <Navigate
+            to={user ? "/profile" : "/home"}
+            replace={true}
+          />
+        }
+      /> */}
       <Route
-        path="/home"
+        path="home"
         element={<Home />}
       />
       <Route
-        path="/home/aboutus"
+        path="home/aboutus"
         element={<AboutUs />}
       />
       <Route
-        path="/home/faq"
+        path="home/faq"
         element={<FAQ />}
       />
       <Route
-        path="/home/signup/:token"
+        path="home/signup/:token"
         element={<SignUp />}
       />
       <Route
-        path="/home/emailsignup"
+        path="home/emailsignup"
         element={<EmailSignUp />}
       />
       <Route
-        path="/home/signin"
+        path="home/signin"
         element={<SignIn />}
       />
       <Route
-        path="/home/forgotpassword"
+        path="home/forgotpassword"
         element={<ForgotPassword />}
       />
       <Route
-        path="/home/resetpassword/:token"
+        path="home/resetpassword/:token"
         element={<ResetPassword />}
       />
       <Route element={<TokenCheck />}>
         <Route
-          path="/profile"
+          path="profile"
           element={
             <Suspense fallback={<Spinner />}>
               <Profile />
@@ -82,27 +94,27 @@ const elementRouter = createBrowserRouter(
           }
         />
         <Route
-          path="/profile/editprofile"
+          path="profile/editprofile"
           element={<ProfileEdit />}
         />
         <Route
-          path="/profile/singles"
+          path="profile/singles"
           element={<Singles />}
         />
         <Route
-          path="/profile/singleedit/:id"
+          path="profile/singleedit/:id"
           element={<SingleEdit />}
         />
         <Route
-          path="/profile/singleview/:id"
+          path="profile/singleview/:id"
           element={<SingleView />}
         />
         <Route
-          path="/profile/newrelease"
+          path="profile/newrelease"
           element={<NewRelease />}
         />
         <Route
-          path="/profile/checkoutpage"
+          path="profile/checkoutpage"
           element={
             <Suspense fallback={<Spinner />}>
               <CheckoutPage />
