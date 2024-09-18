@@ -168,6 +168,10 @@ label {
   border: none;
 }
 
+.profile_btn:hover {
+  cursor: pointer;
+}
+
 @media (max-width: 700px) {
   #content_right {
     display: block;

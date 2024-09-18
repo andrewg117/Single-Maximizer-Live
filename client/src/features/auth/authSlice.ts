@@ -208,7 +208,7 @@ export const wakeServer = createAsyncThunk("auth/wakeserver", (_, thunkAPI) => {
 });
 
 export const logout = createAsyncThunk("auth/logout", () => {
-  authService.logout();
+  return authService.logout();
 });
 
 export const authSlice = createSlice({

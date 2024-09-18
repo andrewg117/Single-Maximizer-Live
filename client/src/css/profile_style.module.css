@@ -170,6 +170,14 @@ label {
   border: none;
 }
 
+.profile_btn:hover {
+  cursor: pointer;
+}
+
+/* .profile_btn:active {
+  transform: scale(0.98);
+} */
+
 @media (max-width: 700px) {
   #edit_profile_content_right {
     display: block;

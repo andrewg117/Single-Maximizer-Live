@@ -140,7 +140,7 @@ const loginUser = asyncHandler(async (req, res) => {
         ...userBody,
       });
     } else {
-      res.status(401);
+      res.status(401).json("Invalid credentials");
       throw new Error("Invalid credentials");
     }
   } catch (error) {

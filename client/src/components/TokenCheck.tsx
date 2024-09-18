@@ -8,7 +8,9 @@ interface TokenCheckProps {
   children?: ReactNode;
 }
 
-const TokenCheck = ({ children}: TokenCheckProps) => {
+// TODO: Create loader function
+
+const TokenCheck = ({ children }: TokenCheckProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -16,9 +18,11 @@ const TokenCheck = ({ children}: TokenCheckProps) => {
 
   useEffect(() => {
     dispatch(getTokenResult());
-    if (!user) {
-      dispatch(logout());
-      toast.error("Login Expired");
+    if (!user === null) {
+      dispatch(logout())
+        .unwrap()
+        .then(() => navigate("/home"));
+      // toast.error("Login Expired");
     }
     // toast.clearWaitingQueue()
   }, [user, navigate, dispatch]);

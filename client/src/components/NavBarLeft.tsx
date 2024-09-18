@@ -69,7 +69,7 @@ function NavBarLeft() {
     {
       name: "NEW RELEASE",
       path:
-        user.trackAllowance >= 1
+        user?.trackAllowance >= 1
           ? "/profile/newrelease"
           : "/profile/checkoutpage",
       position: "top",
@@ -105,13 +105,13 @@ function NavBarLeft() {
           menuItems={menuItems}
           activeLink={activeLink}
           setActiveLink={setActiveLink}
-          onLogout={onLogout as any}
+          onLogout={onLogout}
           toggleTopNav={toggleTopNav}
         />
       ) : null}
       <section id={styles.navbar_container}>
         <div id={styles.navbar_header}>
-          <h1>{"Welcome, " + user.username}</h1>
+          <h1>{"Welcome, " + user?.username}</h1>
         </div>
         <div className={styles.navbar_left}>
           <div className={styles.navbar_left_links}>

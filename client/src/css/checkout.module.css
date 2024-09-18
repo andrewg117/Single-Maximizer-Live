@@ -47,6 +47,10 @@
   border: none;
 }
 
+#submit:hover {
+  cursor: pointer;
+}
+
 @media (max-width: 700px) {
   #logo {
     width: 80%;

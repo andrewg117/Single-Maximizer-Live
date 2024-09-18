@@ -99,6 +99,15 @@
   border: none;
 }
 
+#signin_submit:hover {
+  cursor: pointer;
+}
+
+#signin_submit:disabled {
+  background-color: var(--main-nv-color);
+  cursor: not-allowed;
+}
+
 @media (max-width: 700px) {
   #sign_in_wrapper {
     margin-top: 0;

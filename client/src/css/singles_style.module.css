@@ -76,6 +76,10 @@
   font-size: 1.5em;
 }
 
+.edit_track:hover {
+  cursor: pointer;
+}
+
 #new_single {
   text-decoration: none;
   background-color: var(--main-btn-color);

@@ -26,29 +26,22 @@ function SignIn() {
   const captchaRef = useRef<any>(null);
 
   const [captchaChecked, setCaptchaChecked] = useState(false);
-  const [captchaExpired, setCaptchaExpired] = useState(false);
+  const [captchaExpired, setCaptchaExpired] = useState(true);
 
   const { user, isLoading, isError, message } = useAppSelector(
     (state) => state.auth
   );
 
   useEffect(() => {
-    if (user) {
-      navigate("/profile");
-    }
-
-    
-    const query = new URLSearchParams(window.location.search);
-    if(query){
-      toast.error(query.get('error'));
-      // console.error(query.get('error'));
-    }
+    // if (user) {
+    //   navigate("/profile");
+    // }
 
     return () => {
       dispatch(reset());
       toast.clearWaitingQueue();
     };
-  }, [user, isError, message, navigate, dispatch]);
+  }, [isError, message, navigate, dispatch]);
 
   const onChange = (e: any) => {
     setFormData((prevState) => ({
@@ -57,8 +50,10 @@ function SignIn() {
     }));
   };
 
+  // TODO: Fix captcha expiring
   const onCheck = () => {
-    setCaptchaChecked((captchaExpired) => !captchaExpired);
+    setCaptchaChecked(true);
+    setCaptchaExpired(false);
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -77,9 +72,15 @@ function SignIn() {
       dispatch(login(userData))
         .unwrap()
         .then(() => navigate("/profile"))
-        .catch(() => toast.error("Login Failed"));
+        .catch(() => {
+          toast.error("Login Failed");
+          setCaptchaChecked(false);
+          setCaptchaExpired(true);
+        });
     } else {
       console.log("Captcha Invalid");
+      setCaptchaChecked(false);
+      setCaptchaExpired(true);
     }
   };
 
@@ -163,6 +164,7 @@ function SignIn() {
                   <button
                     type="submit"
                     id={styles.signin_submit}
+                    disabled={captchaExpired || !captchaChecked}
                   >
                     SUBMIT
                   </button>
@@ -174,6 +176,7 @@ function SignIn() {
                 type="button"
                 id={styles.signin_submit}
                 onClick={googleButton}
+                disabled={captchaExpired || !captchaChecked}
               >
                 Google Account
               </button>
