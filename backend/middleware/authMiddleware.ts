@@ -1,8 +1,11 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel";
-import { userType, ExRequest, ExResponse } from "../types/controllers/interfaces";
-import  "../types/controllers/modules";
-
+import {
+  userType,
+  ExRequest,
+  ExResponse,
+} from "../types/controllers/interfaces";
+import "../types/controllers/modules";
 
 const protect = asyncHandler(async (req: ExRequest, res: ExResponse, next) => {
   let sessionID = req.session.userID;
@@ -16,12 +19,12 @@ const protect = asyncHandler(async (req: ExRequest, res: ExResponse, next) => {
 
       next();
     } catch (error) {
-      res.status(401);
-      throw new Error("Not authorized");
+      res.status(401).json("Not authorized");
+      // throw new Error("Not authorized");
     }
   } else {
-    res.status(401);
-    throw new Error("Not authorized");
+    res.status(401).json("Not authorized");
+    // throw new Error("Not authorized");
   }
 });
 

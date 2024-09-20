@@ -68,15 +68,17 @@ const update = async (userData: any) => {
 };
 
 const checkToken = async () => {
-  let response;
-
-  response = await axios.get(API_URL + "token");
-  // console.log(response.status)
-  if (response.status === 401) {
-    localStorage.removeItem("user");
-  }
-
-  return response.data;
+  await axios
+    .get(API_URL + "token")
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        localStorage.removeItem("user");
+        return null;
+      }
+    });
 };
 
 const logout = async () => {

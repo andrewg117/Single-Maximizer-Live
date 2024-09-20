@@ -10,7 +10,7 @@ import { generate } from "generate-password";
 import User from "../models/userModel";
 import { ObjectId } from "mongoose";
 import { urlType, JwtPayload } from "../types/controllers/interfaces";
-import  "../types/controllers/modules";
+import "../types/controllers/modules";
 
 const EMAILUSER = <string>process.env.EMAILUSER;
 const MAILGUN_API = <string>process.env.MAILGUN_API;
@@ -79,7 +79,7 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const userExists = (await User.findOne({ email })) as any;
-  // TODO: Test error handling  
+  // TODO: Test error handling
 
   if (userExists) {
     res.status(409);
@@ -261,16 +261,22 @@ const redirectGoogle = asyncHandler(async (req, res) => {
   // }
 });
 
+const destroySession = async (req, res, status: number, message: string) => {
+  if (req.session.userID) {
+    req.session.destroy(() => {
+      res
+        .clearCookie("connect.sid", { path: "/" })
+        .status(status)
+        .json({ message: message });
+    });
+  }
+};
+
 // @desc    Logout user / clear cookie
 // @route   POST /api/users/logout
 // @access  Public
 const logoutUser = asyncHandler(async (req, res) => {
-  req.session.destroy(() => {
-    res
-      .clearCookie("connect.sid", { path: "/" })
-      .status(200)
-      .json({ message: "Logged out successfully" });
-  });
+  destroySession(req, res, 200, "Logged out successfully");
 });
 
 // @desc    Forgot Password
@@ -351,6 +357,9 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
   try {
+    if (!req.session.userID) {
+      res.status(401).json("User not found");
+    }
     const user = (await User.findById(req.session.userID)) as any;
     if (user) {
       const userBody = {
@@ -372,8 +381,7 @@ const getMe = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   try {
     if (!req.session.userID) {
-      res.status(401);
-      throw new Error("User not found");
+      res.status(401).json("User not found");
     }
 
     let updatedUser;
@@ -415,9 +423,8 @@ const checkUserToken = asyncHandler(async (req, res) => {
   if (token) {
     res.status(200).json("Token");
   } else {
-    res.status(401).json("Invalid Token");
+    destroySession(req, res, 401, "Invalid Token");
   }
-  // res.json(req.user)
 });
 
 // @desc    Wake up demo server

@@ -1,4 +1,3 @@
-import { lazy, Suspense } from "react";
 import {
   Outlet,
   Route,
@@ -30,8 +29,6 @@ import Spinner from "./components/Spinner";
 import NavBar from "./components/NavBar";
 import NavBarLeft from "./components/NavBarLeft";
 import styles from "./css/style.module.css";
-
-const user = store.getState().auth.user;
 
 // const elementRouter = createBrowserRouter(
 //   createRoutesFromElements(
@@ -128,7 +125,7 @@ const router = createBrowserRouter([
     path: "*",
     element: (
       <Navigate
-        to={user === null ? "/home" : "/profile"}
+        to={store.getState().auth.user === null ? "/home" : "/profile"}
         replace={true}
       />
     ),
@@ -138,6 +135,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <HomeLayout />,
     errorElement: <div>Error</div>,
+    loader: () => store.getState().auth.user,
     children: [
       {
         path: "/",
@@ -222,16 +220,24 @@ const router = createBrowserRouter([
   },
 ]);
 
+// TODO: Delete local storage user
+
 function HomeLayout() {
+  const { user } = useAppSelector((state) => state.auth);
   return (
     <>
       <section id={styles.body_wrapper}>
         <NavBar />
-        <Navigate
-          to={user !== null  ? "/profile" : window.location.pathname}
-          replace={true}
-        />
+        {user && <Navigate to="/profile" replace={true} />}
         <Outlet />
+        {/* {user !== null ? (
+          <Navigate
+            to="/profile"
+            replace={true}
+          />
+        ) : (
+          <Outlet />
+        )} */}
       </section>
       <ToastContainer
         autoClose={3000}
@@ -242,18 +248,21 @@ function HomeLayout() {
 }
 
 function ProfileLayout() {
-  const { user } = useAppSelector((state) => state.auth);
-  // console.log(user);
+  // const { user } = useAppSelector((state) => state.auth);
 
   return (
     <>
       <section id={styles.profile_body_wrapper}>
         <NavBarLeft />
-        {/* <Navigate
-          to={user === null ? "/home" : window.location.pathname}
-          replace={true}
-        /> */}
         <TokenCheck />
+        {/* {user !== null ? (
+          <Outlet />
+        ) : (
+          <Navigate
+            to="/home"
+            replace={true}
+          />
+        )} */}
       </section>
       <ToastContainer
         autoClose={3000}

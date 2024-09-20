@@ -4,11 +4,14 @@ import Track from "../models/trackModel";
 import User from "../models/userModel";
 // import { UserRequest } from "../types/interfaces";
 
-
 // @desc    Get tracks
 // @route   GET /api/track
 // @access  Private
 const getTracks = asyncHandler(async (req, res) => {
+  if (!req.session.userID) {
+    res.status(401);
+    throw new Error("User not found");
+  }
   const tracks = await Track.find({ user: req.session.userID });
 
   res.json(tracks);
@@ -18,6 +21,10 @@ const getTracks = asyncHandler(async (req, res) => {
 // @route   GET /api/track/:id
 // @access  Private
 const getSingle = asyncHandler(async (req, res) => {
+  if (!req.session.userID) {
+    res.status(401);
+    throw new Error("User not found");
+  }
   const track = (await Track.findById(req.params.id)) as any;
 
   if (!track) {
@@ -26,11 +33,6 @@ const getSingle = asyncHandler(async (req, res) => {
   }
 
   // const user = await User.findById(req.user.id)
-
-  if (!req.session.userID) {
-    res.status(401);
-    throw new Error("User not found");
-  }
 
   if (track.user.toString() !== req.session.userID) {
     res.status(401);
