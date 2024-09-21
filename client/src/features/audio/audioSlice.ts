@@ -91,6 +91,8 @@ export const deleteAudio = createAsyncThunk(
   }
 );
 
+//TODO: change reducers to return state
+
 export const audioSlice = createSlice({
   name: "audio",
   initialState,

@@ -3,13 +3,21 @@ import authService from "./authService";
 
 const user = JSON.parse(localStorage.getItem("user") as string);
 
-const initialState = {
+interface initialStateType {
+  user: any | null;
+  googleUser: any;
+  isError: boolean;
+  isSuccess: boolean;
+  isLoading: boolean;
+  message: string;
+}
+
+const initialState: initialStateType = {
   user: user ? user : null,
   googleUser: null,
   isError: false,
   isSuccess: false,
   isLoading: false,
-  // isExpired: false,
   message: "",
 };
 
@@ -226,141 +234,205 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(register.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.user = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          user: action.payload,
+        };
       })
       .addCase(register.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
-        state.user = null;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+          user: null,
+        };
       })
       .addCase(emailUser.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(emailUser.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+        };
       })
       .addCase(emailUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(emailData.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(emailData.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+        };
       })
       .addCase(emailData.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(login.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.user = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          user: action.payload,
+        };
       })
       .addCase(login.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
-        state.user = null;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+          user: null,
+        };
       })
       .addCase(loginGoogle.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(loginGoogle.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.googleUser = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          googleUser: action.payload,
+        };
       })
       .addCase(loginGoogle.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
-        state.user = null;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+          googleUser: null,
+        };
       })
       .addCase(resetPass.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(resetPass.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+        };
       })
       .addCase(resetPass.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
+
       .addCase(getUser.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.user = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          user: action.payload,
+        };
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
-        state.user = null;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+          user: null,
+        };
       })
       .addCase(updateUser.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.user = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          user: action.payload,
+        };
       })
       .addCase(updateUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(getTokenResult.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(getTokenResult.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+        };
       })
       .addCase(getTokenResult.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
-        state.user = null;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+          user: null,
+        };
       })
       .addCase(logout.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(logout.fulfilled, (state) => {
-        state.user = null;
+        return {
+          ...state,
+          user: null,
+        };
       })
       .addCase(wakeServer.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(wakeServer.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+        };
       })
       .addCase(wakeServer.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
-        state.user = null;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+          user: null,
+        };
       });
   },
 });

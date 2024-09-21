@@ -1,6 +1,5 @@
 import {
   Outlet,
-  Route,
   Navigate,
   createBrowserRouter,
   RouterProvider,
@@ -17,7 +16,6 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-// const Profile = lazy(() => import("./pages/Profile"));
 import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
 import Singles from "./pages/Singles";
@@ -29,96 +27,6 @@ import Spinner from "./components/Spinner";
 import NavBar from "./components/NavBar";
 import NavBarLeft from "./components/NavBarLeft";
 import styles from "./css/style.module.css";
-
-// const elementRouter = createBrowserRouter(
-//   createRoutesFromElements(
-//     <Route
-//       path="*"
-//       element={<MaximizerApp />}
-//       errorElement={<div>Error</div>}
-//     >
-//       <Route
-//         path="*"
-//         element={
-//           <Navigate
-//             to={user ? "/profile" : "/home"}
-//             replace={true}
-//           />
-//         }
-//       />
-//       <Route
-//         path="home"
-//         element={<Home />}
-//       />
-//       <Route
-//         path="home/aboutus"
-//         element={<AboutUs />}
-//       />
-//       <Route
-//         path="home/faq"
-//         element={<FAQ />}
-//       />
-//       <Route
-//         path="home/signup/:token"
-//         element={<SignUp />}
-//       />
-//       <Route
-//         path="home/emailsignup"
-//         element={<EmailSignUp />}
-//       />
-//       <Route
-//         path="home/signin"
-//         element={<SignIn />}
-//       />
-//       <Route
-//         path="home/forgotpassword"
-//         element={<ForgotPassword />}
-//       />
-//       <Route
-//         path="home/resetpassword/:token"
-//         element={<ResetPassword />}
-//       />
-//       <Route element={<TokenCheck />}>
-//         <Route
-//           path="profile"
-//           element={
-//             <Suspense fallback={<Spinner />}>
-//               <Profile />
-//             </Suspense>
-//           }
-//         />
-//         <Route
-//           path="profile/editprofile"
-//           element={<ProfileEdit />}
-//         />
-//         <Route
-//           path="profile/singles"
-//           element={<Singles />}
-//         />
-//         <Route
-//           path="profile/singleedit/:id"
-//           element={<SingleEdit />}
-//         />
-//         <Route
-//           path="profile/singleview/:id"
-//           element={<SingleView />}
-//         />
-//         <Route
-//           path="profile/newrelease"
-//           element={<NewRelease />}
-//         />
-//         <Route
-//           path="profile/checkoutpage"
-//           element={
-//             <Suspense fallback={<Spinner />}>
-//               <CheckoutPage />
-//             </Suspense>
-//           }
-//         />
-//       </Route>
-//     </Route>
-//   )
-// );
 
 const router = createBrowserRouter([
   {
@@ -220,24 +128,19 @@ const router = createBrowserRouter([
   },
 ]);
 
-// TODO: Delete local storage user
-
 function HomeLayout() {
   const { user } = useAppSelector((state) => state.auth);
   return (
     <>
       <section id={styles.body_wrapper}>
         <NavBar />
-        {user && <Navigate to="/profile" replace={true} />}
-        <Outlet />
-        {/* {user !== null ? (
+        {user && (
           <Navigate
             to="/profile"
             replace={true}
           />
-        ) : (
-          <Outlet />
-        )} */}
+        )}
+        <Outlet />
       </section>
       <ToastContainer
         autoClose={3000}
@@ -248,21 +151,11 @@ function HomeLayout() {
 }
 
 function ProfileLayout() {
-  // const { user } = useAppSelector((state) => state.auth);
-
   return (
     <>
       <section id={styles.profile_body_wrapper}>
         <NavBarLeft />
         <TokenCheck />
-        {/* {user !== null ? (
-          <Outlet />
-        ) : (
-          <Navigate
-            to="/home"
-            replace={true}
-          />
-        )} */}
       </section>
       <ToastContainer
         autoClose={3000}

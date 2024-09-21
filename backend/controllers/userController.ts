@@ -423,7 +423,8 @@ const checkUserToken = asyncHandler(async (req, res) => {
   if (token) {
     res.status(200).json("Token");
   } else {
-    destroySession(req, res, 401, "Invalid Token");
+    destroySession(req, res, 401, "Token Expired");
+    throw new Error("Token Expired");
   }
 });
 
