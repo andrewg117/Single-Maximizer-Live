@@ -358,7 +358,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 const getMe = asyncHandler(async (req, res) => {
   try {
     if (!req.session.userID) {
-      res.status(401).json("User not found");
+      throw new Error("Login Expired");
     }
     const user = (await User.findById(req.session.userID)) as any;
     if (user) {

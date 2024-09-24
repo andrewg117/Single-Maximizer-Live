@@ -1,12 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import imageService from "./imageService";
-
-interface imageType extends Object {
-  trackID: string;
-  s3ImageURL: String;
-  section: String;
-  file: any;
-}
+import imageService, { imageType } from "./imageService";
 
 interface initialType {
   image: imageType | null;
@@ -171,96 +164,127 @@ export const imageSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(postImage.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(postImage.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.image = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          image: action.payload,
+        };
       })
       .addCase(postImage.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(postPress.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(postPress.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.press = [...state.press, action.payload];
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          press: [...state.press, action.payload],
+        };
       })
       .addCase(postPress.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(getImage.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(getImage.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.image = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          image: action.payload,
+        };
       })
       .addCase(getImage.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(getPress.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(getPress.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isPressSuccess = true;
-        state.press = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isPressSuccess: true,
+          press: action.payload,
+        };
       })
       .addCase(getPress.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(updateImage.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(updateImage.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        // state.isExpired = false;
-        state.image = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          image: action.payload,
+        };
       })
       .addCase(updateImage.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(deleteImage.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(deleteImage.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.image = null;
+        return { ...state, isLoading: false, isSuccess: true, image: null };
       })
       .addCase(deleteImage.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(deletePress.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(deletePress.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.image = null;
+        return { ...state, isLoading: false, isPressSuccess: true, image: null };
       })
       .addCase(deletePress.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       });
   },
 });

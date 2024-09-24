@@ -90,7 +90,7 @@ function NewRelease() {
   useEffect(() => {
     dispatch(getUser())
       .unwrap()
-      .then((data) => {
+      .then((data: any) => {
         if (data.trackAllowance === 0) {
           navigate("/profile/checkoutpage");
         }
@@ -153,7 +153,7 @@ function NewRelease() {
         })
       )
         .unwrap()
-        .then((data) => {
+        .then((data: any) => {
           const trackID = data._id;
 
           audioData.append("trackID", trackID);

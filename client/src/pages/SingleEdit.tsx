@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { useImageState } from "../customHooks/imageHooks";
 import { useSingleGenres } from "../customHooks/trackHooks";
+import { useAudioState } from "../customHooks/audioHooks";
 import {
   getSingle,
   updateSingle,
@@ -58,22 +59,23 @@ function SingleEdit() {
 
   const { imageState: trackCover, setImage, changeImageFile } = useImageState();
 
+  const { audioState: trackAudio, changeAudioFile } = useAudioState();
+
   const { genres, setGenres, changeGenreList } = useSingleGenres();
 
   interface stateType {
-    trackAudio: any;
+    trackPress: Array<any>;
     newPressList: Array<any>;
     deletePressList: Array<any>;
   }
 
   const [formState, setFormState] = useState<stateType>({
-    // trackCover: image ? Buffer.from(image.file.buffer, "ascii") : null,
-    trackAudio: null,
+    trackPress: press,
     newPressList: [],
     deletePressList: [],
   });
 
-  const { trackAudio, newPressList, deletePressList } = formState;
+  const { trackPress, newPressList, deletePressList } = formState;
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -253,12 +255,11 @@ function SingleEdit() {
       dispatch(resetAudio());
       setShowPopup(false);
     };
-  }, [dispatch, id, setFormState]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     image && setImage(Buffer.from(image.file.buffer, "ascii"));
   }, [image]);
-
 
   useEffect(() => {
     single && setGenres(single.genres as Array<string>);
@@ -344,7 +345,7 @@ function SingleEdit() {
             <div className={styles.file_input_div}>
               <label className={styles.required}>AUDIO UPLOAD</label>
               <AudioUpload
-                changeFile={setFormState}
+                changeFile={changeAudioFile}
                 file={audio ? audio.file : null}
                 fieldname={"trackAudio"}
               />
@@ -359,7 +360,7 @@ function SingleEdit() {
               {isPressSuccess ? (
                 <PressEdit
                   changeFile={setFormState}
-                  trackPress={press}
+                  trackPress={trackPress}
                   newPressList={newPressList}
                   deletePressList={deletePressList}
                 />

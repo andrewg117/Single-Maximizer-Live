@@ -1,12 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import audioService from "./audioService";
-
-interface audioType extends Object {
-  trackID: string;
-  s3AudioURL: String;
-  section: String;
-  file: any;
-}
+import audioService, { audioType } from "./audioService";
 
 interface initialType {
   audio: audioType | null;
@@ -42,18 +35,23 @@ export const postAudio = createAsyncThunk(
   }
 );
 
-export const getAudio = createAsyncThunk("audio/get", async (id: string, thunkAPI) => {
-  try {
-    return await audioService.getAudio(id);
-  } catch (error: any) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
+export const getAudio = createAsyncThunk(
+  "audio/get",
+  async (id: string, thunkAPI) => {
+    try {
+      return await audioService.getAudio(id);
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
 
-    return thunkAPI.rejectWithValue(message);
+      return thunkAPI.rejectWithValue(message);
+    }
   }
-});
+);
 
 export const updateAudio = createAsyncThunk(
   "audio/put",
@@ -91,8 +89,6 @@ export const deleteAudio = createAsyncThunk(
   }
 );
 
-//TODO: change reducers to return state
-
 export const audioSlice = createSlice({
   name: "audio",
   initialState,
@@ -108,57 +104,80 @@ export const audioSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(postAudio.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(postAudio.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.audio = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          audio: action.payload,
+        };
       })
       .addCase(postAudio.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(getAudio.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(getAudio.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.audio = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          audio: action.payload,
+        };
       })
       .addCase(getAudio.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(updateAudio.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(updateAudio.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        // state.isExpired = false;
-        state.audio = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          audio: action.payload,
+        };
       })
       .addCase(updateAudio.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(deleteAudio.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(deleteAudio.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.audio = null;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          audio: null,
+        };
       })
       .addCase(deleteAudio.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       });
   },
 });

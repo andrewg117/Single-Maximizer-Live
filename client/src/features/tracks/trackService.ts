@@ -2,44 +2,113 @@ import axios from "axios";
 
 const API_URL = "/api/tracks/";
 
+export interface singleType extends Object {
+  user: string;
+  trackTitle: string;
+  artist: string;
+  deliveryDate?: Date;
+  spotify?: string;
+  features?: string;
+  label?: string;
+  apple?: string;
+  producer?: string;
+  scloud?: string;
+  album?: string;
+  trackLabel?: string;
+  ytube?: string;
+  albumDate?: Date;
+  genres?: Array<string>;
+  trackSum?: string;
+  pressSum?: string;
+  isDelivered?: Boolean;
+  s3ImageURL?: string;
+  s3AudioURL?: string;
+  s3PressURL?: Array<string>;
+}
+
 const createTrack = async (trackData: any) => {
-  let response;
+  let response: singleType | any;
 
-  response = await axios.post(API_URL, trackData);
+  await axios
+    .post(API_URL, trackData)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
 
-  return response.data;
+  return response as singleType;
 };
 
 const getTrack = async () => {
-  let response;
+  let response: Array<singleType> | any;
 
-  response = await axios.get(API_URL);
+  await axios
+    .get(API_URL)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
 
-  return response.data;
+  return response as Array<singleType>;
 };
 
 const getSingle = async (trackId: any) => {
-  let response;
+  let response: singleType | any;
 
-  response = await axios.get(API_URL + trackId);
+  await axios
+    .get(API_URL + trackId)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
 
-  return response.data;
+  return response as singleType;
 };
 
 const updateSingle = async (trackID: any, trackData: any) => {
-  let response;
+  let response: singleType | any;
 
-  response = await axios.put(API_URL + trackID, trackData);
+  await axios
+    .put(API_URL + trackID, trackData)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
 
-  return response.data;
+  return response as singleType;
 };
 
 const deleteTrack = async (trackId: any) => {
   let response;
 
-  response = await axios.delete(API_URL + trackId);
+  await axios
+    .delete(API_URL + trackId)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
 
-  return response.data;
+  return response;
 };
 
 const trackService = {
