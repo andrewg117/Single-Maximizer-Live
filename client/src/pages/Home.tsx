@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import LazyBackground from "../components/LazyBackground";
 import homeImage from "../images/homeImage.png";
 import homeImage2 from "../images/homeImage2.png";
 import homeImage3 from "../images/homeImage3.png";
@@ -9,13 +10,12 @@ import faq_style from "../css/faq_style.module.css";
 import { FAQDistro, FAQSave } from "./FAQ";
 
 function Home() {
-
   return (
     <>
       <section id={styles.home_body}>
-        <section
-          className={styles.home_block}
-          style={{ backgroundImage: `url(${homeImage})` }}
+        <LazyBackground
+          style={styles.home_block}
+          imageUrl={homeImage}
         >
           <section className={styles.intro_container}>
             <div className={styles.intro_text}>
@@ -25,26 +25,15 @@ function Home() {
               <Link to="/home/emailsignup">GET STARTED</Link>
             </div>
           </section>
-        </section>
-
-        {/* <section
-          className={styles.home_block}
-          // style={{ backgroundImage: `url(${singlemax})` }}
-        >
-          <img
-            src={singlemax}
-            id={styles.singleMax_image}
-            alt="singleMax"
-          />
-        </section> */}
+        </LazyBackground>
 
         <section className={styles.home_block}>
           <FAQSave styles={faq_style} />
         </section>
 
-        <section
-          className={styles.home_block}
-          style={{ backgroundImage: `url(${homeImage2})` }}
+        <LazyBackground
+          style={styles.home_block}
+          imageUrl={homeImage2}
         >
           <section className={styles.intro_container_alt}>
             <div className={styles.intro_text_alt}>
@@ -55,15 +44,15 @@ function Home() {
               <Link to="/home/emailsignup">GET STARTED</Link>
             </div>
           </section>
-        </section>
+        </LazyBackground>
 
         <section className={styles.home_block}>
           <FAQDistro styles={faq_style} />
         </section>
 
-        <section
-          className={styles.home_block}
-          style={{ backgroundImage: `url(${homeImage3})` }}
+        <LazyBackground
+          style={styles.home_block}
+          imageUrl={homeImage3}
         >
           <section className={styles.intro_container}>
             <div className={styles.intro_text}>
@@ -73,7 +62,7 @@ function Home() {
               <Link to="/home/emailsignup">GET STARTED</Link>
             </div>
           </section>
-        </section>
+        </LazyBackground>
 
         <section
           id={styles.hassle_block}
@@ -101,6 +90,7 @@ function Home() {
                 src={SMLogo}
                 alt="Home"
                 id={styles.logo}
+                loading="lazy"
               />
             </Link>
           </section>
@@ -111,10 +101,18 @@ function Home() {
           </section>
 
           <section id={styles.footer_right}>
-            <a href="https://twitter.com/trackstarz" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://twitter.com/trackstarz"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FaTwitter className={styles.soical_links} />
             </a>
-            <a href="https://www.facebook.com/trackstarz" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.facebook.com/trackstarz"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FaFacebookF className={styles.soical_links} />
             </a>
           </section>
