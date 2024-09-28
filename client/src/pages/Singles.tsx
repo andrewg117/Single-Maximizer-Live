@@ -31,7 +31,9 @@ function Singles() {
   }, [isError, message]);
 
   useEffect(() => {
-    dispatch(getUser());
+    dispatch(getUser())
+      .unwrap()
+      .catch((error) => console.error(error));
 
     dispatch(getTracks())
       .unwrap()
@@ -48,7 +50,7 @@ function Singles() {
 
     navigate(`/profile/singleedit/${id}`);
   };
-  
+
   const viewTrack = (e: any, id: string) => {
     e.preventDefault();
 

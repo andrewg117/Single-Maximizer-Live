@@ -95,6 +95,7 @@ const ProductDisplay = () => {
               src={SMLogo}
               alt="Single Maximizer"
               id={styles.logo}
+              loading="lazy"
             />
           </div>
           <div className={styles.div_item}>
@@ -133,7 +134,7 @@ function CheckoutPage() {
   useEffect(() => {
     dispatch(getUser())
       .unwrap()
-      .then((data) => {
+      .then((data: any) => {
         if (data.trackAllowance > 0) {
           navigate("/profile/newrelease");
         } else {

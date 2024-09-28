@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { toast } from "react-toastify";
+import LazyBackground from "../components/LazyBackground";
 import ReCAPTCHA from "react-google-recaptcha";
 import { login, loginGoogle, reset } from "../features/auth/authSlice";
 import Spinner from "../components/Spinner";
@@ -92,7 +93,7 @@ function SignIn() {
     if (!captchaExpired && captchaChecked) {
       dispatch(loginGoogle(tokenData))
         .unwrap()
-        .then((data) => {
+        .then((data: any) => {
           window.location.href = data;
         })
         .catch(() => toast.error("Login Failed"));
@@ -109,16 +110,19 @@ function SignIn() {
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div
-            id={styles.block_left}
-            style={{ backgroundImage: `url(${signinImage})` }}
-          ></div>
+          <LazyBackground
+            style={styles.block_left}
+            imageUrl={signinImage}
+          >
+            <></>
+          </LazyBackground>
 
           <div id={styles.block_right}>
             <img
               src={SMLogo}
               alt="Home"
               id={styles.logo}
+              loading="lazy"
             />
             <form
               id={styles.signin_form}
@@ -161,26 +165,29 @@ function SignIn() {
                     }}
                     // size="compact"
                   />
+                </div>
+
+                <div className={styles.submit_div}>
                   <button
                     type="submit"
-                    id={styles.signin_submit}
+                    className={styles.signin_submit}
                     disabled={captchaExpired || !captchaChecked}
                   >
                     SUBMIT
                   </button>
                 </div>
+                <div className={styles.submit_div} id={styles.signin_google}>
+                  <button
+                    type="button"
+                    className={styles.signin_submit}
+                    onClick={googleButton}
+                    disabled={captchaExpired || !captchaChecked}
+                  >
+                    GOOGLE ACCOUNT
+                  </button>
+                </div>
               </div>
             </form>
-            <div className={styles.signin_form_div}>
-              <button
-                type="button"
-                id={styles.signin_submit}
-                onClick={googleButton}
-                disabled={captchaExpired || !captchaChecked}
-              >
-                Google Account
-              </button>
-            </div>
           </div>
         </section>
       </section>

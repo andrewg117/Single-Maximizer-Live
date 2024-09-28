@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { toast } from "react-toastify";
 import { emailUser } from "../features/auth/authSlice";
+import LazyBackground from "../components/LazyBackground";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signupImage from "../images/signupImage.png";
@@ -31,7 +32,7 @@ function EmailSignUp() {
     e.preventDefault();
     if (isError) {
       toast.error(message);
-      // TODO cake type for ToastOptions 
+      // TODO cake type for ToastOptions
       // toast.error(message, { id: message });
     } else if (email === "") {
       toast.error("Add Email");
@@ -42,7 +43,7 @@ function EmailSignUp() {
           setEmailSent(true);
         })
         .catch(() =>
-          toast.error(("User exists, use a different email or login"))
+          toast.error("User exists, use a different email or login")
         );
     }
   };
@@ -66,16 +67,19 @@ function EmailSignUp() {
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div
-            id={styles.block_left}
-            style={{ backgroundImage: `url(${signupImage})` }}
-          ></div>
+          <LazyBackground
+            style={styles.block_left}
+            imageUrl={signupImage}
+          >
+            <></>
+          </LazyBackground>
 
           <div id={styles.block_right}>
             <img
               src={SMLogo}
               alt="Home"
               id={styles.logo}
+              loading="lazy"
             />
             {/* <h1>Sign In</h1> */}
             {emailSent === false ? (
@@ -96,7 +100,7 @@ function EmailSignUp() {
                   <div className={styles.submit_div}>
                     <button
                       type="submit"
-                      id={styles.signin_submit}
+                      className={styles.signin_submit}
                     >
                       SUBMIT
                     </button>

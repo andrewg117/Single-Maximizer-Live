@@ -18,15 +18,15 @@
   background-color: var(--main-cnt-color);
 }
 
-#block_left {
+.block_left {
   display: grid;
-  justify-content: center;
   align-items: center;
   height: 100%;
-  background-color: darkgray;
+  background-color: var(--main-nv-color);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  transition: background-image .8s ease-in-out;
 }
 
 #block_right {
@@ -85,16 +85,16 @@
 
 .submit_div {
   display: grid;
-  justify-content: right;
+  justify-content: center;
   align-items: center;
   margin-top: 1em;
 }
 
-#signin_submit {
+.signin_submit {
   background-color: var(--main-btn-color);
   color: white;
   text-align: center;
-  padding: 1em 3em;
+  padding: 1em 1.5em;
   font-size: 1.2em;
   border: none;
 }

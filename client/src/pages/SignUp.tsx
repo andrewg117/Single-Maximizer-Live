@@ -30,10 +30,10 @@ function SignUp() {
   useEffect(() => {
     dispatch(emailData(token as string))
       .unwrap()
-      .then((data) => {
+      .then((data: any) => {
         setFormData((prevState) => ({
           ...prevState,
-          email: data.id,
+          email: data?.id,
         }));
       })
       .catch((error) => {

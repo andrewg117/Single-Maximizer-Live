@@ -109,7 +109,7 @@ function ResetPassword() {
                   <div className={styles.submit_div}>
                     <input
                       type="submit"
-                      id={styles.signin_submit}
+                      className={styles.signin_submit}
                       value="Login"
                     />
                   </div>
@@ -143,7 +143,7 @@ function ResetPassword() {
                   <div className={styles.submit_div}>
                     <button
                       type="submit"
-                      id={styles.signin_submit}
+                      className={styles.signin_submit}
                     >
                       SUBMIT
                     </button>

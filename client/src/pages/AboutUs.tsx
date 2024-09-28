@@ -9,6 +9,7 @@ function AboutUs() {
           src={TSLogo}
           alt="TrackStarz"
           id={styles.logo}
+          loading="lazy"
         />
         <p>
           Trackstarz is a Christian media company determined to bring
