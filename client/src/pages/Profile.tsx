@@ -80,6 +80,7 @@ const Profile = () => {
                 <img
                   src={`data:image/*;base64,${profileImage}`}
                   alt="Edit for Avatar"
+                  loading="lazy"
                 />
               ) : (
                 <FaUser id={styles.defaultAvatar} />

@@ -28,7 +28,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 1em 0;
-  /* font-size: 20px; */
 }
 
 #profile_form {
@@ -58,6 +57,17 @@
   text-align: left;
   height: auto;
   cursor: pointer;
+
+  p {
+    cursor: pointer;
+    padding-top: 1rem;
+    font-size: 90%;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 
 #edit_image_div {
@@ -78,17 +88,6 @@
   background-color: var(--main-nv-color);
 }
 
-#image_div p {
-  cursor: pointer;
-  padding-top: 1rem;
-  font-size: 90%;
-}
-
-#image_div img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
 #remove_image {
   cursor: pointer;
   font-size: 1em;
@@ -104,13 +103,20 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 5em;
-}
 
-.profile_input_div div {
-  position: relative;
-  display: grid;
-  align-items: center;
-  width: 100%;
+  div {
+    position: relative;
+    display: grid;
+    align-items: center;
+    width: 100%;
+  }
+
+  textarea {
+    margin: 1em 0;
+    color: var(--main-cnt-color);
+    resize: none;
+    overflow: auto;
+  }
 }
 
 label {
@@ -138,13 +144,6 @@ label {
   grid-template-columns: 100%;
 }
 
-.profile_input_div textarea {
-  margin: 1em 0;
-  color: var(--main-cnt-color);
-  resize: none;
-  overflow: auto;
-}
-
 ::placeholder {
   color: rgb(139, 139, 139);
 }
@@ -155,10 +154,10 @@ label {
   justify-content: left;
   column-gap: 2rem;
   align-items: center;
-}
 
-#profile_submit_div a {
-  text-decoration: none;
+  a {
+    text-decoration: none;
+  }
 }
 
 .profile_btn {
@@ -168,19 +167,33 @@ label {
   padding: 0.5em 1.5em;
   font-size: 1.2em;
   border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
-.profile_btn:hover {
-  cursor: pointer;
-}
+@media screen and (max-height: 700px) {
+  #edit_profile_content_right {
+    display: block;
+    margin-top: 10vh;
+  }
 
-/* .profile_btn:active {
-  transform: scale(0.98);
-} */
+  #profile_content_right {
+    margin-top: 10vh;
+    overflow: visible;
+  }
+}
 
 @media (max-width: 700px) {
   #edit_profile_content_right {
     display: block;
+    margin-top: 10vh;
+  }
+
+  #profile_content_right {
+    margin-top: 10vh;
+    overflow: visible;
   }
 
   #top_div {

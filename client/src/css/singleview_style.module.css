@@ -52,16 +52,16 @@ label {
   height: 90%;
   width: 90%;
   cursor: pointer;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 
 #image_upload_div {
   align-self: center;
   border: 2px dashed #dfdfdf;
-}
-
-#image_div img {
-  max-width: 100%;
-  max-height: 100%;
 }
 
 #press_upload {
@@ -83,12 +83,12 @@ label {
   height: 100px;
   border: 1px solid #000;
   overflow: hidden;
-}
 
-#press_frame img {
-  height: auto;
-  max-width: 60%;
-  max-height: 60%;
+  img {
+    height: auto;
+    max-width: 60%;
+    max-height: 60%;
+  }
 }
 
 #add_press {
@@ -117,6 +117,14 @@ label {
   width: 90%;
   padding: 1em;
   text-align: left;
+
+  textarea {
+    margin: 1em 0;
+    color: var(--main-cnt-color);
+    font-size: 20px;
+    resize: none;
+    overflow: auto;
+  }
 }
 
 #checkboxlist {
@@ -126,23 +134,15 @@ label {
   text-align: start;
   margin: 1em 0;
   border: 1px solid #000;
-}
 
-#checkboxlist fieldset {
-  display: contents;
-}
+  fieldset {
+    display: contents;
+  }
 
-#checkboxlist div {
-  display: flex;
-  justify-content: center;
-}
-
-#view_form_div textarea {
-  margin: 1em 0;
-  color: var(--main-cnt-color);
-  font-size: 20px;
-  resize: none;
-  overflow: auto;
+  div {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 ::placeholder {
@@ -166,10 +166,10 @@ label {
   padding: 0.5em 1.5em;
   font-size: 1.2em;
   border: none;
-}
 
-.profile_btn:hover {
-  cursor: pointer;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 @media (max-width: 700px) {

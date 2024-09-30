@@ -6,7 +6,7 @@ import { FaBars } from "react-icons/fa";
 import styles from "../css/profile_nav.module.css";
 
 interface NavBarTopProps {
-  menuItems: Array<{name: string, path: string}>;
+  menuItems: Array<{ name: string; path: string }>;
   activeLink: string;
   setActiveLink: any;
   onLogout: (e: Event) => void;
@@ -21,10 +21,7 @@ const NavBarTop = ({
   toggleTopNav,
 }: NavBarTopProps) => {
   return (
-    <div
-      className={styles.navbar_left_links}
-      id={styles.navbar_top_links}
-    >
+    <div id={styles.navbar_top_links}>
       {menuItems.map((menu) => (
         <Link
           key={menu.name}
@@ -86,7 +83,10 @@ function NavBarLeft() {
 
     if (location.pathname.includes("/editprofile")) {
       setActiveLink("/profile");
-    } else if (location.pathname.includes("/singleedit") || location.pathname.includes("/singleview")) {
+    } else if (
+      location.pathname.includes("/singleedit") ||
+      location.pathname.includes("/singleview")
+    ) {
       setActiveLink("/profile/singles");
     }
   }, [location]);

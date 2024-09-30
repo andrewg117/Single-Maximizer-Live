@@ -3,7 +3,7 @@
   --main-btn-color: #ff4646;
   --main-cnt-color: #121212;
   --main-wht-color: #ffffff;
-  
+
   font-family: Roboto, sans-serif;
   letter-spacing: 0.1em;
 }
@@ -55,6 +55,7 @@ textarea {
   display: grid;
   align-items: center;
   justify-content: center;
+  margin-top: 10vh;
   height: 90vh;
   background-color: darkgray;
   background-repeat: no-repeat;
@@ -66,30 +67,30 @@ textarea {
   margin-left: 5rem;
   width: 40%;
   text-align: left;
-}
 
-#intro_text h1 {
-  margin: 0;
-  font-size: 80px;
-  color: var(--main-wht-color);
+  h1 {
+    margin: 0;
+    font-size: 80px;
+    color: var(--main-wht-color);
+  }
 }
 
 #intro_btn {
   display: grid;
   justify-content: left;
   margin-left: 5rem;
-}
 
-#intro_btn a {
-  background-color: var(--main-btn-color);
-  color: var(--main-wht-color);
-  text-align: center;
-  padding: 1em;
-  font-size: 30px;
-  border: none;
-  border-radius: 8px;
-  text-decoration: none;
-  display: inline-block;
+  a {
+    background-color: var(--main-btn-color);
+    color: var(--main-wht-color);
+    text-align: center;
+    padding: 1em;
+    font-size: 30px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+  }
 }
 
 .loadingSpinnerContainer {
@@ -99,12 +100,12 @@ textarea {
   height: 100vh;
   justify-content: center;
   align-items: center;
-}
 
-.loadingSpinnerContainer img {
-  width: 200px;
-  height: auto;
-  animation: spin 5s linear infinite;
+  img {
+    width: 200px;
+    height: auto;
+    animation: spin 5s linear infinite;
+  }
 }
 
 @keyframes spin {
@@ -135,30 +136,32 @@ textarea {
   #intro_text {
     width: auto;
     margin: 0;
-  }
 
-  #intro_text h1 {
-    text-align: center;
-    font-size: 50px;
+    h1 {
+      text-align: center;
+      font-size: 50px;
+    }
   }
 
   #intro_btn {
     align-self: center;
     margin: 0;
-  }
 
-  #intro_btn a {
-    font-size: 20px;
+    a {
+      font-size: 20px;
+    }
   }
 
   #profile_body_wrapper {
-    grid-template-columns: 100%;
+    display: block;
+    overflow: auto;
   }
 }
 
 @media (max-height: 700px) {
   #profile_body_wrapper {
-    grid-template-columns: 100%;
+    display: block;
+    overflow: auto;
   }
 }
 
@@ -170,10 +173,10 @@ textarea {
 
   #intro_text {
     width: fit-content;
-  }
 
-  #intro_text h1 {
-    font-size: 50px;
+    h1 {
+      font-size: 50px;
+    }
   }
 
   #intro_btn a {

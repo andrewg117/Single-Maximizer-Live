@@ -12,18 +12,18 @@ import { FAQDistro, FAQSave } from "./FAQ";
 function Home() {
   return (
     <>
-      <section id={styles.home_body}>
+      <article id={styles.home_body}>
         <LazyBackground
           style={styles.home_block}
           imageUrl={homeImage}
         >
           <section className={styles.intro_container}>
-            <div className={styles.intro_text}>
+            <section className={styles.intro_text}>
               <h1>GET YOUR MUSIC OUT TO THE WORLD</h1>
-            </div>
-            <div className={styles.intro_btn}>
+            </section>
+            <section className={styles.intro_btn}>
               <Link to="/home/emailsignup">GET STARTED</Link>
-            </div>
+            </section>
           </section>
         </LazyBackground>
 
@@ -36,13 +36,13 @@ function Home() {
           imageUrl={homeImage2}
         >
           <section className={styles.intro_container_alt}>
-            <div className={styles.intro_text_alt}>
+            <section className={styles.intro_text_alt}>
               <h1>BECOME AN INSPIRATION</h1>
               <h2>WITH YOUR MUSICAL TALENT</h2>
-            </div>
-            <div className={`${styles.intro_btn} ${styles.intro_btn_alt}`}>
+            </section>
+            <section className={`${styles.intro_btn} ${styles.intro_btn_alt}`}>
               <Link to="/home/emailsignup">GET STARTED</Link>
-            </div>
+            </section>
           </section>
         </LazyBackground>
 
@@ -55,12 +55,12 @@ function Home() {
           imageUrl={homeImage3}
         >
           <section className={styles.intro_container}>
-            <div className={styles.intro_text}>
+            <section className={styles.intro_text}>
               <h1>GET YOUR MUSIC HEARD</h1>
-            </div>
-            <div className={styles.intro_btn}>
+            </section>
+            <section className={styles.intro_btn}>
               <Link to="/home/emailsignup">GET STARTED</Link>
-            </div>
+            </section>
           </section>
         </LazyBackground>
 
@@ -69,12 +69,12 @@ function Home() {
           className={styles.home_block}
         >
           <section className={styles.intro_container}>
-            <div id={styles.hassle_text}>
+            <section id={styles.hassle_text}>
               <p>INSPIRE YOUR WORLD WITH YOUR CRAFT</p>
               <p>MAKE YOUR GIFT HEARD</p>
               <h1>WITHOUT THE TIME OR HASSLE</h1>
               <p>SHARE IT WITH US & WE'LL MAKE IT HAPPEN</p>
-            </div>
+            </section>
           </section>
         </section>
 
@@ -117,7 +117,7 @@ function Home() {
             </a>
           </section>
         </footer>
-      </section>
+      </article>
     </>
   );
 }

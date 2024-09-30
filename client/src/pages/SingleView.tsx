@@ -135,6 +135,7 @@ function SingleView() {
                     image ? Buffer.from(image.file.buffer, "ascii") : null
                   }`}
                   alt="Cover"
+                  loading="lazy"
                 />
               </div>
             </div>

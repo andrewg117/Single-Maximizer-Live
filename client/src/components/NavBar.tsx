@@ -6,14 +6,18 @@ import SMLogo from "../images/smLogo.png";
 import styles from "../css/navbar.module.css";
 
 interface NavBarTopProps {
-  menuItems: Array<{name: string, path: string}>;
+  menuItems: Array<{ name: string; path: string }>;
   activeLink: string;
   setActiveLink: any;
   toggleTopNav: any;
 }
 
-// TODO: Change to popup bar
-const NavBarTop = ({ menuItems, activeLink, setActiveLink, toggleTopNav }: NavBarTopProps) => {
+const NavBarTop = ({
+  menuItems,
+  activeLink,
+  setActiveLink,
+  toggleTopNav,
+}: NavBarTopProps) => {
   return (
     <div
       className={styles.navbar_left_links}
@@ -43,7 +47,7 @@ function NavBar() {
   const [showTopNav, setTopNav] = useState(false);
 
   const toggleTopNav = () => {
-    window.scrollTo(0, 0)
+    window.scrollTo(0, 0);
     showTopNav === false ? setTopNav(true) : setTopNav(false);
   };
 
@@ -92,8 +96,8 @@ function NavBar() {
         <Link
           to={"/home"}
           onClick={() => {
-            setActiveLink("/home")
-            window.scrollTo(0, 0)
+            setActiveLink("/home");
+            window.scrollTo(0, 0);
           }}
         >
           <img

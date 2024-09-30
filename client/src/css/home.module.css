@@ -11,7 +11,7 @@
   background-size: cover;
   background-position: center;
   background-color: var(--main-nv-color);
-  transition: background-image .8s ease-in-out;
+  transition: background-image 0.8s ease-in-out;
 }
 
 #singleMax_image {
@@ -30,24 +30,23 @@
 .intro_text {
   width: 40%;
   text-align: left;
-}
 
-.intro_text h1 {
-  margin: 0;
-  font-size: 90px;
-  color: var(--main-wht-color);
-}
+  h1 {
+    margin: 0;
+    font-size: 90px;
+    color: var(--main-wht-color);
+  }
 
-.intro_text h2 {
-  margin: 0;
-  font-size: 40px;
-  color: var(--main-wht-color);
+  h2 {
+    margin: 0;
+    font-size: 40px;
+    color: var(--main-wht-color);
+  }
 }
 
 .intro_btn {
   display: grid;
   justify-content: left;
-  /* margin-left: 5rem; */
 
   a {
     background-color: var(--main-btn-color);
@@ -75,41 +74,42 @@
   justify-self: right;
   width: 50%;
   text-align: right;
-}
 
-.intro_text_alt h1 {
-  margin: 0;
-  font-size: 90px;
-  color: var(--main-wht-color);
-}
+  h1 {
+    margin: 0;
+    font-size: 90px;
+    color: var(--main-wht-color);
+  }
 
-.intro_text_alt h2 {
-  margin: 0;
-  font-size: 40px;
-  color: var(--main-wht-color);
+  h2 {
+    margin: 0;
+    font-size: 40px;
+    color: var(--main-wht-color);
+  }
 }
 
 .intro_btn_alt {
   display: grid;
   justify-content: right;
-  /* margin-left: 5rem; */
 }
 
 #hassle_block {
   background-color: var(--main-wht-color);
 }
 
-#hassle_text p {
-  font-size: 30px;
-  color: var(--main-btn-color);
-  font-weight: bolder;
-}
+#hassle_text {
+  p {
+    font-size: 30px;
+    color: var(--main-btn-color);
+    font-weight: bolder;
+  }
 
-#hassle_text h1 {
-  font-size: 80px;
-  color: var(--main-cnt-color);
-  font-weight: bolder;
-  margin: 0;
+  h1 {
+    font-size: 80px;
+    color: var(--main-cnt-color);
+    font-weight: bolder;
+    margin: 0;
+  }
 }
 
 #home_footer {
@@ -129,11 +129,11 @@
   justify-self: center;
   justify-content: center;
   gap: 1rem;
-}
 
-#footer_mid a {
-  text-decoration: none;
-  color: var(--main-wht-color);
+  a {
+    text-decoration: none;
+    color: var(--main-wht-color);
+  }
 }
 
 #footer_right {
@@ -143,12 +143,12 @@
   justify-content: right;
   margin-right: 5rem;
   gap: 1rem;
-}
 
-#footer_right a {
-  text-decoration: none;
-  color: var(--main-wht-color);
-  font-size: 30px;
+  a {
+    text-decoration: none;
+    color: var(--main-wht-color);
+    font-size: 30px;
+  }
 }
 
 @media (max-width: 1000px) {
@@ -160,44 +160,43 @@
 
   .intro_container {
     width: 90%;
-    /* justify-content: center; */
     margin-left: 0;
   }
 
   .intro_text {
     width: auto;
     margin: 0;
-  }
 
-  .intro_text h1 {
-    text-align: center;
-    font-size: 50px;
+    h1 {
+      text-align: center;
+      font-size: 50px;
+    }
   }
 
   .intro_btn {
     justify-self: center;
     align-self: center;
     margin: 0;
-  }
 
-  .intro_btn a {
-    font-size: 20px;
+    a {
+      font-size: 20px;
+    }
   }
 
   .intro_text_alt {
     width: auto;
     margin: 0;
-  }
 
-  .intro_text_alt h1 {
-    text-align: center;
-    font-size: 50px;
-    text-align: center;
-  }
+    h1 {
+      text-align: center;
+      font-size: 50px;
+      text-align: center;
+    }
 
-  .intro_text_alt h2 {
-    text-align: center;
-    text-align: center;
+    h2 {
+      text-align: center;
+      text-align: center;
+    }
   }
 
   .intro_btn_alt {
@@ -207,7 +206,6 @@
   }
 
   .content_block {
-    /* width: 90%; */
     height: 100%;
   }
 
@@ -217,12 +215,14 @@
     margin-right: 0;
   }
 
-  #hassle_text p {
-    font-size: 25px;
-  }
+  #hassle_text {
+    p {
+      font-size: 25px;
+    }
 
-  #hassle_text h1 {
-    font-size: 50px;
+    h1 {
+      font-size: 50px;
+    }
   }
 
   #home_footer {
@@ -247,22 +247,20 @@
 
 @media (max-height: 800px) and (min-width: 1000px) {
   .home_block {
-    /* grid-template-columns: 1fr 1fr; */
     justify-items: center;
   }
 
   .intro_container {
     width: 90%;
-    /* justify-content: center; */
     margin-left: 0;
   }
 
   .intro_text {
     width: 100%;
-  }
 
-  .intro_text h1 {
-    font-size: 50px;
+    h1 {
+      font-size: 50px;
+    }
   }
 
   .intro_btn a {
@@ -277,12 +275,14 @@
     overflow: visible;
   }
 
-  #hassle_text p {
-    font-size: 25px;
-  }
+  #hassle_text {
+    p {
+      font-size: 25px;
+    }
 
-  #hassle_text h1 {
-    font-size: 50px;
+    h1 {
+      font-size: 50px;
+    }
   }
 
   #home_footer {

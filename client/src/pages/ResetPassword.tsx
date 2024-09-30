@@ -7,6 +7,7 @@ import {
   emailData,
   reset as resetUser,
 } from "../features/auth/authSlice";
+import LazyBackground from "../components/LazyBackground";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signinImage from "../images/signinImage.png";
@@ -27,7 +28,7 @@ function ResetPassword() {
 
   const { isLoading, isError, message } = useAppSelector((state) => state.auth);
 
-  const { token } = useParams<{token: string}>();
+  const { token } = useParams<{ token: string }>();
 
   useEffect(() => {
     if (isError) {
@@ -36,7 +37,7 @@ function ResetPassword() {
     dispatch(emailData(token as string))
       .unwrap()
       .catch((error) => {
-        toast.error("Login Expired",  error);
+        toast.error("Login Expired", error);
         toast.clearWaitingQueue();
         navigate("/home/signin");
       });
@@ -60,7 +61,7 @@ function ResetPassword() {
     if (password !== password2) {
       toast.error("Passwords do not match");
     } else {
-      const userData: {token: string | any, password: string} = {
+      const userData: { token: string | any; password: string } = {
         token,
         password,
       };
@@ -87,16 +88,19 @@ function ResetPassword() {
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div
-            id={styles.block_left}
-            style={{ backgroundImage: `url(${signinImage})` }}
-          ></div>
+          <LazyBackground
+            style={styles.block_left}
+            imageUrl={signinImage}
+          >
+            <></>
+          </LazyBackground>
 
           <div id={styles.block_right}>
             <img
               src={SMLogo}
               alt="Home"
               id={styles.logo}
+              loading="lazy"
             />
             <h1>Reset Password</h1>
             {isReset ? (

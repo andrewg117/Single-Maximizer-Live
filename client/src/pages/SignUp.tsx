@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { emailData, register, reset } from "../features/auth/authSlice";
+import LazyBackground from "../components/LazyBackground";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signupImage from "../images/signupImage.png";
@@ -91,16 +92,19 @@ function SignUp() {
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div
-            id={styles.block_left}
-            style={{ backgroundImage: `url(${signupImage})` }}
-          ></div>
+          <LazyBackground
+            style={styles.block_left}
+            imageUrl={signupImage}
+          >
+            <></>
+          </LazyBackground>
 
           <div id={styles.block_right}>
             <img
               src={SMLogo}
               alt="Home"
               id={styles.logo}
+              loading="lazy"
             />
             <form
               id={styles.signin_form}

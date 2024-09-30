@@ -19,18 +19,18 @@
 
 #nav_links {
   margin-right: 3vw;
-}
 
-#nav_links a {
-  padding: 1.5em;
-  font-style: normal;
-  font-weight: bold;
-  text-decoration: none;
-  font-family: Arial, Helvetica, sans-serif;
-}
+  a {
+    padding: 1.5em;
+    font-style: normal;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
 
-#nav_links a:hover {
-  color: var(--main-btn-color);
+    &:hover {
+      color: var(--main-btn-color);
+    }
+  }
 }
 
 .active {
@@ -41,11 +41,18 @@
   color: var(--main-wht-color);
 }
 
+
+
 #navbar_top_links {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  z-index: 1;
   text-align: center;
   background-color: var(--main-nv-color);
+
+
+  a:hover {
+    color: var(--main-btn-color);
+  }
 }
 
 .navbar_left_links {
@@ -53,13 +60,13 @@
   justify-content: center;
   width: 100%;
   text-align: left;
-}
 
-.navbar_left_links a {
-  padding: 1.5em;
-  font-style: normal;
-  font-weight: bold;
-  text-decoration: none;
+  a {
+    padding: 1.5em;
+    font-style: normal;
+    font-weight: bold;
+    text-decoration: none;
+  }
 }
 
 #top_nav_container {
@@ -72,6 +79,7 @@
   align-items: center;
   background-color: var(--main-nv-color);
   color: var(--main-wht-color);
+  z-index: 10;
 }
 
 #fabars {
@@ -82,7 +90,7 @@
   cursor: pointer;
 }
 
-@media (max-width: 700px)  {
+@media (max-width: 850px) {
   #navbar {
     display: none;
   }
@@ -110,7 +118,7 @@
   }
 }
 
-@media (min-width: 700px) and (min-height: 700px) {
+@media (min-width: 850px) and (min-height: 700px) {
   #top_nav_container {
     display: none;
   }

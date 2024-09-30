@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { toast } from "react-toastify";
 import { emailUser } from "../features/auth/authSlice";
+import LazyBackground from "../components/LazyBackground";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signinImage from "../images/signinImage.png";
@@ -62,16 +63,19 @@ function ForgotPassword() {
     <>
       <section id={styles.sign_in_wrapper}>
         <section id={styles.sign_in_content}>
-          <div
-            id={styles.block_left}
-            style={{ backgroundImage: `url(${signinImage})` }}
-          ></div>
+          <LazyBackground
+            style={styles.block_left}
+            imageUrl={signinImage}
+          >
+            <></>
+          </LazyBackground>
 
           <div id={styles.block_right}>
             <img
               src={SMLogo}
               alt="Home"
               id={styles.logo}
+              loading="lazy"
             />
             <h1>Forgot Password</h1>
             {emailSent === false ? (

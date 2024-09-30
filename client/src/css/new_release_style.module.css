@@ -62,22 +62,25 @@ label {
   height: 90%;
   width: 90%;
   cursor: pointer;
+
+  p {
+    cursor: pointer;
+  }
+
+  img {
+    justify-self: center;
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 
 #image_upload_div {
-  align-self: center;
+  display: grid;
+  grid-template-rows: 90% 10%;
+  min-height: 150px;
+  /* place-items: left; */
   border: 2px dashed #dfdfdf;
 }
-
-#image_div p {
-  cursor: pointer;
-}
-
-#image_div img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
 
 #remove_image {
   cursor: pointer;
@@ -106,12 +109,12 @@ label {
   height: 100px;
   border: 1px solid #000;
   overflow: hidden;
-}
 
-#press_frame img {
-  height: auto;
-  max-width: 60%;
-  max-height: 60%;
+  img {
+    height: auto;
+    max-width: 60%;
+    max-height: 60%;
+  }
 }
 
 #add_press {
@@ -140,6 +143,14 @@ label {
   width: 90%;
   padding: 1em;
   text-align: left;
+
+  textarea {
+    margin: 1em 0;
+    color: var(--main-cnt-color);
+    font-size: 20px;
+    resize: none;
+    overflow: auto;
+  }
 }
 
 .new_input {
@@ -165,23 +176,15 @@ label {
   text-align: start;
   margin: 1em 0;
   border: 1px solid #000;
-}
 
-#checkboxlist fieldset {
-  display: contents;
-}
+  fieldset {
+    display: contents;
+  }
 
-#checkboxlist div {
-  display: flex;
-  justify-content: center;
-}
-
-#new_form_div textarea {
-  margin: 1em 0;
-  color: var(--main-cnt-color);
-  font-size: 20px;
-  resize: none;
-  overflow: auto;
+  div {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 ::placeholder {
@@ -205,14 +208,22 @@ label {
   padding: 0.5em 1.5em;
   font-size: 1.2em;
   border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
-.profile_btn:hover {
-  cursor: pointer;
+@media screen and (max-height: 700px) {
+  #content_right {
+    margin-top: 10vh;
+    display: block;
+  }
 }
 
 @media (max-width: 700px) {
   #content_right {
+    margin-top: 10vh;
     display: block;
   }
 

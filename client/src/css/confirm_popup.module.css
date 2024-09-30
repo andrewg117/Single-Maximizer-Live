@@ -8,6 +8,20 @@
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 9999;
+
+  button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: var(--main-btn-color);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: var(--main-nv-color);
+  }
 }
 
 .message {
@@ -17,18 +31,4 @@
 .buttons {
   display: flex;
   justify-content: flex-end;
-}
-
-.confirmation_popup button {
-  margin-left: 10px;
-  padding: 8px 16px;
-  border-radius: 4px;
-  background-color: var(--main-btn-color);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
-
-.confirmation_popup button:hover {
-  background-color: var(--main-nv-color);
 }

@@ -21,6 +21,7 @@ const FaqBlock = ({ styles, src, alt, title, info }: FaqBlockProps) => {
       <img
         src={src}
         alt={alt}
+        loading="lazy"
       />
       <h3>{title}</h3>
       <p>{info}</p>

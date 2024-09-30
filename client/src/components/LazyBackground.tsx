@@ -5,7 +5,7 @@ function LazyBackground({
   imageUrl,
   children,
 }: {
-  style?: string;
+  style: string;
   imageUrl: string;
   children: React.ReactNode;
 }) {
@@ -18,11 +18,12 @@ function LazyBackground({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true);
-            observer.disconnect(); // Stop observing after the image is loaded
+          } else {
+            setIsVisible(false);
           }
         });
       },
-      { threshold: 0.2 } // 0.1 means when 10% of the div is visible
+      { threshold: 0.1 } // 0.1 means when 10% of the div is visible
     );
 
     if (divRef.current) {
@@ -31,6 +32,7 @@ function LazyBackground({
 
     return () => {
       if (divRef.current) {
+        setIsVisible(false);
         observer.unobserve(divRef.current);
       }
     };
