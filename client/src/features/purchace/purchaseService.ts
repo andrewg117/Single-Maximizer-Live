@@ -4,26 +4,52 @@ const API_URL = "/api/purchase/";
 
 const makePurchase = async () => {
   let response;
-  response = await axios.post(API_URL);
+  await axios
+    .post(API_URL)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
 
-  return response.data;
+  return response;
 };
 
 const makeEmbeddedPurchase = async () => {
   let response;
-  response = await axios.post(API_URL + "checkout");
+  await axios
+    .post(API_URL + "checkout")
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
 
-  return response.data;
+  return response;
 };
 
 const getCheckoutStatus = async (session_id: string) => {
   let response;
-  response = await axios.get(API_URL + "checkout" + session_id);
 
-  return response.data;
+  await axios
+    .get(API_URL + "checkout" + session_id)
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
+
+  return response;
 };
-
-
 
 const purchaseService = {
   makePurchase,

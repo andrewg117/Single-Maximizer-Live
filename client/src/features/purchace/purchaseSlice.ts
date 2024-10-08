@@ -78,41 +78,59 @@ export const purchaseSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(makePurchase.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(makePurchase.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+        };
       })
       .addCase(makePurchase.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(makeEmbeddedPurchase.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(makeEmbeddedPurchase.fulfilled, (state) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+        };
       })
       .addCase(makeEmbeddedPurchase.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       })
       .addCase(getCheckoutStatus.pending, (state) => {
-        state.isLoading = true;
+        return { ...state, isLoading: true };
       })
       .addCase(getCheckoutStatus.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.purchase = action.payload;
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          purchase: action.payload as any,
+        };
       })
       .addCase(getCheckoutStatus.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload as string;
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
       });
   },
 });
