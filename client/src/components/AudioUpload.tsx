@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Buffer, File } from "buffer";
+import { Buffer } from "buffer";
 import { FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
 import AudioPlayer from "react-h5-audio-player";
@@ -101,9 +101,7 @@ function AudioUpload({ changeFile, file, fieldname }: AudioUploadProps) {
                   autoPlayAfterSrcChange={false}
                   volume={0.2}
                 />
-                <p>
-                  {getAudioFileName()}
-                </p>
+                <p>{getAudioFileName()}</p>
               </>
             )}
           </>

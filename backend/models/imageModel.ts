@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {imageSchemaTypes} from "../types/models/interfaces";
+import {type imageSchemaTypes} from "../types/models/interfaces";
 
 
 const imageSchema = new mongoose.Schema<imageSchemaTypes>(

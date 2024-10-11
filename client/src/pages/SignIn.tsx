@@ -29,15 +29,11 @@ function SignIn() {
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaExpired, setCaptchaExpired] = useState(true);
 
-  const { user, isLoading, isError, message } = useAppSelector(
+  const { isLoading, isError, message } = useAppSelector(
     (state) => state.auth
   );
 
   useEffect(() => {
-    // if (user) {
-    //   navigate("/profile");
-    // }
-
     return () => {
       dispatch(reset());
       toast.clearWaitingQueue();

@@ -4,6 +4,9 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "sourceMap": true,
+    "outDir": "scripts",
+    "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "strict": true
   },

@@ -4,7 +4,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
-  GetObjectCommandInput,
+  type GetObjectCommandInput,
 } from "@aws-sdk/client-s3";
 // TODO npm install @aws-sdk/client-s3
 

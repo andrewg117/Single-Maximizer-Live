@@ -1,4 +1,4 @@
-import session, { SessionData } from "express-session";
+import { type Request, type Response } from "express";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -8,8 +8,8 @@ import formData from "form-data";
 import Mailgun from "mailgun.js";
 import { generate } from "generate-password";
 import User from "../models/userModel";
-import { ObjectId } from "mongoose";
-import { urlType, JwtPayload } from "../types/controllers/interfaces";
+import { type ObjectId } from "mongoose";
+import { type urlType, type JwtPayload } from "../types/controllers/interfaces";
 import "../types/controllers/modules";
 
 const EMAILUSER = <string>process.env.EMAILUSER;
@@ -261,7 +261,12 @@ const redirectGoogle = asyncHandler(async (req, res) => {
   // }
 });
 
-const destroySession = async (req, res, status: number, message: string) => {
+const destroySession = async (
+  req: Request,
+  res: Response,
+  status: number,
+  message: string
+) => {
   if (req.session.userID) {
     req.session.destroy(() => {
       res
@@ -403,7 +408,7 @@ const decodeEmailToken = asyncHandler(async (req, res) => {
   const { token } = req.params;
   // console.log(token)
   try {
-    const decoded = decodeToken(token);
+    const decoded = decodeToken(token as string) as JwtPayload;
     res.json(decoded);
   } catch (error) {
     res.status(401);

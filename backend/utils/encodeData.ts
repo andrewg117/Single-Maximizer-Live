@@ -2,7 +2,7 @@ import crypto from "crypto";
 import User from "../models/userModel";
 const ENCEMAILKEY: string = process.env.ENCEMAILKEY as string;
 
-export const encodeEmail = async (email) => {
+export const encodeEmail = async (email: string) => {
   try {
     const dataEMKey = Buffer.from(ENCEMAILKEY, "hex");
     const iv = crypto.randomBytes(16);
@@ -12,7 +12,7 @@ export const encodeEmail = async (email) => {
       Buffer.from(dataEMKey),
       iv
     );
-    let encrypted = cipher.update(email.toString());
+    let encrypted = cipher.update(email);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const emailEncrypted: { iv: Buffer; encryptedData: Buffer } = {
       iv: iv,

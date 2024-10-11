@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 
 export interface userType extends Document {
   username: String;
@@ -40,7 +40,9 @@ export interface StripeRequest extends Request {
   body: any;
   headers: any;
   user?: any;
-  session_id?: string;
+  params: {
+    session_id: string;
+  };
 }
 
 export interface urlType {

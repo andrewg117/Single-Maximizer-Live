@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { trackSchemaTypes } from "../types/models/interfaces";
+import { type trackSchemaTypes } from "../types/models/interfaces";
 
 const trackSchema = new mongoose.Schema<trackSchemaTypes>(
   {

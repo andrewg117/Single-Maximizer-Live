@@ -1,5 +1,5 @@
-import express, { Request, Response } from "express";
-import session, { SessionData } from "express-session";
+import express, { type Request, type Response } from "express";
+import session from "express-session";
 import asyncHandler from "express-async-handler";
 import Stripe from "stripe";
 const stripe = new Stripe(process.env.SK_TEST as string, {
@@ -7,11 +7,10 @@ const stripe = new Stripe(process.env.SK_TEST as string, {
   typescript: true,
 });
 // const stripe = require("stripe")(process.env.SK_TEST);
-import { StripeRequest } from "../types/controllers/interfaces";
+import { type StripeRequest } from "../types/controllers/interfaces";
 import "../types/controllers/modules";
 import User from "../models/userModel";
 import Purchase from "../models/purchaseModel";
-
 
 const YOUR_DOMAIN: string = "http://localhost:3000/";
 
@@ -24,7 +23,6 @@ const endpointSecret = <string>process.env.SK_ENDPOINT;
 // Create checkout on the same page
 const embeddedCheckout = asyncHandler(
   async (req: StripeRequest, res: Response) => {
-
     // Create Stripe Customer
     let userStripeID;
     let customerData;
@@ -66,21 +64,25 @@ const embeddedCheckout = asyncHandler(
     // Create Stripe Session Link
     const session = await stripe.checkout.sessions.create(commands);
 
-    res.send({clientSecret: session.client_secret});
+    res.send({ clientSecret: session.client_secret });
   }
 );
 
 // @desc    Get SessionStatus
 // @route   GET /api/purchase/checkout/:session_id
 // @access  Private
-const checkSessionStatus = asyncHandler(async (req: StripeRequest, res: Response) => {
-  const session = await stripe.checkout.sessions.retrieve(req.params.session_id);
+const checkSessionStatus = asyncHandler(
+  async (req: StripeRequest, res: Response) => {
+    const session = await stripe.checkout.sessions.retrieve(
+      req.params.session_id
+    );
 
-  res.send({
-    status: session.status,
-    customer_email: session.customer_details?.email
-  });
-});
+    res.send({
+      status: session.status,
+      customer_email: session.customer_details?.email,
+    });
+  }
+);
 
 // @desc    Post purchase
 // @route   POST /api/purchase
@@ -219,4 +221,10 @@ const postEndpoint = asyncHandler(async (req: StripeRequest, res: any) => {
   res.status(200).end();
 });
 
-export { postPayment, postDemoPayment, postEndpoint, embeddedCheckout, checkSessionStatus };
+export {
+  postPayment,
+  postDemoPayment,
+  postEndpoint,
+  embeddedCheckout,
+  checkSessionStatus,
+};

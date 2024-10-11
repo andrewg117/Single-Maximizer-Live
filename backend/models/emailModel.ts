@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { emailSchemaTypes } from "../types/models/interfaces";
+import { type emailSchemaTypes } from "../types/models/interfaces";
 
 const emailSchema = new mongoose.Schema<emailSchemaTypes>(
   {

@@ -1,10 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { CssModuleTypes } from "./watching_css_modules.js";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), CssModuleTypes()],
+  plugins: [react()],
   server: {
     open: "http://localhost:3000/",
     port: 3000,

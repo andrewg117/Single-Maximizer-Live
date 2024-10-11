@@ -1,7 +1,7 @@
-import { Response } from "express";
+import { type Response } from "express";
 import asyncHandler from "express-async-handler";
 import multer from "multer";
-import { FileRequest } from "../types/controllers/interfaces";
+import { type FileRequest } from "../types/controllers/interfaces";
 import Image from "../models/imageModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
@@ -278,7 +278,7 @@ const deleteImage = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if (image[0].user.toString() !== req.session.userID) {
+  if (image[0]?.user.toString() !== req.session.userID) {
     res.status(401);
     throw new Error("User not authorized");
   }

@@ -1,4 +1,4 @@
-import session, { SessionData } from "express-session";
+import session from "express-session";
 import asyncHandler from "express-async-handler";
 import { Buffer } from "buffer";
 import iconv from "iconv-lite";

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { purchaseSchemaTypes } from "../types/models/interfaces";
+import { type purchaseSchemaTypes } from "../types/models/interfaces";
 
 const purchaseSchema = new mongoose.Schema<purchaseSchemaTypes>(
   {

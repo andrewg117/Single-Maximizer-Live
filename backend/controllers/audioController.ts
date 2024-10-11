@@ -1,10 +1,10 @@
-import express, {  Request, Response } from "express";
+import { type Response } from "express";
 import asyncHandler from "express-async-handler";
-import { FileRequest } from "../types/controllers/interfaces";
+import { type FileRequest } from "../types/controllers/interfaces";
 import Audio from "../models/audioModel";
 import Track from "../models/trackModel";
-import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
-import { ObjectId } from "mongoose";
+// import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
+// import { ObjectId } from "mongoose";
 
 // @desc    Post audio
 // @route   GET /api/audio
@@ -182,9 +182,4 @@ const deleteAudio = asyncHandler(async (req, res) => {
   res.json(deleteAudio?.id);
 });
 
-export {
-  uploadAudio,
-  getAudio,
-  updateAudio,
-  deleteAudio,
-};
+export { uploadAudio, getAudio, updateAudio, deleteAudio };

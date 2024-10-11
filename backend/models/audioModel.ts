@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {audioSchemaTypes} from "../types/models/interfaces";
+import { type audioSchemaTypes } from "../types/models/interfaces";
 
 const audioSchema = new mongoose.Schema<audioSchemaTypes>(
   {

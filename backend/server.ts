@@ -8,15 +8,15 @@ import cors from "cors"; // To enable Cross-Origin Resource Sharing
 import session from "express-session";
 import MongoStore from "connect-mongo"; // For storing session data in MongoDB
 import connectDB from "./config/db.js"; // Function to connect to the database
-import webhookRoutes from "./routes/webhookRoutes.js"; // Routes for webhook-related endpoints
-import trackRoutes from "./routes/trackRoutes.js"; // Routes for track-related endpoints
-import userRoutes from "./routes/userRoutes.js"; // Routes for user-related endpoints
-import emailRoutes from "./routes/emailRoutes.js"; // Routes for email-related endpoints
-import imageRoutes from "./routes/imageRoutes.js"; // Routes for image-related endpoints
-import audioRoutes from "./routes/audioRoutes.js"; // Routes for audio-related endpoints
-import purchaseRoutes from "./routes/purchaseRoutes.js"; // Routes for purchase-related endpoints
-import { sendScheduledEmail } from "./controllers/emailController.js"; // Function to send scheduled emails
-import errorHandler from "./middleware/errorMiddleware.js"; // Middleware for handling errors
+import webhookRoutes from "./routes/webhookRoutes"; // Routes for webhook-related endpoints
+import trackRoutes from "./routes/trackRoutes"; // Routes for track-related endpoints
+import userRoutes from "./routes/userRoutes"; // Routes for user-related endpoints
+import emailRoutes from "./routes/emailRoutes"; // Routes for email-related endpoints
+import imageRoutes from "./routes/imageRoutes"; // Routes for image-related endpoints
+import audioRoutes from "./routes/audioRoutes"; // Routes for audio-related endpoints
+import purchaseRoutes from "./routes/purchaseRoutes"; // Routes for purchase-related endpoints
+import { sendScheduledEmail } from "./controllers/emailController"; // Function to send scheduled emails
+import errorHandler from "./middleware/errorMiddleware"; // Middleware for handling errors
 const MDB_URI: string = process.env.MDB_URI as string;
 const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
 

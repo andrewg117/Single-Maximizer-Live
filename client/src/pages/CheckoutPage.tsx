@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import SMLogo from "../images/Single-Maximizer-Package-Mockup-1024x616.png.webp";
 import styles from "../css/checkout.module.css";
 const pk_key = import.meta.env.VITE_STRIPE_PKKEY.toString();
-const stripePromise = await loadStripe(pk_key);
+const stripePromise = loadStripe(pk_key);
 
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +25,7 @@ const CheckoutForm = () => {
   useEffect(() => {
     dispatch(makeEmbeddedPurchase())
       .unwrap()
-      .then((data) => {
+      .then((data: any) => {
         setClientSecret(data.clientSecret);
       });
     return () => {
@@ -150,7 +150,7 @@ function CheckoutPage() {
     session_id
       ? dispatch(getCheckoutStatus(session_id as string))
           .unwrap()
-          .then((data) => {
+          .then((data: any) => {
             if (data.status === "complete") {
               toast.success("Purchase Successful");
               navigate("/profile/newrelease");
