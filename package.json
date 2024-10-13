@@ -5,7 +5,7 @@
   "description": "Single Maximizer Live App.",
   "main": "server.ts",
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --watchAll --verbose --detectOpenHandles --testTimeout=5000",
     "start": "tsc --watch",
     "server": "nodemon --watch backend --exec tsx ./backend/server.ts",
     "client": "npm run dev --prefix client",
@@ -54,6 +54,7 @@
     "@types/supertest": "^6.0.2",
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.7",
+    "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.1",

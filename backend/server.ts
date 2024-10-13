@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors"; // To enable Cross-Origin Resource Sharing
 import session from "express-session";
 import MongoStore from "connect-mongo"; // For storing session data in MongoDB
-import connectDB from "./config/db.js"; // Function to connect to the database
+import connectDB from "./config/db"; // Function to connect to the database
 import webhookRoutes from "./routes/webhookRoutes"; // Routes for webhook-related endpoints
 import trackRoutes from "./routes/trackRoutes"; // Routes for track-related endpoints
 import userRoutes from "./routes/userRoutes"; // Routes for user-related endpoints
@@ -77,4 +77,7 @@ app.get("/", (req, res) => {
   res.json({ Connection: "Success" }); // Default route to test server connection
 });
 
-app.listen(port, () => console.log(`Server started on port ${port}`)); // Start the server on the defined port
+const server = app.listen(port, () => console.log(`Server started on port ${port}`)); // Start the server on the defined port
+
+
+export default server;
