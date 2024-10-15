@@ -363,6 +363,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 const getMe = asyncHandler(async (req, res) => {
   try {
     if (!req.session.userID) {
+      res.status(401);
       throw new Error("Login Expired");
     }
     const user = (await User.findById(req.session.userID)) as any;
@@ -376,6 +377,7 @@ const getMe = asyncHandler(async (req, res) => {
       res.json(userBody["_doc"]);
     }
   } catch (error) {
+    res.status(401);
     throw new Error("Login Expired");
   }
 });
@@ -424,12 +426,16 @@ const decodeEmailToken = asyncHandler(async (req, res) => {
 // @route   GET /api/users/token
 // @access  Private
 const checkUserToken = asyncHandler(async (req, res) => {
-  let token = req.session.userID;
-  if (token) {
-    res.status(200).json("Token");
-  } else {
+  try {
+    if (req.session.userID) {
+      res.status(200).json("Token");
+    } else {
+      destroySession(req, res, 401, "Token Expired");
+      res.status(401).send("Token Expired");
+    }
+  } catch (error) {
     destroySession(req, res, 401, "Token Expired");
-    throw new Error("Token Expired");
+    res.status(401).send("Token Expired");
   }
 });
 

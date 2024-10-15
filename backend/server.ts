@@ -34,8 +34,7 @@ const app = express();
 
 app.use("/api/webhook", webhookRoutes); // Use webhook routes for /api/webhook path
 
-// Create middleware to handle errors
-app.use(errorHandler);
+app.use(errorHandler); // Error handling middleware
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
 app.use(cookieParser()); // Middleware to parse cookies
@@ -77,7 +76,8 @@ app.get("/", (req, res) => {
   res.json({ Connection: "Success" }); // Default route to test server connection
 });
 
-const server = app.listen(port, () => console.log(`Server started on port ${port}`)); // Start the server on the defined port
-
+const server = app.listen(port, () =>
+  console.log(`Server started on port ${port}`)
+); // Start the server on the defined port
 
 export default server;
