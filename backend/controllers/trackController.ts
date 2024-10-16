@@ -136,7 +136,7 @@ const deleteTrack = asyncHandler(async (req, res) => {
     id: String;
   }
 
-  const deleteTrack: trackObject = (await Track.findByIdAndDelete(
+  const deleteTrackData: trackObject = (await Track.findByIdAndDelete(
     req.params.id
   )) as any;
 
@@ -150,7 +150,7 @@ const deleteTrack = asyncHandler(async (req, res) => {
     }
   );
 
-  res.json(deleteTrack.id);
+  res.json(deleteTrackData.id);
 });
 
 export { getTracks, getSingle, setTrack, updateTrack, deleteTrack };

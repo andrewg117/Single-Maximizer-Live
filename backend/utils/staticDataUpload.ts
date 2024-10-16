@@ -1,13 +1,28 @@
 import fs from "fs";
 import { parse } from "csv-parse";
-import { encodeEmail, decodeEmail } from "./encodeData";
-  
+import { encodeEmail, decodeEmail, type emailType } from "./encodeData";
+import Distro from "../models/distroModel";
+
 const DISTRO_FILE: string = process.env.DISTRO_FILE as string;
 
-// TODO: Create Distro Model to import data
+interface distroType {
+  email: string;
+  fname: string;
+  lname: string;
+  tags: Array<string>;
+}
+
+const addDistrosToCollection = async (distroData: distroType) => {
+  await Distro.create({
+    email: await encodeEmail(distroData.email),
+    fname: distroData.fname,
+    lname: distroData.lname,
+    tags: distroData.tags,
+  });
+};
 
 export const getDataFromFile = () => {
-  const dataArray: Array<{email: any, fname: string, lname: string, tags: Array<string>}> = [];
+  const distroArray: Array<distroType> = [];
   fs.createReadStream(DISTRO_FILE)
     .pipe(
       parse({
@@ -16,20 +31,64 @@ export const getDataFromFile = () => {
       })
     )
     .on("data", async (row) => {
-      const renamedColumns = {
-        email: await encodeEmail(row["Email Address"]),
+      const renamedColumns: distroType = {
+        // email: await encodeEmail(row["Email Address"]),
+        email: row["Email Address"],
         fname: row["First Name"],
         lname: row["Last Name"],
-        tags: row.TAGS.toString().replace(/"/g, '').replace(/ Standard/g, '').split(","),
+        tags: row.TAGS.toString()
+          .replace(/"/g, "")
+          .replace(/ Standard/g, "")
+          .split(","),
       };
-      dataArray.push(renamedColumns);
+      distroArray.push(renamedColumns);
     })
     .on("end", function () {
-      console.log(dataArray.at(0));
-      console.log(dataArray.at(-1));
-      console.log("File end");
+      Distro.find({}).then((data) => {
+        if (data.length < 0) {
+          distroArray.forEach((dist: distroType) => {
+            addDistrosToCollection(dist);
+          });
+        } else {
+          distroArray.forEach((dist: distroType) => {
+            if (
+              data.find(
+                (item) => decodeEmail(item.email as emailType) === dist.email
+              ) === undefined
+            ) {
+              console.log("Distro Added");
+              addDistrosToCollection(dist);
+            }
+          });
+        }
+      });
     })
     .on("error", function (err) {
       console.error(err);
     });
+};
+
+export const findDistro = (email: string) => {
+  Distro.find({}).then((data) => {
+    const emailFound = data.find(
+      (item) => decodeEmail(item.email as emailType) === email
+    );
+
+    emailFound ? console.log(emailFound) : console.log("Email not found");
+  });
+};
+
+export const deleteDistro = async (email: string) => {
+  await Distro.find({}).then(async (data) => {
+    const emailFound = data.find(
+      (item) => decodeEmail(item.email as emailType) === email
+    );
+
+    if (emailFound) {
+      console.log("Distro Deleted");
+      await Distro.findByIdAndDelete(emailFound._id);
+    } else {
+      console.log("Email not found");
+    }
+  });
 };

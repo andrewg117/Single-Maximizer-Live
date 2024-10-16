@@ -1,5 +1,8 @@
 import crypto from "crypto";
 import User from "../models/userModel";
+
+// TODO: Replace env key with cloud key hub(Google Cloud) 
+// Implement key rotation
 const ENCEMAILKEY: string = process.env.ENCEMAILKEY as string;
 
 export const encodeEmail = async (email: string) => {
@@ -81,7 +84,7 @@ export const EncUserEmails = async () => {
   }
 };
 
-interface emailType {
+export interface emailType {
   iv?: any;
   encryptedData?: any;
 }

@@ -75,3 +75,10 @@ export interface userSchemaTypes extends mongoose.Document {
   isAdmin?: Boolean;
   stripeID?: String;
 }   
+
+export interface distroSchemaTypes extends mongoose.Document {
+  email: Object;
+  fname?: String;
+  lname?: String;
+  tags?: Array<string>;
+}
