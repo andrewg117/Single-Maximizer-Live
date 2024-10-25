@@ -8,6 +8,8 @@ import { FaEdit, FaEye } from "react-icons/fa";
 import Spinner from "../components/Spinner";
 import styles from "../css/singles_style.module.css";
 
+// TODO: Add filtering for singles
+
 function Singles() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

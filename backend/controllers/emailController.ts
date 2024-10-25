@@ -12,7 +12,6 @@ import Audio from "../models/audioModel";
 import formData from "form-data";
 import Mailgun from "mailgun.js";
 import axios from "axios";
-// TODO: Get email list for EMAILTO
 const EMAILTO = process.env.EMAILTO as string;
 const EMAILUSER = process.env.EMAILUSER as string;
 const MAILGUN_API = process.env.MAILGUN_API as string;

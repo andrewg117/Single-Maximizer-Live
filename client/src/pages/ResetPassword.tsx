@@ -13,6 +13,8 @@ import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp
 import signinImage from "../images/signinImage.png";
 import styles from "../css/sign_in_style.module.css";
 
+// TODO: Add password restrictions (8-12 characters, numbers, special characters, etc.)
+
 function ResetPassword() {
   const [formData, setFormData] = useState({
     password: "",

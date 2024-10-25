@@ -29,9 +29,7 @@ function SignIn() {
   const [captchaChecked, setCaptchaChecked] = useState(false);
   const [captchaExpired, setCaptchaExpired] = useState(true);
 
-  const { isLoading, isError, message } = useAppSelector(
-    (state) => state.auth
-  );
+  const { isLoading, isError, message } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     return () => {
@@ -47,7 +45,6 @@ function SignIn() {
     }));
   };
 
-  // TODO: Fix captcha expiring
   const onCheck = () => {
     setCaptchaChecked(true);
     setCaptchaExpired(false);
@@ -172,7 +169,10 @@ function SignIn() {
                     SUBMIT
                   </button>
                 </div>
-                <div className={styles.submit_div} id={styles.signin_google}>
+                <div
+                  className={styles.submit_div}
+                  id={styles.signin_google}
+                >
                   <button
                     type="button"
                     className={styles.signin_submit}

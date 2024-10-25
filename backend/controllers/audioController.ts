@@ -24,7 +24,6 @@ const uploadAudio = asyncHandler(async (req: FileRequest, res: Response) => {
     file: req.file,
   });
 
-  // TODO: fix mongodb type error
   const updatedAudio = await Audio.findByIdAndUpdate(
     audio._id,
     {

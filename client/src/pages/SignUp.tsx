@@ -174,7 +174,7 @@ function SignUp() {
                 <div className={styles.submit_div}>
                   <button
                     type="submit"
-                    id={styles.signin_submit}
+                    className={styles.signin_submit}
                   >
                     SUBMIT
                   </button>

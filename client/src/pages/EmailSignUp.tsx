@@ -5,7 +5,7 @@ import { emailUser } from "../features/auth/authSlice";
 import LazyBackground from "../components/LazyBackground";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
-import signupImage from "../images/signupImage.png";
+import signupImage from "../images/signupImage.png"; // TODO: replace image before deployment
 import styles from "../css/sign_in_style.module.css";
 
 function EmailSignUp() {
@@ -32,8 +32,6 @@ function EmailSignUp() {
     e.preventDefault();
     if (isError) {
       toast.error(message);
-      // TODO cake type for ToastOptions
-      // toast.error(message, { id: message });
     } else if (email === "") {
       toast.error("Add Email");
     } else {
@@ -113,12 +111,12 @@ function EmailSignUp() {
                 onSubmit={resendEmail}
               >
                 <div className={styles.signin_form_div}>
-                  <h1>Check your email to register your account</h1>
+                  <h1>Check your email to register your account:</h1>
                   <h3>{email}</h3>
                   <div className={styles.submit_div}>
                     <button
                       type="submit"
-                      id={styles.signin_submit}
+                      className={styles.signin_submit}
                     >
                       SUBMIT
                     </button>

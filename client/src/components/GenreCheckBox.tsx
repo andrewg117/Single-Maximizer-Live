@@ -25,7 +25,17 @@ interface GenreCheckBoxProps {
 }
 
 function GenreCheckBox({ changeList, list }: GenreCheckBoxProps) {
-  const genreList = ["CHH", "Hip Hop", "Gospel", "R&B", "Pop", "Rock", "CCM"];
+  // TODO: Verify which genres are available
+  const genreList = [
+    "CHH",
+    "Hip Hop",
+    "Gospel",
+    "R&B",
+    "Pop",
+    "Rock",
+    "CCM",
+    "Country",
+  ];
 
   return (
     <>

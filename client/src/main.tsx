@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { store } from "./app/store";
 import MaximizerApp from "./MaximizerApp";
 import "./css/style.module.css";
-// TODO: Add ErrorBoundary
 // Create redirect for incorrect urls
 
 const container = document.getElementById("root") as HTMLElement;
