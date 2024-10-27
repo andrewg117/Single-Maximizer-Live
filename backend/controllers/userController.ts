@@ -86,7 +86,8 @@ const checkRegisterEmail = asyncHandler(async (req, res) => {
     throw new Error("User exists, use a different email or login");
   }
 
-  const token = makeToken(email, "2m");
+  // TODO: Set to 2 minutes after development
+  const token = makeToken(email, "10m");
 
   const link = `${API_URL}/home/signup/${token}`;
 
@@ -297,6 +298,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error("User does not exists, use a different email or login");
   }
 
+  // TODO: Set to 2 minutes after development
   const token = makeToken(user.email as string, "10m");
 
   const link = `${API_URL}/home/resetpass/${token}`;

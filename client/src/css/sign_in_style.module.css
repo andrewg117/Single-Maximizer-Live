@@ -83,6 +83,24 @@
   font-size: 1.2em;
 }
 
+#password_requirements_list {
+  margin: 0 0 2em 0;
+  padding: 0;
+
+  li {
+    list-style: none;
+    color: #ffff;
+    font-size: 1.1em;
+  }
+}
+
+#password_match {
+  margin: 0 0 2em 0;
+  padding: 0;
+  color: red;
+  font-size: 1.1em;
+}
+
 .submit_div {
   display: grid;
   justify-content: center;

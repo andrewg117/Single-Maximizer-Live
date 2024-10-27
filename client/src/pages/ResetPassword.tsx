@@ -8,17 +8,27 @@ import {
   reset as resetUser,
 } from "../features/auth/authSlice";
 import LazyBackground from "../components/LazyBackground";
+import {
+  passwordReqTypes,
+  PasswordRequirementsList,
+} from "../components/PasswordCheck";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signinImage from "../images/signinImage.png";
 import styles from "../css/sign_in_style.module.css";
 
-// TODO: Add password restrictions (8-12 characters, numbers, special characters, etc.)
-
 function ResetPassword() {
   const [formData, setFormData] = useState({
     password: "",
     password2: "",
+  });
+
+  const [passwordReq, setPasswordReq] = useState<passwordReqTypes>({
+    length: false,
+    numbers: false,
+    specialCharacters: false,
+    uppercase: false,
+    lowercase: false,
   });
 
   const { password, password2 } = formData;
@@ -50,7 +60,30 @@ function ResetPassword() {
     };
   }, [isError, message, token, dispatch, navigate]);
 
+  // COMPLETE: Add password restrictions (8-12 characters, numbers, special characters, etc.)
+  const passwordRequirementCheck = (password: string) => {
+    const numbers = /[0-9]/;
+    const specialCharacters = /[$&+,:;=?@#|'<>%*^!]/;
+    const uppercase = /[A-Z]/;
+    const lowercase = /[a-z]/;
+
+    setPasswordReq((prevState) => ({
+      ...prevState,
+      length: password.length < 8 || password.length > 12 ? false : true,
+      numbers: !numbers.test(password) ? false : true,
+      specialCharacters: !specialCharacters.test(password) ? false : true,
+      uppercase: !uppercase.test(password) ? false : true,
+      lowercase: !lowercase.test(password) ? false : true,
+    }));
+  };
+
   const onChange = (e: any) => {
+    // Check password target
+
+    if (e.target.name === "password") {
+      passwordRequirementCheck(e.target.value);
+    }
+
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -60,7 +93,13 @@ function ResetPassword() {
   const onSubmit = (e: any) => {
     e.preventDefault();
 
-    if (password !== password2) {
+    // TODO: prevent submit if password requirements are not met
+    if (Object.values(passwordReq).includes(false)) {
+      toast.error("Password requirements not met");
+    } else if (
+      Object.values(passwordReq).includes(false) ||
+      password !== password2
+    ) {
       toast.error("Passwords do not match");
     } else {
       const userData: { token: string | any; password: string } = {
@@ -137,6 +176,12 @@ function ResetPassword() {
                     value={password}
                     onChange={onChange}
                   />
+                  <section>
+                    {password && (
+                      <PasswordRequirementsList passwordReq={passwordReq} />
+                    )}
+                  </section>
+
                   <label htmlFor="password2">CONFIRM PASSWORD</label>
                   <input
                     type="password"
@@ -146,6 +191,11 @@ function ResetPassword() {
                     value={password2}
                     onChange={onChange}
                   />
+                  <p id={styles.password_match}>
+                    {password2 && password !== password2
+                      ? "Passwords Do Not Match"
+                      : ""}
+                  </p>
                   <div className={styles.submit_div}>
                     <button
                       type="submit"

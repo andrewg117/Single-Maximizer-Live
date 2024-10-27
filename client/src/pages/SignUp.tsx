@@ -4,6 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { emailData, register, reset } from "../features/auth/authSlice";
 import LazyBackground from "../components/LazyBackground";
+import {
+  passwordReqTypes,
+  PasswordRequirementsList,
+} from "../components/PasswordCheck";
 import Spinner from "../components/Spinner";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signupImage from "../images/signupImage.png";
@@ -20,6 +24,14 @@ function SignUp() {
   });
 
   const { fname, lname, username, email, password, password2 } = formData;
+
+  const [passwordReq, setPasswordReq] = useState<passwordReqTypes>({
+    length: false,
+    numbers: false,
+    specialCharacters: false,
+    uppercase: false,
+    lowercase: false,
+  });
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -48,7 +60,27 @@ function SignUp() {
     };
   }, [isError, message, token, dispatch, navigate]);
 
+  const passwordRequirementCheck = (password: string) => {
+    const numbers = /[0-9]/;
+    const specialCharacters = /[$&+,:;=?@#|'<>%*^!]/;
+    const uppercase = /[A-Z]/;
+    const lowercase = /[a-z]/;
+
+    setPasswordReq((prevState) => ({
+      ...prevState,
+      length: password.length < 8 || password.length > 12 ? false : true,
+      numbers: !numbers.test(password) ? false : true,
+      specialCharacters: !specialCharacters.test(password) ? false : true,
+      uppercase: !uppercase.test(password) ? false : true,
+      lowercase: !lowercase.test(password) ? false : true,
+    }));
+  };
+
   const onChange = (e: any) => {
+    if (e.target.name === "password") {
+      passwordRequirementCheck(e.target.value);
+    }
+
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -58,7 +90,9 @@ function SignUp() {
   const onSubmit = (e: any) => {
     e.preventDefault();
 
-    if (password !== password2) {
+    if (Object.values(passwordReq).includes(false)) {
+      toast.error("Password requirements not met");
+    } else if (password !== password2) {
       toast.error("Passwords do not match");
     } else {
       const userData: {
@@ -116,6 +150,7 @@ function SignUp() {
                     <label htmlFor="fname">FIRST NAME</label>
                     <input
                       className={styles.signin_input}
+                      required
                       type="text"
                       id="fname"
                       name="fname"
@@ -127,6 +162,7 @@ function SignUp() {
                     <label htmlFor="lname">LAST NAME</label>
                     <input
                       className={styles.signin_input}
+                      required
                       type="text"
                       id="lname"
                       name="lname"
@@ -139,6 +175,7 @@ function SignUp() {
                 <input
                   type="text"
                   className={styles.signin_input}
+                  required
                   id="username"
                   name="username"
                   value={username}
@@ -148,6 +185,7 @@ function SignUp() {
                 <input
                   type="email"
                   className={styles.signin_input}
+                  readOnly
                   id="email"
                   name="email"
                   defaultValue={email}
@@ -162,6 +200,11 @@ function SignUp() {
                   value={password}
                   onChange={onChange}
                 />
+                <section>
+                  {password && (
+                    <PasswordRequirementsList passwordReq={passwordReq} />
+                  )}
+                </section>
                 <label htmlFor="password2">CONFIRM PASSWORD</label>
                 <input
                   type="password"
@@ -171,6 +214,11 @@ function SignUp() {
                   value={password2}
                   onChange={onChange}
                 />
+                <p id={styles.password_match}>
+                  {password2 && password !== password2
+                    ? "Passwords Do Not Match"
+                    : ""}
+                </p>
                 <div className={styles.submit_div}>
                   <button
                     type="submit"
