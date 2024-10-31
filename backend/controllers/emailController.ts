@@ -9,6 +9,7 @@ import Track from "../models/trackModel";
 import User from "../models/userModel";
 import Image from "../models/imageModel";
 import Audio from "../models/audioModel";
+import Distro from "../models/distroModel";
 import formData from "form-data";
 import Mailgun from "mailgun.js";
 import axios from "axios";
@@ -110,14 +111,23 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
   //     })
   //   : null;
   let audioFile: any = await Audio.findOne({ trackID: singleDoc._id });
-  let audioBuffer = Buffer.from(audioFile.file.buffer.toString("base64"), "base64");
+  let audioBuffer = Buffer.from(
+    audioFile.file.buffer.toString("base64"),
+    "base64"
+  );
   getAttachments.push({
     filename: audioFile.file.originalname,
     data: audioBuffer,
   });
 
-  let trackCover: any = await Image.findOne({ trackID: singleDoc._id, section: "cover" });
-  let coverBuffer = Buffer.from(trackCover.file.buffer.toString("base64"), "base64");
+  let trackCover: any = await Image.findOne({
+    trackID: singleDoc._id,
+    section: "cover",
+  });
+  let coverBuffer = Buffer.from(
+    trackCover.file.buffer.toString("base64"),
+    "base64"
+  );
   getAttachments.push({
     filename: trackCover.file.originalname,
     data: coverBuffer,
@@ -133,8 +143,7 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
   const mailOptions = {
     from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
     to: userDoc.email, // list of receivers
-    // to: EMAILTO, // list of receivers
-    // bcc: userDoc.email,
+    // bcc: EMAILTOMULT, // TODO: Add distribution email list
     subject: subjectLine, // Subject line
     html: emailContent, // html body
     attachment: getAttachments,
@@ -250,6 +259,23 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
     .catch((err) => console.log(err));
 };
 
+// Get Distribution by genre
+// TODO: Check which genres have distros
+const getDistributionGenre = async (genres: string[]) => {
+  let distroCount: object[] = [];
+  console.log(genres);
+  for (const genre of genres) {
+    let ditroMatch = await Distro.find({ tags: genre });
+
+    distroCount.push({
+      genre: genre,
+      count: ditroMatch.length,
+    });
+  }
+
+  return distroCount;
+};
+
 // @desc    Send Scheduled Email
 const sendScheduledEmail = async () => {
   // Updates tracks to be delivered
@@ -260,14 +286,16 @@ const sendScheduledEmail = async () => {
   curDate.setUTCHours(23, 59, 59, 999);
 
   let tracks = await Track.find({
-    deliveryDate: { $lt: curDate },
+    // deliveryDate: { $lt: curDate },
     isDelivered: false,
   });
 
   for (const track in tracks) {
     const singleDoc: any = tracks[track];
 
-    generalEmail(singleDoc, "default");
+    console.log(await getDistributionGenre(singleDoc.genres));
+
+    // generalEmail(singleDoc, "default");
     // generalEmail(singleDoc, 'Mizfitz')
     // generalEmail(singleDoc, 'Hop Nation')
     // generalEmail(singleDoc, 'Brooklyn Radio')

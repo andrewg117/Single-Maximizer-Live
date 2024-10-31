@@ -93,7 +93,6 @@ function ResetPassword() {
   const onSubmit = (e: any) => {
     e.preventDefault();
 
-    // TODO: prevent submit if password requirements are not met
     if (Object.values(passwordReq).includes(false)) {
       toast.error("Password requirements not met");
     } else if (

@@ -17,8 +17,10 @@ import audioRoutes from "./routes/audioRoutes"; // Routes for audio-related endp
 import purchaseRoutes from "./routes/purchaseRoutes"; // Routes for purchase-related endpoints
 import { sendScheduledEmail } from "./controllers/emailController"; // Function to send scheduled emails
 import errorHandler from "./middleware/errorMiddleware"; // Middleware for handling errors
+import { console } from "inspector";
 const MDB_URI: string = process.env.MDB_URI as string;
 const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
+
 
 const port = process.env.Port || 5000; // Define the port number, default to 5000
 
@@ -31,6 +33,7 @@ const app = express();
 // schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
 //   sendScheduledEmail();
 // });
+  // sendScheduledEmail();
 
 app.use("/api/webhook", webhookRoutes); // Use webhook routes for /api/webhook path
 
