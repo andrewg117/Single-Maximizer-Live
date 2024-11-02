@@ -17,10 +17,8 @@ import audioRoutes from "./routes/audioRoutes"; // Routes for audio-related endp
 import purchaseRoutes from "./routes/purchaseRoutes"; // Routes for purchase-related endpoints
 import { sendScheduledEmail } from "./controllers/emailController"; // Function to send scheduled emails
 import errorHandler from "./middleware/errorMiddleware"; // Middleware for handling errors
-import { console } from "inspector";
 const MDB_URI: string = process.env.MDB_URI as string;
 const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
-
 
 const port = process.env.Port || 5000; // Define the port number, default to 5000
 
@@ -33,7 +31,7 @@ const app = express();
 // schedule.scheduleJob({ hour: 12, minute: 0 }, function () {
 //   sendScheduledEmail();
 // });
-  // sendScheduledEmail();
+// sendScheduledEmail();
 
 app.use("/api/webhook", webhookRoutes); // Use webhook routes for /api/webhook path
 
@@ -75,12 +73,11 @@ app.use("/api/image", imageRoutes); // Use image routes for /api/image path
 app.use("/api/audio", audioRoutes); // Use audio routes for /api/audio path
 app.use("/api/purchase", purchaseRoutes); // Use purchase routes for /api/purchase path
 
+// favicon.ico route to prevent 404 errors
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 app.get("/", (req, res) => {
-  res.json({ Connection: "Success" }); // Default route to test server connection
+  res.send("SingleMax Server is running..."); // Default route to test server connection
 });
 
-const server = app.listen(port, () =>
-  console.log(`Server started on port ${port}`)
-); // Start the server on the defined port
-
-export default server;
+app.listen(port, () => console.log(`Server started on port ${port}`)); // Start the server on the defined port

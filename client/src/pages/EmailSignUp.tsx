@@ -8,6 +8,8 @@ import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp
 import signupImage from "../images/signupImage.png"; // TODO: replace image before deployment
 import styles from "../css/sign_in_style.module.css";
 
+// TODO: Implement Vest form testing
+
 function EmailSignUp() {
   const [formData, setFormData] = useState({
     email: "",

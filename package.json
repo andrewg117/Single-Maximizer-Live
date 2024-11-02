@@ -7,12 +7,27 @@
   "scripts": {
     "test": "jest --watchAll --verbose --detectOpenHandles --testTimeout=10000",
     "start": "tsc --watch",
-    "server": "nodemon --watch backend --exec tsx ./backend/server.ts",
+    "server": "nodemon --watch ./backend --exec tsx ./backend/server.ts",
+    "compiler": "tsc --build --watch",
     "client": "npm run dev --prefix client",
     "webhook": "stripe listen --forward-to localhost:5000/api/webhook",
     "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run webhook\"",
-    "live": "concurrently \"npm run server\" \"npm run webhook\""
+    "live": "concurrently \"npm run server\" \"npm run webhook\"",
+    "build": "concurrently \"npm run compiler\" \"npm run server\""
   },
+  "tasks": [
+    {
+      "type": "typescript",
+      "tsconfig": "tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ],
   "author": "Andrew",
   "license": "ISC",
   "dependencies": {

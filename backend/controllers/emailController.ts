@@ -262,6 +262,7 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
 // Get Distribution by genre
 // TODO: Check which genres have distros
 const getDistributionGenre = async (genres: string[]) => {
+  debugger
   let distroCount: object[] = [];
   console.log(genres);
   for (const genre of genres) {
