@@ -16,7 +16,8 @@ import imageRoutes from "./routes/imageRoutes"; // Routes for image-related endp
 import audioRoutes from "./routes/audioRoutes"; // Routes for audio-related endpoints
 import purchaseRoutes from "./routes/purchaseRoutes"; // Routes for purchase-related endpoints
 import { sendScheduledEmail } from "./controllers/emailController"; // Function to send scheduled emails
-import errorHandler from "./middleware/errorMiddleware"; // Middleware for handling errors
+// TODO: check error handling for all routes
+import { errorHandler, clientErrorHandler } from "./middleware/errorMiddleware"; // Middleware for handling errors
 const MDB_URI: string = process.env.MDB_URI as string;
 const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
 
@@ -35,7 +36,13 @@ const app = express();
 
 app.use("/api/webhook", webhookRoutes); // Use webhook routes for /api/webhook path
 
-app.use(errorHandler); // Error handling middleware
+app.use("/api/tracks", trackRoutes); // Use track routes for /api/tracks path
+app.use("/api/users", userRoutes); // Use user routes for /api/users path
+app.use("/api/email", emailRoutes); // Use email routes for /api/email path
+app.use("/api/image", imageRoutes); // Use image routes for /api/image path
+app.use("/api/audio", audioRoutes); // Use audio routes for /api/audio path
+app.use("/api/purchase", purchaseRoutes); // Use purchase routes for /api/purchase path
+
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
 app.use(cookieParser()); // Middleware to parse cookies
@@ -66,18 +73,28 @@ app.use(
   })
 );
 
-app.use("/api/tracks", trackRoutes); // Use track routes for /api/tracks path
-app.use("/api/users", userRoutes); // Use user routes for /api/users path
-app.use("/api/email", emailRoutes); // Use email routes for /api/email path
-app.use("/api/image", imageRoutes); // Use image routes for /api/image path
-app.use("/api/audio", audioRoutes); // Use audio routes for /api/audio path
-app.use("/api/purchase", purchaseRoutes); // Use purchase routes for /api/purchase path
-
 // favicon.ico route to prevent 404 errors
 app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 app.get("/", (req, res) => {
   res.send("SingleMax Server is running..."); // Default route to test server connection
 });
+
+// app.get("*", (req, res, next) => {
+//   try {
+//     // check if route does not exist
+//     if (req.statusCode === 404) {
+//       throw new Error(`Route not found: ${req.originalUrl}`);
+//     }
+
+//     next();
+//   } catch (error: any) {
+//     res.status(404);
+//     next(error);
+//   }
+// });
+
+app.use(errorHandler); // Error handling middleware
+app.use(clientErrorHandler); // Client error handling middleware
 
 app.listen(port, () => console.log(`Server started on port ${port}`)); // Start the server on the defined port

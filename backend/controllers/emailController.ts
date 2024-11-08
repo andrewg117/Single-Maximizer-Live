@@ -291,6 +291,7 @@ const sendScheduledEmail = async () => {
     isDelivered: false,
   });
 
+
   for (const track in tracks) {
     const singleDoc: any = tracks[track];
 
