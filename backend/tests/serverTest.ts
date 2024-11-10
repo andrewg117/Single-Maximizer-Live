@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"; // To load environment variables from a .env file
 dotenv.config();
-import errorHandler from "../middleware/errorMiddleware"; // Middleware for handling errors
+import { errorHandler } from "../middleware/errorMiddleware"; // Middleware for handling errors
 import trackRoutes from "../routes/trackRoutes"; // Routes for track-related endpoints
 import userRoutes from "../routes/userRoutes"; // Routes for user-related endpoints
 import emailRoutes from "../routes/emailRoutes"; // Routes for email-related endpoints
@@ -13,7 +13,6 @@ import purchaseRoutes from "../routes/purchaseRoutes"; // Routes for purchase-re
 const port = 5001;
 const app = express();
 
-app.use(errorHandler);
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
 app.use(cookieParser()); // Middleware to parse cookies
@@ -28,6 +27,8 @@ app.use("/api/purchase", purchaseRoutes); // Use purchase routes for /api/purcha
 app.get("/", (req, res) => {
   res.json({ Connection: "Success" }); // Default route to test server connection
 });
+
+app.use(errorHandler);
 
 const server = app.listen(port, () =>
   console.log(`Server started on port ${port}`)

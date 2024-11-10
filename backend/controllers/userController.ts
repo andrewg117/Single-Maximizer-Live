@@ -9,6 +9,7 @@ import Mailgun from "mailgun.js";
 import { generate } from "generate-password";
 import User from "../models/userModel";
 import { type ObjectId } from "mongoose";
+import { StatusCodes } from "http-status-codes";
 import { type urlType, type JwtPayload } from "../types/controllers/interfaces";
 import "../types/controllers/modules";
 
@@ -33,19 +34,19 @@ const mgDomain: string = "mail.trackstarz.com";
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res, next) => {
   const { fname, lname, username, email, password } = req.body;
 
   try {
     if (!fname || !lname || !username || !email || !password) {
-      res.status(400);
+      res.status(StatusCodes.BAD_REQUEST);
       throw new Error("Add all fields");
     }
 
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      res.status(400);
+      res.status(StatusCodes.BAD_REQUEST);
       throw new Error("User exists, use a different email or login");
     }
 
@@ -63,60 +64,63 @@ const registerUser = asyncHandler(async (req, res) => {
     if (user) {
       req.session.userID = user._id;
     } else {
-      res.status(400);
+      res.status(StatusCodes.UNAUTHORIZED);
       throw new Error("Invalid user data");
     }
-    res.status(200).end();
+    res.status(StatusCodes.CREATED).end();
   } catch (error) {
-    throw new Error(error as string);
+    next(error);
   }
 });
 
 // @desc    Email new user
 // @route   POST /api/users/email
 // @access  Public
-const checkRegisterEmail = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+const checkRegisterEmail = asyncHandler(async (req, res, next) => {
+  try {
+    const { email } = req.body;
 
-  const userExists = (await User.findOne({ email })) as any;
-  // TODO: Test error handling
+    const userExists = (await User.findOne({ email })) as any;
+    // COMPLETE: Test error handling
 
-  if (userExists) {
-    res.status(409);
-    throw new Error("User exists, use a different email or login");
+    if (userExists) {
+      res.status(StatusCodes.CONFLICT);
+      throw new Error("User exists, use a different email or login");
+    }
+
+    // TODO: Set to 2 minutes after development
+    const token = makeToken(email, "10m");
+
+    const link = `${API_URL}/home/signup/${token}`;
+
+    // setup email data with unicode symbols
+    const mailOptions = {
+      from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+      to: email, // list of receivers
+      subject: "Register Account", // Subject line
+      text: "Continue creating your account: " + link, // plain text body
+      html: `<p>Continue creating your account:</p><p>${link}</p>`, // html body
+    };
+
+    mg.messages
+      .create(mgDomain, mailOptions)
+      .then((msg) => console.log(msg))
+      .catch((err) => console.error(err));
+
+    // console.log('Message sent: %s', info.messageId)
+
+    res.status(StatusCodes.CREATED).json("Email sent");
+  } catch (error) {
+    next(error);
   }
-
-  // TODO: Set to 2 minutes after development
-  const token = makeToken(email, "10m");
-
-  const link = `${API_URL}/home/signup/${token}`;
-
-  // setup email data with unicode symbols
-  const mailOptions = {
-    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: email, // list of receivers
-    subject: "Register Account", // Subject line
-    text: "Continue creating your account: " + link, // plain text body
-    html: `<p>Continue creating your account:</p><p>${link}</p>`, // html body
-  };
-
-  mg.messages
-    .create(mgDomain, mailOptions)
-    .then((msg) => console.log(msg))
-    .catch((err) => console.error(err));
-
-  // console.log('Message sent: %s', info.messageId)
-
-  res.status(200).json("Email sent");
 });
 
 // @desc    Authenticate a user
 // @route   POST /api/users/login
 // @access  Public
-const loginUser = asyncHandler(async (req, res) => {
-  const { email, password, token } = req.body;
-
+const loginUser = asyncHandler(async (req: Request, res, next) => {
   try {
+    const { email, password, token } = req.body as any;
     const user = (await User.findOne({ email })) as any;
 
     const response = await axios.post(
@@ -125,11 +129,11 @@ const loginUser = asyncHandler(async (req, res) => {
 
     if (
       user &&
-      (await bcrypt.compare(password, user.password)) &&
+      (await bcrypt.compare(password, user.password as string)) &&
       response.data.success
     ) {
       // generateToken(res, user._id, "10m");
-      req.session.userID = user._id as string;
+      req.session.userID = user?._id as string;
 
       const userBody = {
         ...user["_doc"],
@@ -141,11 +145,11 @@ const loginUser = asyncHandler(async (req, res) => {
         ...userBody,
       });
     } else {
-      res.status(401).json("Invalid credentials");
+      res.status(StatusCodes.UNAUTHORIZED);
       throw new Error("Invalid credentials");
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 
@@ -226,7 +230,7 @@ const redirectGoogle = asyncHandler(async (req, res) => {
           console.error("Error: Google email used in another account");
           // throw new Error("Google email used in another account");
           res
-            .status(409)
+            .status(StatusCodes.CONFLICT)
             .redirect(
               "http://localhost:3000/home/signin?error=Google email used in another account"
             );
@@ -281,41 +285,45 @@ const destroySession = async (
 // @route   POST /api/users/logout
 // @access  Public
 const logoutUser = asyncHandler(async (req, res) => {
-  destroySession(req, res, 200, "Logged out successfully");
+  destroySession(req, res, StatusCodes.OK, "Logged out successfully");
 });
 
 // @desc    Forgot Password
 // @route   POST /api/users/forgot
 // @access  Public
-const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+const forgotPassword = asyncHandler(async (req, res, next) => {
+  try {
+    const { email } = req.body;
 
-  const user = await User.findOne({ email });
-  // console.log(user)
+    const user = await User.findOne({ email });
+    // console.log(user)
 
-  if (!user) {
-    res.status(409);
-    throw new Error("User does not exists, use a different email or login");
+    if (!user) {
+      res.status(StatusCodes.NOT_ACCEPTABLE);
+      throw new Error("User does not exists, use a different email or login");
+    }
+
+    // TODO: Set to 2 minutes after development
+    const token = makeToken(user.email as string, "2m");
+
+    const link = `${API_URL}/home/resetpass/${token}`;
+
+    // setup email data with unicode symbols
+    const mailOptions = {
+      from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
+      to: email, // list of receivers
+      subject: "Forgot Password", // Subject line
+      text: "Hello " + user.username + ",\n Reset Password: \n" + link, // plain text body
+      html: `<p>Hello ${user.username},</p><p>Reset Password:</p><p>${link}</p>`, // html body
+    };
+
+    mg.messages
+      .create(mgDomain, mailOptions)
+      .then((msg) => res.status(StatusCodes.OK).json(msg))
+      .catch((err) => res.status(StatusCodes.BAD_REQUEST).json(err));
+  } catch (error) {
+    next(error);
   }
-
-  // TODO: Set to 2 minutes after development
-  const token = makeToken(user.email as string, "10m");
-
-  const link = `${API_URL}/home/resetpass/${token}`;
-
-  // setup email data with unicode symbols
-  const mailOptions = {
-    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: email, // list of receivers
-    subject: "Forgot Password", // Subject line
-    text: "Hello " + user.username + ",\n Reset Password: \n" + link, // plain text body
-    html: `<p>Hello ${user.username},</p><p>Reset Password:</p><p>${link}</p>`, // html body
-  };
-
-  mg.messages
-    .create(mgDomain, mailOptions)
-    .then((msg) => res.status(200).json(msg))
-    .catch((err) => res.status(409).json(err));
 
   // console.log('Message sent: %s', info.messageId)
 
@@ -325,46 +333,49 @@ const forgotPassword = asyncHandler(async (req, res) => {
 // @desc    Update user password
 // @route   PUT /api/users/reset
 // @access  Private
-const resetPassword = asyncHandler(async (req, res) => {
-  const { token, password } = req.body;
-  let email;
-
+const resetPassword = asyncHandler(async (req, res, next) => {
   try {
+    const { token, password } = req.body;
+    let email;
+
     const decoded = decodeToken(token) as JwtPayload;
     email = decoded.id as string;
-  } catch (error) {
-    res.status(401);
-    throw new Error(
-      error === "TokenExpiredError: jwt expired"
-        ? "Login Expired"
-        : (error as string)
+
+    const user = await User.findOne({ email });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    let updatedUser;
+
+    updatedUser = await User.findByIdAndUpdate(
+      user?._id as ObjectId,
+      { password: hashedPassword },
+      {
+        new: true,
+      }
     );
-  }
 
-  const user = await User.findOne({ email });
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  let updatedUser;
-
-  updatedUser = await User.findByIdAndUpdate(
-    user?._id as ObjectId,
-    { password: hashedPassword },
-    {
-      new: true,
+    res.json(updatedUser);
+  } catch (error) {
+    if (error === "TokenExpiredError: jwt expired") {
+      res.status(StatusCodes.REQUEST_TIMEOUT);
+      throw new Error(
+        error === "TokenExpiredError: jwt expired"
+          ? "Login Expired"
+          : (error as string)
+      );
     }
-  );
-
-  res.json(updatedUser);
+    next(error);
+  }
 });
 
 // @desc    Get user data
 // @route   GET /api/users/me
 // @access  Private
-const getMe = asyncHandler(async (req, res) => {
+const getMe = asyncHandler(async (req, res, next) => {
   try {
     if (!req.session.userID) {
-      res.status(401);
+      res.status(StatusCodes.UNAUTHORIZED);
       throw new Error("Login Expired");
     }
     const user = (await User.findById(req.session.userID)) as any;
@@ -378,18 +389,18 @@ const getMe = asyncHandler(async (req, res) => {
       res.json(userBody["_doc"]);
     }
   } catch (error) {
-    res.status(401);
-    throw new Error("Login Expired");
+    next(error);
   }
 });
 
 // @desc    Update user data
 // @route   PUT /api/users/
 // @access  Private
-const updateUser = asyncHandler(async (req, res) => {
+const updateUser = asyncHandler(async (req, res, next) => {
   try {
     if (!req.session.userID) {
-      res.status(401).json("User not found");
+      res.status(StatusCodes.NOT_FOUND);
+      throw new Error("User not found");
     }
 
     let updatedUser;
@@ -400,43 +411,45 @@ const updateUser = asyncHandler(async (req, res) => {
 
     res.json(updatedUser);
   } catch (error) {
-    throw new Error("Login Expired");
+    next(error);
   }
 });
 
 // @desc    Get email data
 // @route   GET /api/users/email
 // @access  Private
-const decodeEmailToken = asyncHandler(async (req, res) => {
+const decodeEmailToken = asyncHandler(async (req, res, next) => {
   const { token } = req.params;
   // console.log(token)
   try {
     const decoded = decodeToken(token as string) as JwtPayload;
     res.json(decoded);
   } catch (error) {
-    res.status(401);
-    throw new Error(
-      error === "TokenExpiredError: jwt expired"
-        ? "Login Expired"
-        : (error as string)
-    );
+    if (error === "TokenExpiredError: jwt expired") {
+      res.status(StatusCodes.REQUEST_TIMEOUT);
+      throw new Error(
+        error === "TokenExpiredError: jwt expired"
+          ? "Login Expired"
+          : (error as string)
+      );
+    }
+    next(error);
   }
 });
 
 // @desc    Get user data
 // @route   GET /api/users/token
 // @access  Private
-const checkUserToken = asyncHandler(async (req, res) => {
+const checkUserToken = asyncHandler(async (req, res, next) => {
   try {
     if (req.session.userID) {
-      res.status(200).json("Token");
+      res.status(StatusCodes.OK).json("Token");
     } else {
-      destroySession(req, res, 401, "Token Expired");
-      res.status(401).send("Token Expired");
+      destroySession(req, res, StatusCodes.REQUEST_TIMEOUT, "Token Expired");
+      res.status(StatusCodes.REQUEST_TIMEOUT).send("Token Expired");
     }
   } catch (error) {
-    destroySession(req, res, 401, "Token Expired");
-    res.status(401).send("Token Expired");
+    next(error);
   }
 });
 

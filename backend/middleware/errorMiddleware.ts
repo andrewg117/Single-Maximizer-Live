@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from "express";
 
-const errorHandler = (
+export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
@@ -12,6 +12,7 @@ const errorHandler = (
   //   stack: process.env.NODE_ENV === "production" ? null : err.message,
   //   message: err.message,
   // });
+  console.error("Error Handler: " + err.message);
   res.status(statusCode).send({
     name: err.name,
     status: statusCode,
@@ -21,7 +22,7 @@ const errorHandler = (
   });
 };
 
-const clientErrorHandler = (
+export const clientErrorHandler = (
   err: Error,
   req: Request,
   res: Response,
@@ -36,4 +37,3 @@ const clientErrorHandler = (
   }
 };
 
-export { errorHandler, clientErrorHandler };

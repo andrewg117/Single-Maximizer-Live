@@ -1,5 +1,6 @@
 import { type Response } from "express";
 import asyncHandler from "express-async-handler";
+import { StatusCodes } from "http-status-codes";
 import { type FileRequest } from "../types/controllers/interfaces";
 import Audio from "../models/audioModel";
 import Track from "../models/trackModel";
@@ -9,176 +10,194 @@ import Track from "../models/trackModel";
 // @desc    Post audio
 // @route   GET /api/audio
 // @access  Private
-const uploadAudio = asyncHandler(async (req: FileRequest, res: Response) => {
-  if (!req.session.userID) {
-    res.status(401);
-    throw new Error("User not found");
-  }
+const uploadAudio = asyncHandler(
+  async (req: FileRequest, res: Response, next) => {
+    try {
+      if (!req.session.userID) {
+        res.status(StatusCodes.UNAUTHORIZED);
+        throw new Error("User not found");
+      }
 
-  // console.log('Body: ' + JSON.stringify(req.body))
-  // console.log('File: ' + JSON.stringify(req.file))
+      // console.log('Body: ' + JSON.stringify(req.body))
+      // console.log('File: ' + JSON.stringify(req.file))
 
-  const audio = await Audio.create({
-    user: req.session.userID,
-    trackID: req.body.trackID,
-    file: req.file,
-  });
+      const audio = await Audio.create({
+        user: req.session.userID,
+        trackID: req.body.trackID,
+        file: req.file,
+      });
 
-  const updatedAudio = await Audio.findByIdAndUpdate(
-    audio._id,
-    {
-      $set: {
-        s3AudioURL:
-          "https://singlemax-bucket.s3.amazonaws.com/" + audio._id.toString(),
-      },
-    },
-    {
-      new: true,
-    }
-  );
-
-  const updateTrack = await Track.findByIdAndUpdate(
-    audio.trackID,
-    {
-      $set: {
-        s3AudioURL: {
-          name: req.file.originalname,
-          url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + audio._id.toString(),
+      const updatedAudio = await Audio.findByIdAndUpdate(
+        audio._id,
+        {
+          $set: {
+            s3AudioURL:
+              "https://singlemax-bucket.s3.amazonaws.com/" +
+              audio._id.toString(),
+          },
         },
-      },
-    },
-    {
-      new: true,
+        {
+          new: true,
+        }
+      );
+
+      const updateTrack = await Track.findByIdAndUpdate(
+        audio.trackID,
+        {
+          $set: {
+            s3AudioURL: {
+              name: req.file.originalname,
+              url:
+                "https://singlemax-bucket.s3.amazonaws.com/" +
+                audio._id.toString(),
+            },
+          },
+        },
+        {
+          new: true,
+        }
+      );
+
+      // if(updatedAudio) {
+      //   const response = await s3.send(
+      //     uploadS3Object(
+      //       updatedAudio?._id.toString(),
+      //       req.file.buffer as string,
+      //       req.file.mimetype as string
+      //     )
+      //   );
+      // }
+
+      if (audio) {
+        res.json(audio);
+      }
+    } catch (error) {
+      next(error);
     }
-  );
-
-  // if(updatedAudio) {
-  //   const response = await s3.send(
-  //     uploadS3Object(
-  //       updatedAudio?._id.toString(),
-  //       req.file.buffer as string,
-  //       req.file.mimetype as string
-  //     )
-  //   );
-  // }
-
-  if (audio) {
-    res.json(audio);
   }
-});
+);
 
 // @desc    Get audio
 // @route   GET /api/audio/:id
 // @access  Private
-const getAudio = asyncHandler(async (req, res) => {
-  const audio = await Audio.findOne({ trackID: req.params.id });
+const getAudio = asyncHandler(async (req, res, next) => {
+  try {
+    const audio = await Audio.findOne({ trackID: req.params.id });
 
-  if (!audio) {
-    res.status(400);
-    throw new Error("Audio not found");
+    if (!audio) {
+      res.status(StatusCodes.NOT_FOUND);
+      throw new Error("Audio not found");
+    }
+
+    if (!req.session.userID) {
+      res.status(StatusCodes.UNAUTHORIZED);
+      throw new Error("User not found");
+    }
+
+    if (audio.user.toString() !== req.session.userID) {
+      res.status(StatusCodes.UNAUTHORIZED);
+      throw new Error("User not authorized");
+    }
+
+    res.json(audio);
+  } catch (error) {
+    next(error);
   }
-
-  if (!req.session.userID) {
-    res.status(401);
-    throw new Error("User not found");
-  }
-
-  if (audio.user.toString() !== req.session.userID) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
-
-  res.json(audio);
 });
 
 // @desc    Update audio
 // @route   PUT /api/audio/:file
 // @access  Private
-const updateAudio = asyncHandler(async (req: FileRequest, res: Response) => {
-  const audio = await Audio.findOne({ trackID: req.body.trackID });
+const updateAudio = asyncHandler(
+  async (req: FileRequest, res: Response, next) => {
+    try {
+      const audio = await Audio.findOne({ trackID: req.body.trackID });
 
-  if (!audio) {
-    res.status(400);
-    throw new Error("Tacrk not found");
-  }
+      if (!audio) {
+        res.status(StatusCodes.NOT_FOUND);
+        throw new Error("Tacrk not found");
+      }
 
-  if (!req.session.userID) {
-    res.status(401);
-    throw new Error("User not found");
-  }
+      if (!req.session.userID) {
+        res.status(StatusCodes.UNAUTHORIZED);
+        throw new Error("User not found");
+      }
 
-  if (audio.user.toString() !== req.session.userID) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
+      if (audio.user.toString() !== req.session.userID) {
+        res.status(StatusCodes.UNAUTHORIZED);
+        throw new Error("User not authorized");
+      }
 
-  // console.log('Audio: ' + track)
-  // console.log('Params: ' + JSON.stringify(req.params))
-  // console.log('File: ' + JSON.stringify(req.files))
-  // console.log('Body: ' + JSON.stringify(req.body))
+      const newBody = {
+        ...req.body,
+        file: req.file,
+      };
 
-  const newBody = {
-    ...req.body,
-    file: req.file,
-  };
+      const updatedAudio = await Audio.findByIdAndUpdate(audio._id, newBody, {
+        new: true,
+      });
 
-  const updatedAudio = await Audio.findByIdAndUpdate(audio._id, newBody, {
-    new: true,
-  });
-
-  const updateTrack = await Track.findByIdAndUpdate(
-    audio.trackID,
-    {
-      $set: {
-        s3AudioURL: {
-          name: req.file?.originalname,
-          url:
-            "https://singlemax-bucket.s3.amazonaws.com/" + audio._id.toString(),
+      const updateTrack = await Track.findByIdAndUpdate(
+        audio.trackID,
+        {
+          $set: {
+            s3AudioURL: {
+              name: req.file?.originalname,
+              url:
+                "https://singlemax-bucket.s3.amazonaws.com/" +
+                audio._id.toString(),
+            },
+          },
         },
-      },
-    },
-    {
-      new: true,
+        {
+          new: true,
+        }
+      );
+
+      // const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
+      // console.log(delResponse)
+
+      // const putResponse = await s3.send(
+      //   uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
+      // );
+
+      res.json(updatedAudio);
+    } catch (error) {
+      next(error);
     }
-  );
-
-  // const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
-  // console.log(delResponse)
-
-  // const putResponse = await s3.send(
-  //   uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
-  // );
-
-  res.json(updatedAudio);
-});
+  }
+);
 
 // @desc    Delete audio
 // @route   DELETE /api/audio/:id
 // @access  Private
-const deleteAudio = asyncHandler(async (req, res) => {
-  const audio = await Audio.findOne({ trackID: req.params.id });
+const deleteAudio = asyncHandler(async (req, res, next) => {
+  try {
+    const audio = await Audio.findOne({ trackID: req.params.id });
 
-  if (!audio) {
-    res.status(400);
-    throw new Error("Audio not found");
+    if (!audio) {
+      res.status(StatusCodes.NOT_FOUND);
+      throw new Error("Audio not found");
+    }
+
+    if (!req.session.userID) {
+      res.status(StatusCodes.UNAUTHORIZED);
+      throw new Error("User not found");
+    }
+
+    if (audio.user.toString() !== req.session.userID) {
+      res.status(StatusCodes.UNAUTHORIZED);
+      throw new Error("User not authorized");
+    }
+
+    const deleteAudio = await Audio.findByIdAndDelete(audio._id);
+
+    // const response = await s3.send(deleteS3Object(audio._id.toString()));
+
+    res.json(deleteAudio?.id);
+  } catch (error) {
+    next(error);
   }
-
-  if (!req.session.userID) {
-    res.status(401);
-    throw new Error("User not found");
-  }
-
-  if (audio.user.toString() !== req.session.userID) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
-
-  const deleteAudio = await Audio.findByIdAndDelete(audio._id);
-
-  // const response = await s3.send(deleteS3Object(audio._id.toString()));
-
-  res.json(deleteAudio?.id);
 });
 
 export { uploadAudio, getAudio, updateAudio, deleteAudio };
