@@ -5,6 +5,6 @@
 
 
 ## Preview
-![Single Maximizer Desktop](https://github.com/andrewg117/)
-![Single Maximizer Mobile](https://github.com/andrewg117/)
+![Single Maximizer Desktop](https://github.com/andrewg117/Single-Maximizer-Live/blob/master/client/public/singleMaxDesktop.png)
+![Single Maximizer Mobile](https://github.com/andrewg117/Single-Maximizer-Live/blob/master/client/public/Screen%20Shot%202024-11-11%20at%2014.24.15.png)
 
