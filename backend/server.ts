@@ -17,9 +17,10 @@ import imageRoutes from "./routes/imageRoutes"; // Routes for image-related endp
 import audioRoutes from "./routes/audioRoutes"; // Routes for audio-related endpoints
 import purchaseRoutes from "./routes/purchaseRoutes"; // Routes for purchase-related endpoints
 import { sendScheduledEmail } from "./controllers/emailController"; // Function to send scheduled emails
-// TODO: check error handling for all routes
-// TODO: Add status codes
 import { errorHandler, clientErrorHandler } from "./middleware/errorMiddleware"; // Middleware for handling errors
+
+
+
 const MDB_URI: string = process.env.MDB_URI as string;
 const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
 

@@ -6,7 +6,7 @@ import {
   DeleteObjectCommand,
   type GetObjectCommandInput,
 } from "@aws-sdk/client-s3";
-// TODO npm install @aws-sdk/client-s3
+// npm install @aws-sdk/client-s3
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -14,6 +14,7 @@ const port = process.env.Port || 5000;
 const AWS_ACCESS_KEY_ID = process.env.ACCESS_KEY_ID;
 const AWS_SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY;
 const AWS_DEFAULT_REGION = process.env.DEFAULT_REGION;
+const AWS_BUCKET_NAME = process.env.BUCKET_NAME;
 
 let s3 = new S3Client({
   region: AWS_DEFAULT_REGION as string,
@@ -26,7 +27,7 @@ let s3 = new S3Client({
 });
 
 const searchBucket = new ListObjectsCommand({
-  Bucket: "singlemax-bucket",
+  Bucket: AWS_BUCKET_NAME as string,
   // MaxKeys: 1,
 });
 
@@ -42,7 +43,7 @@ interface ETagParams extends GetObjectCommandInput {
 }
 
 const s3Params = {
-  Bucket: "singlemax-bucket",
+  Bucket: AWS_BUCKET_NAME as string,
   Key: "hello-s3.txt",
   ETag: "fcefc42e049921a12611b2c421141919",
 } as ETagParams;
@@ -55,7 +56,7 @@ const uploadS3Object = (
   mimetype: string
 ) => {
   return new PutObjectCommand({
-    Bucket: "singlemax-bucket",
+    Bucket: AWS_BUCKET_NAME as string,
     Key: fileName,
     Body: fileBody,
     ContentType: mimetype,
@@ -64,20 +65,23 @@ const uploadS3Object = (
 
 const deleteS3Object = (fileName: string) => {
   return new DeleteObjectCommand({
-    Bucket: "singlemax-bucket",
+    Bucket: AWS_BUCKET_NAME as string,
     Key: fileName,
   });
 };
 
 const runS3Commands = async () => {
   try {
-    // let {Contents} = await s3.send(searchBucket)
-    // console.log(Contents)
+    // let { Contents } = await s3.send(searchBucket);
+    // console.log(Contents);
 
-    // const response = await s3.send(uploadS3Object)
-    // console.log(response)
+    const response = await s3.send(
+      uploadS3Object("hello-s3.txt", "hello", "text/plain")
+    );
 
-    const response = await s3.send(getObject);
+    // const response = await s3.send(deleteS3Object("hello-s3.txt"));
+
+    // const response = await s3.send(getObject);
     console.log(response);
   } catch (err) {
     console.error(err);
