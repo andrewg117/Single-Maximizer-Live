@@ -39,8 +39,9 @@ const uploadImage = asyncHandler(
         image._id,
         {
           $set: {
-            s3ImageURL: ("https://singlemax-bucket.s3.amazonaws.com/" +
-              image._id) as string,
+            s3ImageURL:
+              ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
+                image._id) as string,
           },
         },
         {
@@ -54,7 +55,7 @@ const uploadImage = asyncHandler(
           $set: {
             s3ImageURL: {
               name: image.file.originalname,
-              url: ("https://singlemax-bucket.s3.amazonaws.com/" +
+              url: ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
                 image._id) as string,
             },
           },
@@ -64,15 +65,15 @@ const uploadImage = asyncHandler(
         }
       );
 
-      // if (uploadedImage) {
-      //   const response = await s3.send(
-      //     uploadS3Object(
-      //       uploadedImage?._id.toString(),
-      //       req.file.buffer,
-      //       req.file.mimetype
-      //     )
-      //   );
-      // }
+      if (uploadedImage) {
+        const response = await s3.send(
+          uploadS3Object(
+            uploadedImage?._id.toString(),
+            req.file.buffer,
+            req.file.mimetype
+          )
+        );
+      }
 
       if (image) {
         res.json(image);
@@ -108,7 +109,7 @@ const uploadPress = asyncHandler(async (req, res, next) => {
         {
           $set: {
             s3ImageURL:
-              "https://singlemax-bucket.s3.amazonaws.com/" +
+              "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
               image._id.toString(),
           },
         },
@@ -132,9 +133,9 @@ const uploadPress = asyncHandler(async (req, res, next) => {
         }
       );
 
-      // const response = await s3.send(
-      //   uploadS3Object(updatedImage._id.toString(), file.buffer, file.mimetype)
-      // );
+      const response = await s3.send(
+        uploadS3Object(updatedImage._id.toString(), file.buffer, file.mimetype)
+      );
     });
 
     res.json("Files saved");
@@ -233,7 +234,7 @@ const updateImage = asyncHandler(
       const newBody = {
         ...req.body,
         file: req.file,
-        s3ImageURL: ("https://singlemax-bucket.s3.amazonaws.com/" +
+        s3ImageURL: ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
           image._id) as string,
       };
 
@@ -247,7 +248,7 @@ const updateImage = asyncHandler(
           $set: {
             s3ImageURL: {
               name: req.file.originalname,
-              url: ("https://singlemax-bucket.s3.amazonaws.com/" +
+              url: ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
                 image._id) as string,
             },
           },
@@ -257,15 +258,15 @@ const updateImage = asyncHandler(
         }
       );
 
-      // if (updatedImage) {
-      //   const response = await s3.send(
-      //     uploadS3Object(
-      //       updatedImage?._id.toString(),
-      //       req.file.buffer as string,
-      //       req.file.mimetype as string
-      //     )
-      //   );
-      // }
+      if (updatedImage) {
+        const response = await s3.send(
+          uploadS3Object(
+            updatedImage?._id.toString(),
+            req.file.buffer as string,
+            req.file.mimetype as string
+          )
+        );
+      }
 
       res.json(updatedImage);
     } catch (error) {
@@ -299,7 +300,7 @@ const deleteImage = asyncHandler(async (req, res, next) => {
     image.forEach(async (item: any) => {
       const deleteImage = await Image.findByIdAndDelete(item._id);
 
-      // const response = await s3.send(deleteS3Object(item._id as string));
+      const response = await s3.send(deleteS3Object(item._id as string));
     });
 
     res.json(req.params.id);
@@ -343,7 +344,7 @@ const deletePress = asyncHandler(async (req, res, next) => {
 
     const deleteImage = await Image.findByIdAndDelete(req.params.id);
 
-    // const response = await s3.send(deleteS3Object(image._id.toString()));
+    const response = await s3.send(deleteS3Object(image._id.toString()));
 
     res.json(deleteImage?.id);
   } catch (error) {

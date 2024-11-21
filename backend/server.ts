@@ -18,6 +18,7 @@ import audioRoutes from "./routes/audioRoutes"; // Routes for audio-related endp
 import purchaseRoutes from "./routes/purchaseRoutes"; // Routes for purchase-related endpoints
 import { sendScheduledEmail } from "./controllers/emailController"; // Function to send scheduled emails
 import { errorHandler, clientErrorHandler } from "./middleware/errorMiddleware"; // Middleware for handling errors
+// import { runS3Commands } from "./config/s3helper";
 
 
 
@@ -29,6 +30,7 @@ const port = process.env.Port || 5000; // Define the port number, default to 500
 connectDB(); // Connect to the database
 
 const app = express();
+// runS3Commands();
 
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies

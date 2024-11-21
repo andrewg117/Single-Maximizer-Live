@@ -75,14 +75,14 @@ const runS3Commands = async () => {
     // let { Contents } = await s3.send(searchBucket);
     // console.log(Contents);
 
-    const response = await s3.send(
-      uploadS3Object("hello-s3.txt", "hello", "text/plain")
-    );
+    // const response = await s3.send(
+    //   uploadS3Object("hello-s3.txt", "hello world", "text/plain")
+    // );
 
     // const response = await s3.send(deleteS3Object("hello-s3.txt"));
 
     // const response = await s3.send(getObject);
-    console.log(response);
+    // console.log(response);
   } catch (err) {
     console.error(err);
   }

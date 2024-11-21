@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { type FileRequest } from "../types/controllers/interfaces";
 import Audio from "../models/audioModel";
 import Track from "../models/trackModel";
-// import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
+import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
 // import { ObjectId } from "mongoose";
 
 // @desc    Post audio
@@ -32,7 +32,7 @@ const uploadAudio = asyncHandler(
         {
           $set: {
             s3AudioURL:
-              "https://singlemax-bucket.s3.amazonaws.com/" +
+              "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
               audio._id.toString(),
           },
         },
@@ -48,7 +48,7 @@ const uploadAudio = asyncHandler(
             s3AudioURL: {
               name: req.file.originalname,
               url:
-                "https://singlemax-bucket.s3.amazonaws.com/" +
+                "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
                 audio._id.toString(),
             },
           },
@@ -58,15 +58,15 @@ const uploadAudio = asyncHandler(
         }
       );
 
-      // if(updatedAudio) {
-      //   const response = await s3.send(
-      //     uploadS3Object(
-      //       updatedAudio?._id.toString(),
-      //       req.file.buffer as string,
-      //       req.file.mimetype as string
-      //     )
-      //   );
-      // }
+      if(updatedAudio) {
+        const response = await s3.send(
+          uploadS3Object(
+            updatedAudio?._id.toString(),
+            req.file.buffer as string,
+            req.file.mimetype as string
+          )
+        );
+      }
 
       if (audio) {
         res.json(audio);
@@ -144,7 +144,7 @@ const updateAudio = asyncHandler(
             s3AudioURL: {
               name: req.file?.originalname,
               url:
-                "https://singlemax-bucket.s3.amazonaws.com/" +
+                "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
                 audio._id.toString(),
             },
           },
@@ -154,12 +154,12 @@ const updateAudio = asyncHandler(
         }
       );
 
-      // const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
-      // console.log(delResponse)
+      const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
+      console.log(delResponse)
 
-      // const putResponse = await s3.send(
-      //   uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
-      // );
+      const putResponse = await s3.send(
+        uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
+      );
 
       res.json(updatedAudio);
     } catch (error) {
@@ -192,7 +192,7 @@ const deleteAudio = asyncHandler(async (req, res, next) => {
 
     const deleteAudio = await Audio.findByIdAndDelete(audio._id);
 
-    // const response = await s3.send(deleteS3Object(audio._id.toString()));
+    const response = await s3.send(deleteS3Object(audio._id.toString()));
 
     res.json(deleteAudio?.id);
   } catch (error) {
