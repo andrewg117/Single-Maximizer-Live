@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { FaRegWindowClose } from "react-icons/fa";
 import styles from "../css/new_release_style.module.css";
 
+// TODO: move state management to custom hook
+
 interface FrameProps {
   blob: any | Blob;
   id: string;
@@ -139,6 +141,7 @@ function PressEdit({
       <div id={styles.press_upload}>
         {trackPress.length > 0
           ? trackPress.map((item, index) => {
+            // debugger
               return (
                 <ImageFrame
                   key={index}

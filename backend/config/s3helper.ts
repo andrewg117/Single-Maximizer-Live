@@ -31,10 +31,6 @@ const searchBucket = new ListObjectsCommand({
   // MaxKeys: 1,
 });
 
-// URL examples
-// https://singlemax-bucket.s3.us-east-1.amazonaws.com/single-Maximizer-tile.png
-// https://s3.us-east-1.amazonaws.com/singlemax-bucket/single-Maximizer-tile.png
-
 // meta-data examples: x-amz-meta-
 // x-amz-meta-userID, x-amz-meta-trackID
 
@@ -74,13 +70,10 @@ const runS3Commands = async () => {
   try {
     // let { Contents } = await s3.send(searchBucket);
     // console.log(Contents);
-
     // const response = await s3.send(
     //   uploadS3Object("hello-s3.txt", "hello world", "text/plain")
     // );
-
     // const response = await s3.send(deleteS3Object("hello-s3.txt"));
-
     // const response = await s3.send(getObject);
     // console.log(response);
   } catch (err) {

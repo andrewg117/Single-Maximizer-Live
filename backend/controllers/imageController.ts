@@ -6,6 +6,7 @@ import { type FileRequest } from "../types/controllers/interfaces";
 import Image from "../models/imageModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
+const AWS_SITE_URL = process.env.AWS_SITE_URL;
 
 // @desc    Post image
 // @route   POST /api/image
@@ -39,9 +40,7 @@ const uploadImage = asyncHandler(
         image._id,
         {
           $set: {
-            s3ImageURL:
-              ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-                image._id) as string,
+            s3ImageURL: (AWS_SITE_URL + image._id) as string,
           },
         },
         {
@@ -55,8 +54,7 @@ const uploadImage = asyncHandler(
           $set: {
             s3ImageURL: {
               name: image.file.originalname,
-              url: ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-                image._id) as string,
+              url: (AWS_SITE_URL + image._id) as string,
             },
           },
         },
@@ -108,9 +106,7 @@ const uploadPress = asyncHandler(async (req, res, next) => {
         image._id,
         {
           $set: {
-            s3ImageURL:
-              "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-              image._id.toString(),
+            s3ImageURL: AWS_SITE_URL + image._id.toString(),
           },
         },
         {
@@ -234,8 +230,7 @@ const updateImage = asyncHandler(
       const newBody = {
         ...req.body,
         file: req.file,
-        s3ImageURL: ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-          image._id) as string,
+        s3ImageURL: (AWS_SITE_URL + image._id) as string,
       };
 
       const updatedImage = (await Image.findByIdAndUpdate(image._id, newBody, {
@@ -248,8 +243,7 @@ const updateImage = asyncHandler(
           $set: {
             s3ImageURL: {
               name: req.file.originalname,
-              url: ("https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-                image._id) as string,
+              url: (AWS_SITE_URL + image._id) as string,
             },
           },
         },

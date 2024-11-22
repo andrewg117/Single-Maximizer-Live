@@ -5,7 +5,7 @@ import { type FileRequest } from "../types/controllers/interfaces";
 import Audio from "../models/audioModel";
 import Track from "../models/trackModel";
 import { s3, uploadS3Object, deleteS3Object } from "../config/s3helper";
-// import { ObjectId } from "mongoose";
+const AWS_SITE_URL = process.env.AWS_SITE_URL;
 
 // @desc    Post audio
 // @route   GET /api/audio
@@ -31,9 +31,7 @@ const uploadAudio = asyncHandler(
         audio._id,
         {
           $set: {
-            s3AudioURL:
-              "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-              audio._id.toString(),
+            s3AudioURL: AWS_SITE_URL + audio._id.toString(),
           },
         },
         {
@@ -47,9 +45,7 @@ const uploadAudio = asyncHandler(
           $set: {
             s3AudioURL: {
               name: req.file.originalname,
-              url:
-                "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-                audio._id.toString(),
+              url: AWS_SITE_URL + audio._id.toString(),
             },
           },
         },
@@ -58,7 +54,7 @@ const uploadAudio = asyncHandler(
         }
       );
 
-      if(updatedAudio) {
+      if (updatedAudio) {
         const response = await s3.send(
           uploadS3Object(
             updatedAudio?._id.toString(),
@@ -143,9 +139,7 @@ const updateAudio = asyncHandler(
           $set: {
             s3AudioURL: {
               name: req.file?.originalname,
-              url:
-                "https://singlemax-bucket.s3.us-east-1.amazonaws.com/" +
-                audio._id.toString(),
+              url: AWS_SITE_URL + audio._id.toString(),
             },
           },
         },
@@ -155,10 +149,14 @@ const updateAudio = asyncHandler(
       );
 
       const delResponse = await s3.send(deleteS3Object(audio._id.toString()));
-      console.log(delResponse)
+      console.log(delResponse);
 
       const putResponse = await s3.send(
-        uploadS3Object(audio._id.toString(), req.file?.buffer, req.file?.mimetype)
+        uploadS3Object(
+          audio._id.toString(),
+          req.file?.buffer,
+          req.file?.mimetype
+        )
       );
 
       res.json(updatedAudio);

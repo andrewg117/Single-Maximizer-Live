@@ -43,7 +43,6 @@ function SingleEdit() {
   const {
     image,
     isLoading: imageLoading,
-    press,
     isPressSuccess,
   } = useAppSelector((state) => state.image);
   const { audio, isLoading: audioLoading } = useAppSelector(
@@ -70,7 +69,7 @@ function SingleEdit() {
   }
 
   const [formState, setFormState] = useState<stateType>({
-    trackPress: press,
+    trackPress: [],
     newPressList: [],
     deletePressList: [],
   });

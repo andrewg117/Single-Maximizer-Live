@@ -275,8 +275,14 @@ export const imageSlice = createSlice({
       .addCase(deletePress.pending, (state) => {
         return { ...state, isLoading: true };
       })
-      .addCase(deletePress.fulfilled, (state) => {
-        return { ...state, isLoading: false, isPressSuccess: true, image: null };
+      .addCase(deletePress.fulfilled, (state, action) => {
+        return {
+          ...state,
+          isLoading: false,
+          isPressSuccess: true,
+          image: null,
+          press: state.press.filter((item: any) => item._id !== action.payload),
+        };
       })
       .addCase(deletePress.rejected, (state, action) => {
         return {
