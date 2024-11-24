@@ -12,7 +12,7 @@ export const errorHandler = (
   //   stack: process.env.NODE_ENV === "production" ? null : err.message,
   //   message: err.message,
   // });
-  console.error("Error Handler: " + err.message);
+  console.error("Error Handler: " + err.message + "\n" + err.stack?.yellow);
   res.status(statusCode).send({
     name: err.name,
     status: statusCode,

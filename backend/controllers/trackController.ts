@@ -2,6 +2,7 @@
 import asyncHandler from "express-async-handler";
 import Track from "../models/trackModel";
 import User from "../models/userModel";
+import Distro from "../models/distroModel";
 import { StatusCodes } from "http-status-codes";
 // import { UserRequest } from "../types/interfaces";
 
@@ -172,4 +173,25 @@ const deleteTrack = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { getTracks, getSingle, setTrack, updateTrack, deleteTrack };
+// @desc    Get genres
+// @route   GET /api/genres
+// @access  Private
+const getGenres = asyncHandler(async (req, res, next) => {
+  try {
+    const genres = await Distro.distinct("tags");
+
+    const newGrenres = genres.map(genre => {
+      if (genre === "") {
+        return "Other";
+      } else {
+        return genre;
+      }
+    });
+    
+    res.status(StatusCodes.OK).json(newGrenres);
+  } catch (error) {
+    next(error);
+  }
+});
+
+export { getTracks, getSingle, setTrack, updateTrack, deleteTrack, getGenres };

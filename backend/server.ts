@@ -85,7 +85,7 @@ app.get("/", (req, res) => {
   res.send("SingleMax Server is running..."); // Default route to test server connection
 });
 
-// Catch-all route to handle 404 errors
+// TODO:Catch-all route to handle 404 errors
 // app.get("*", (req, res, next) => {
 //   try {
 //     // check if route does not exist

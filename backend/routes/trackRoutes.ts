@@ -5,11 +5,13 @@ import {
   setTrack,
   updateTrack,
   deleteTrack,
+  getGenres,
 } from "../controllers/trackController";
 import { protect } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
+router.route("/genres").get(getGenres);
 router.route("/").get(protect, getTracks).post(protect, setTrack);
 router
   .route("/:id")

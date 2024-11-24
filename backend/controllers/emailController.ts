@@ -22,6 +22,39 @@ const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain = "mail.trackstarz.com";
 
+const emailSetup = (
+  fromEmail: string,
+  toEmail: string,
+  bccEmails: string[],
+  subject: string,
+  htmlBody: string,
+  attachments: Array<{ filename: string; data: any }>
+) => {
+  const mailOptions = {
+    from: '"TRACKSTARZ" ' + fromEmail, // sender address
+    to: toEmail, // list of receivers
+    bcc: bccEmails, // TODO: Add distribution email list
+    subject: subject, // Subject line
+    html: htmlBody, // html body
+    attachment: attachments,
+  };
+
+  mg.messages
+    .create(mgDomain, mailOptions)
+    .then(async (msg) => {
+      console.log(msg);
+
+      // const updatedTrack = await Track.findByIdAndUpdate(
+      //   singleDoc.id,
+      //   { isDelivered: true },
+      //   {
+      //     new: true,
+      //   }
+      // );
+    })
+    .catch((err) => console.log(err));
+};
+
 // General email
 const generalEmail = async (singleDoc: any, subjectType: any) => {
   let emailContent: string;
@@ -139,30 +172,14 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
   //     })
   //   : null;
 
-  // setup email data with unicode symbols
-  const mailOptions = {
-    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: userDoc.email, // list of receivers
-    // bcc: EMAILTOMULT, // TODO: Add distribution email list
-    subject: subjectLine, // Subject line
-    html: emailContent, // html body
-    attachment: getAttachments,
-  };
-
-  mg.messages
-    .create(mgDomain, mailOptions)
-    .then(async (msg) => {
-      console.log(msg);
-
-      const updatedTrack = await Track.findByIdAndUpdate(
-        singleDoc.id,
-        { isDelivered: true },
-        {
-          new: true,
-        }
-      );
-    })
-    .catch((err) => console.log(err));
+  emailSetup(
+    EMAILUSER,
+    userDoc.email,
+    [],
+    subjectLine as string,
+    emailContent,
+    getAttachments
+  );
 };
 
 // Alternate email
@@ -237,32 +254,20 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
       })
     : null;
 
-  // setup email data with unicode symbols
-  const mailOptions = {
-    from: '"TRACKSTARZ" ' + EMAILUSER, // sender address
-    to: EMAILTO, // list of receivers
-    bcc: userDoc.email,
-    subject: subjectLine, // Subject line
-    html: emailContent, // html body
-    attachment: getAttachments,
-  };
-
-  mg.messages
-    .create(mgDomain, mailOptions)
-    .then(async (msg) => {
-      console.log(msg);
-
-      // const updatedTrack = await Track.findByIdAndUpdate(singleDoc.id, { isDelivered: true }, {
-      //   new: true
-      // })
-    })
-    .catch((err) => console.log(err));
+  emailSetup(
+    EMAILUSER,
+    userDoc.email,
+    [],
+    subjectLine as string,
+    emailContent,
+    getAttachments
+  );
 };
 
 // Get Distribution by genre
 // TODO: Check which genres have distros
 const getDistributionGenre = async (genres: string[]) => {
-  debugger
+  debugger;
   let distroCount: object[] = [];
   console.log(genres);
   for (const genre of genres) {
@@ -291,11 +296,10 @@ const sendScheduledEmail = async () => {
     isDelivered: false,
   });
 
-
   for (const track in tracks) {
     const singleDoc: any = tracks[track];
 
-    console.log(await getDistributionGenre(singleDoc.genres));
+    // console.log(await getDistributionGenre(singleDoc.genres));
 
     // generalEmail(singleDoc, "default");
     // generalEmail(singleDoc, 'Mizfitz')
