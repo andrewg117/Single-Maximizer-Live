@@ -11,6 +11,7 @@ import {
 } from "../features/auth/authSlice";
 import {
   createTrack,
+  getGenres,
   reset as resetTracks,
 } from "../features/tracks/trackSlice";
 import {
@@ -73,6 +74,7 @@ function NewRelease() {
   const { isLoading, isError, message } = useAppSelector(
     (state) => state.tracks
   );
+
   const [showPopup, setShowPopup] = useState(false);
 
   const formRefData = useRef<HTMLFormElement>(null);
@@ -95,6 +97,10 @@ function NewRelease() {
           navigate("/profile/checkoutpage");
         }
       })
+      .catch((err) => console.error(err));
+
+    dispatch(getGenres())
+      .unwrap()
       .catch((err) => console.error(err));
 
     return () => {

@@ -111,12 +111,30 @@ const deleteTrack = async (trackId: any) => {
   return response;
 };
 
+const getGenres = async () => {
+  let response: Array<string> | any;
+
+  await axios
+    .get(API_URL + "genres")
+    .then((res) => {
+      response = res.data;
+    })
+    .catch((err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
+
+  return response as Array<string>;
+};
+
 const trackService = {
   createTrack,
   getTrack,
   getSingle,
   updateSingle,
   deleteTrack,
+  getGenres,
 };
 
 export default trackService;

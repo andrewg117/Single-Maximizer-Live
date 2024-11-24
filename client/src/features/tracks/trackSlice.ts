@@ -4,6 +4,7 @@ import trackService, { singleType } from "./trackService";
 interface initialType {
   tracks: Array<singleType>;
   single: singleType;
+  genreList: Array<string>;
   isError: Boolean;
   isSuccess: Boolean;
   isLoading: Boolean;
@@ -19,6 +20,7 @@ const initialState: initialType = {
     deliveryDate: new Date(Date.now()),
     genres: [],
   },
+  genreList: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -157,6 +159,24 @@ export const deleteTrack = createAsyncThunk(
   }
 );
 
+export const getGenres = createAsyncThunk(
+  "tracks/genres",
+  async (_, thunkAPI) => {
+    try {
+      return await trackService.getGenres();
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const trackSlice = createSlice({
   name: "tracks",
   initialState,
@@ -259,6 +279,25 @@ export const trackSlice = createSlice({
         };
       })
       .addCase(deleteTrack.rejected, (state, action) => {
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          message: action.payload as string,
+        };
+      })
+      .addCase(getGenres.pending, (state) => {
+        return { ...state, isLoading: true };
+      })
+      .addCase(getGenres.fulfilled, (state, action) => {
+        return {
+          ...state,
+          isLoading: false,
+          isSuccess: true,
+          genreList: action.payload,
+        };
+      })
+      .addCase(getGenres.rejected, (state, action) => {
         return {
           ...state,
           isLoading: false,

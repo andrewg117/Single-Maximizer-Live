@@ -8,6 +8,7 @@ import {
   getSingle,
   updateSingle,
   deleteTrack,
+  getGenres,
   reset as resetSingle,
 } from "../features/tracks/trackSlice";
 import {
@@ -212,6 +213,10 @@ function SingleEdit() {
 
   useEffect(() => {
     dispatch(getSingle(id as string))
+      .unwrap()
+      .catch((error) => console.error(error));
+
+    dispatch(getGenres())
       .unwrap()
       .catch((error) => console.error(error));
 

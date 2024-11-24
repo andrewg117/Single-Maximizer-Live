@@ -1,3 +1,5 @@
+import { useAppSelector } from "../app/hooks";
+
 interface CheckBoxProps {
   item: string;
   list: Array<string>;
@@ -25,17 +27,7 @@ interface GenreCheckBoxProps {
 }
 
 function GenreCheckBox({ changeList, list }: GenreCheckBoxProps) {
-  // TODO: Verify which genres are available
-  const genreList = [
-    "CHH",
-    "Hip Hop",
-    "Gospel",
-    "R&B",
-    "Pop",
-    "Rock",
-    "CCM",
-    "Country",
-  ];
+  const { genreList } = useAppSelector((state) => state.tracks);
 
   return (
     <>
