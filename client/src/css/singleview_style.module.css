@@ -51,6 +51,7 @@ label {
   text-align: left;
   height: 90%;
   width: 90%;
+  max-width: 280px;
   cursor: pointer;
 
   img {
@@ -175,6 +176,7 @@ label {
 @media (max-width: 700px) {
   #content_right {
     display: block;
+    margin-top: 10vh;
   }
 
   #top_div {

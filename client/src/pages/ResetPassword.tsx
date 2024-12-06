@@ -150,13 +150,15 @@ function ResetPassword() {
               >
                 <div className={styles.signin_form_div}>
                   <h3>Password Reset Successful</h3>
-                  <div className={styles.submit_div}>
-                    <input
-                      type="submit"
-                      className={styles.signin_submit}
-                      value="Login"
-                    />
-                  </div>
+                  <section id={styles.signin_submit_section}>
+                    <div className={styles.submit_div}>
+                      <input
+                        type="submit"
+                        className={styles.signin_submit}
+                        value="Login"
+                      />
+                    </div>
+                  </section>
                 </div>
               </form>
             ) : (
@@ -195,14 +197,16 @@ function ResetPassword() {
                       ? "Passwords Do Not Match"
                       : ""}
                   </p>
-                  <div className={styles.submit_div}>
-                    <button
-                      type="submit"
-                      className={styles.signin_submit}
-                    >
-                      SUBMIT
-                    </button>
-                  </div>
+                  <section id={styles.signin_submit_section}>
+                    <div className={styles.submit_div}>
+                      <button
+                        type="submit"
+                        className={styles.signin_submit}
+                      >
+                        SUBMIT
+                      </button>
+                    </div>
+                  </section>
                 </div>
               </form>
             )}

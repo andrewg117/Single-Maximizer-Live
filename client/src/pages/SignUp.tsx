@@ -219,14 +219,16 @@ function SignUp() {
                     ? "Passwords Do Not Match"
                     : ""}
                 </p>
-                <div className={styles.submit_div}>
-                  <button
-                    type="submit"
-                    className={styles.signin_submit}
-                  >
-                    SUBMIT
-                  </button>
-                </div>
+                <section id={styles.signin_submit_section}>
+                  <div className={styles.submit_div}>
+                    <button
+                      type="submit"
+                      className={styles.signin_submit}
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
+                </section>
               </div>
             </form>
           </div>

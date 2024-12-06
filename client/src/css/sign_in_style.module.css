@@ -46,6 +46,7 @@
 
 .signin_form {
   display: flex;
+  min-width: 400px;
 }
 
 .signin_form_div {
@@ -101,11 +102,17 @@
   font-size: 1.1em;
 }
 
+#signin_submit_section {
+  display: grid;
+  justify-content: right;
+  align-items: end;
+}
+
 .submit_div {
   display: grid;
-  justify-content: center;
-  align-items: center;
+  /* align-items: end; */
   margin-top: 1em;
+  min-width: 250px;
 }
 
 .signin_submit {
@@ -140,18 +147,28 @@
     display: none;
   }
 
+  #logo {
+    width: 60%;
+    height: auto;
+  }
+
   #signin_form {
     justify-self: center;
-    width: 80%;
+    width: 90%;
   }
 
   .signin_form_div {
-    padding: 2rem;
+    padding: 1rem;
     text-align: left;
   }
 
-  .submit_div {
+  #signin_submit_section {
     justify-content: center;
+  }
+
+  .submit_div {
+    align-items: center;
+    width: 100%;
   }
 
   .signin_submit {

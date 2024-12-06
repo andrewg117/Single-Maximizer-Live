@@ -40,7 +40,7 @@ function ForgotPassword() {
         .then(() => {
           setEmailSent(true);
         })
-        .catch(() => toast.error(("Email not registered")));
+        .catch(() => toast.error("Email not registered"));
     }
   };
 
@@ -93,14 +93,17 @@ function ForgotPassword() {
                     value={email}
                     onChange={onChange}
                   />
-                  <div className={styles.submit_div}>
-                    <button
-                      type="submit"
-                      className={styles.signin_submit}
-                    >
-                      SUBMIT
-                    </button>
-                  </div>
+
+                  <section id={styles.signin_submit_section}>
+                    <div className={styles.submit_div}>
+                      <button
+                        type="submit"
+                        className={styles.signin_submit}
+                      >
+                        SUBMIT
+                      </button>
+                    </div>
+                  </section>
                 </div>
               </form>
             ) : (
@@ -111,14 +114,16 @@ function ForgotPassword() {
                 <div className={styles.signin_form_div}>
                   <h1>Check your email to recover your account</h1>
                   <h3>{email}</h3>
-                  <div className={styles.submit_div}>
-                    <button
-                      type="submit"
-                      className={styles.signin_submit}
-                    >
-                      SUBMIT
-                    </button>
-                  </div>
+                  <section id={styles.signin_submit_section}>
+                    <div className={styles.submit_div}>
+                      <button
+                        type="submit"
+                        className={styles.signin_submit}
+                      >
+                        RESEND EMAIL
+                      </button>
+                    </div>
+                  </section>
                 </div>
               </form>
             )}

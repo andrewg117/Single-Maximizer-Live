@@ -55,6 +55,7 @@
 #image_div {
   display: grid;
   text-align: left;
+  max-width: 280px;
   height: auto;
   cursor: pointer;
 

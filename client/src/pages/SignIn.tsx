@@ -148,40 +148,42 @@ function SignIn() {
                 >
                   Forgot Password?
                 </Link>
-                <div className={styles.submit_div}>
-                  <ReCAPTCHA
-                    sitekey={CAPT_SITEKEY as string}
-                    ref={captchaRef}
-                    onChange={onCheck}
-                    onExpired={() => {
-                      setCaptchaExpired(true);
-                    }}
-                    // size="compact"
-                  />
-                </div>
+                <section id={styles.signin_submit_section}>
+                  <div className={styles.submit_div}>
+                    <ReCAPTCHA
+                      sitekey={CAPT_SITEKEY as string}
+                      ref={captchaRef}
+                      onChange={onCheck}
+                      onExpired={() => {
+                        setCaptchaExpired(true);
+                      }}
+                      // size="compact"
+                    />
+                  </div>
 
-                <div className={styles.submit_div}>
-                  <button
-                    type="submit"
-                    className={styles.signin_submit}
-                    disabled={captchaExpired || !captchaChecked}
+                  <div className={styles.submit_div}>
+                    <button
+                      type="submit"
+                      className={styles.signin_submit}
+                      disabled={captchaExpired || !captchaChecked}
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
+                  <div
+                    className={styles.submit_div}
+                    id={styles.signin_google}
                   >
-                    SUBMIT
-                  </button>
-                </div>
-                <div
-                  className={styles.submit_div}
-                  id={styles.signin_google}
-                >
-                  <button
-                    type="button"
-                    className={styles.signin_submit}
-                    onClick={googleButton}
-                    disabled={captchaExpired || !captchaChecked}
-                  >
-                    GOOGLE ACCOUNT
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      className={styles.signin_submit}
+                      onClick={googleButton}
+                      disabled={captchaExpired || !captchaChecked}
+                    >
+                      GOOGLE ACCOUNT
+                    </button>
+                  </div>
+                </section>
               </div>
             </form>
           </div>
