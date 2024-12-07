@@ -23,6 +23,7 @@ button {
   font-family: Arial, Helvetica, sans-serif;
   letter-spacing: 0.1em;
   font-weight: bold;
+  transition: all 0.5s ease-in-out;
 }
 
 label {
@@ -52,7 +53,7 @@ textarea {
   background-color: var(--main-nv-color);
 }
 
-#home_block {
+.home_block {
   display: grid;
   align-items: center;
   justify-content: center;
@@ -64,7 +65,7 @@ textarea {
   background-position: center;
 }
 
-#intro_text {
+.intro_text {
   margin-left: 5rem;
   width: 40%;
   text-align: left;
@@ -76,7 +77,7 @@ textarea {
   }
 }
 
-#intro_btn {
+.intro_btn {
   display: grid;
   justify-content: left;
   margin-left: 5rem;
@@ -91,7 +92,12 @@ textarea {
     border-radius: 8px;
     text-decoration: none;
     display: inline-block;
+    cursor: pointer;
   }
+}
+
+.intro_link:hover {
+  background-color: black;
 }
 
 .loadingSpinnerContainer {
@@ -128,13 +134,13 @@ textarea {
     height: auto;
   }
 
-  #home_block {
+  .home_block {
     grid-template-rows: auto;
     justify-items: center;
     height: 100vh;
   }
 
-  #intro_text {
+  .intro_text {
     width: auto;
     margin: 0;
 
@@ -144,7 +150,7 @@ textarea {
     }
   }
 
-  #intro_btn {
+  .intro_btn {
     align-self: center;
     margin: 0;
 
@@ -167,12 +173,12 @@ textarea {
 }
 
 @media (max-height: 700px) and (min-width: 700px) {
-  #home_block {
+  .home_block {
     /* grid-template-columns: 1fr 1fr; */
     justify-items: center;
   }
 
-  #intro_text {
+  .intro_text {
     width: fit-content;
 
     h1 {
@@ -180,7 +186,7 @@ textarea {
     }
   }
 
-  #intro_btn a {
+  .intro_btn a {
     font-size: 20px;
   }
 }

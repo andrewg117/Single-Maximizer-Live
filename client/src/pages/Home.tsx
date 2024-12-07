@@ -22,7 +22,7 @@ function Home() {
               <h1>GET YOUR MUSIC OUT TO THE WORLD</h1>
             </section>
             <section className={styles.intro_btn}>
-              <Link to="/home/emailsignup">GET STARTED</Link>
+              <Link className="intro_link" to="/home/emailsignup">GET STARTED</Link>
             </section>
           </section>
         </LazyBackground>
@@ -41,7 +41,7 @@ function Home() {
               <h2>WITH YOUR MUSICAL TALENT</h2>
             </section>
             <section className={`${styles.intro_btn} ${styles.intro_btn_alt}`}>
-              <Link to="/home/emailsignup">GET STARTED</Link>
+              <Link className="intro_link" to="/home/emailsignup">GET STARTED</Link>
             </section>
           </section>
         </LazyBackground>
@@ -59,7 +59,7 @@ function Home() {
               <h1>GET YOUR MUSIC HEARD</h1>
             </section>
             <section className={styles.intro_btn}>
-              <Link to="/home/emailsignup">GET STARTED</Link>
+              <Link className="intro_link" to="/home/emailsignup">GET STARTED</Link>
             </section>
           </section>
         </LazyBackground>

@@ -59,6 +59,11 @@
     text-decoration: none;
     display: inline-block;
   }
+
+  a:hover {
+    background-color: var(--main-nv-color);
+    color: var(--main-btn-color);
+  }
 }
 
 .intro_container_alt {
@@ -134,6 +139,10 @@
     text-decoration: none;
     color: var(--main-wht-color);
   }
+
+  a:hover {
+    color: var(--main-btn-color);
+  }
 }
 
 #footer_right {
@@ -148,6 +157,10 @@
     text-decoration: none;
     color: var(--main-wht-color);
     font-size: 30px;
+  }
+
+  a:hover {
+    color: var(--main-btn-color);
   }
 }
 
