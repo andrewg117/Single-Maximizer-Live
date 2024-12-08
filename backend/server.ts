@@ -20,8 +20,6 @@ import { sendScheduledEmail } from "./controllers/emailController"; // Function 
 import { errorHandler, clientErrorHandler } from "./middleware/errorMiddleware"; // Middleware for handling errors
 // import { runS3Commands } from "./config/s3helper";
 
-
-
 const MDB_URI: string = process.env.MDB_URI as string;
 const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
 
@@ -85,20 +83,10 @@ app.get("/", (req, res) => {
   res.send("SingleMax Server is running..."); // Default route to test server connection
 });
 
-// TODO:Catch-all route to handle 404 errors
-// app.get("*", (req, res, next) => {
-//   try {
-//     // check if route does not exist
-//     if (req.statusCode === 404) {
-//       throw new Error(`Route not found: ${req.originalUrl}`);
-//     }
-
-//     next();
-//   } catch (error: any) {
-//     res.status(404);
-//     next(error);
-//   }
-// });
+// Catch-all route to handle 404 errors
+app.get("*", function (req, res) {
+  res.status(404).send(req.originalUrl + " Path not found");
+});
 
 app.use(errorHandler); // Error handling middleware
 app.use(clientErrorHandler); // Client error handling middleware
