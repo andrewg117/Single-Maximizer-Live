@@ -78,6 +78,38 @@ export const findDistro = (email: string) => {
   });
 };
 
+// Find Distros if email contains string
+export const findDistrosByComapany = async (company: string) => {
+  let emailArray: string[] = [];
+
+  await Distro.find({}).then((data) => {
+    data.forEach((item) => {
+      let email = decodeEmail(item.email as emailType);
+      if (email.toLocaleLowerCase().includes(company.toLocaleLowerCase())) {
+        emailArray.push(email);
+      }
+    });
+  });
+
+  return emailArray.length > 0 ? emailArray : [];
+};
+
+// Find Distros if email does not contains string
+export const findDefaultDistros = async (company: string) => {
+  let emailArray: string[] = [];
+
+  await Distro.find({}).then((data) => {
+    data.forEach((item) => {
+      let email = decodeEmail(item.email as emailType);
+      if (!email.toLocaleLowerCase().includes(company.toLocaleLowerCase())) {
+        emailArray.push(email);
+      }
+    });
+  });
+
+  return emailArray.length > 0 ? emailArray : [];
+};
+
 export const deleteDistro = async (email: string) => {
   await Distro.find({}).then(async (data) => {
     const emailFound = data.find(

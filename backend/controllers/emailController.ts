@@ -1,8 +1,9 @@
 import session from "express-session";
 import asyncHandler from "express-async-handler";
 import { Buffer } from "buffer";
-import iconv from "iconv-lite";
-import fs from "fs";
+import formData from "form-data";
+import Mailgun from "mailgun.js";
+import axios from "axios";
 import "../types/controllers/modules";
 import Email from "../models/emailModel";
 import Track from "../models/trackModel";
@@ -10,9 +11,6 @@ import User from "../models/userModel";
 import Image from "../models/imageModel";
 import Audio from "../models/audioModel";
 import Distro from "../models/distroModel";
-import formData from "form-data";
-import Mailgun from "mailgun.js";
-import axios from "axios";
 const EMAILTO = process.env.EMAILTO as string;
 const EMAILUSER = process.env.EMAILUSER as string;
 const MAILGUN_API = process.env.MAILGUN_API as string;
@@ -22,14 +20,23 @@ const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: "api", key: MAILGUN_API });
 const mgDomain = "mail.trackstarz.com";
 
-const emailSetup = (
-  fromEmail: string,
-  toEmail: string,
-  bccEmails: string[],
-  subject: string,
-  htmlBody: string,
-  attachments: Array<{ filename: string; data: any }>
-) => {
+interface emailOptionsType {
+  fromEmail: string;
+  toEmail: string;
+  bccEmails: string[];
+  subject: string;
+  htmlBody: string;
+  attachments: Array<{ filename: string; data: any }>;
+}
+
+const emailSetup = ({
+  fromEmail,
+  toEmail,
+  bccEmails,
+  subject,
+  htmlBody,
+  attachments,
+}: emailOptionsType) => {
   const mailOptions = {
     from: '"TRACKSTARZ" ' + fromEmail, // sender address
     to: toEmail, // list of receivers
@@ -172,14 +179,17 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
   //     })
   //   : null;
 
-  emailSetup(
-    EMAILUSER,
-    userDoc.email,
-    [],
-    subjectLine as string,
-    emailContent,
-    getAttachments
-  );
+  // TODO: Change to return email options
+  const emailOptions: emailOptionsType = {
+    fromEmail: EMAILUSER,
+    toEmail: userDoc.email,
+    bccEmails: [],
+    subject: subjectLine as string,
+    htmlBody: emailContent,
+    attachments: getAttachments,
+  };
+
+  emailSetup(emailOptions);
 };
 
 // Alternate email
@@ -254,18 +264,22 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
       })
     : null;
 
-  emailSetup(
-    EMAILUSER,
-    userDoc.email,
-    [],
-    subjectLine as string,
-    emailContent,
-    getAttachments
-  );
+  // TODO: Change to return email options
+  const emailOptions: emailOptionsType = {
+    fromEmail: EMAILUSER,
+    toEmail: userDoc.email,
+    bccEmails: [],
+    subject: subjectLine as string,
+    htmlBody: emailContent,
+    attachments: getAttachments,
+  };
+
+  emailSetup(emailOptions);
 };
 
 // Get Distribution by genre
 // TODO: Check which genres have distros
+// TODO: Separate email template by genre
 const getDistributionGenre = async (genres: string[]) => {
   debugger;
   let distroCount: object[] = [];
