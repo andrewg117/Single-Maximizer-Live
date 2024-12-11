@@ -4,6 +4,7 @@ import { Buffer } from "buffer";
 import formData from "form-data";
 import Mailgun from "mailgun.js";
 import axios from "axios";
+import { decodeEmail, type emailType } from "../utils/encodeData";
 import "../types/controllers/modules";
 import Email from "../models/emailModel";
 import Track from "../models/trackModel";
@@ -11,6 +12,7 @@ import User from "../models/userModel";
 import Image from "../models/imageModel";
 import Audio from "../models/audioModel";
 import Distro from "../models/distroModel";
+import e from "express";
 const EMAILTO = process.env.EMAILTO as string;
 const EMAILUSER = process.env.EMAILUSER as string;
 const MAILGUN_API = process.env.MAILGUN_API as string;
@@ -283,17 +285,31 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
 const getDistributionGenre = async (genres: string[]) => {
   debugger;
   let distroCount: object[] = [];
-  console.log(genres);
+  let totalCount: number = 0;
+  let emailArray: any[] = [];
   for (const genre of genres) {
-    let ditroMatch = await Distro.find({ tags: genre });
+    let ditroMatch: any = await Distro.find({ tags: genre });
+    totalCount += ditroMatch.length;
+
+    for (const distro of ditroMatch) {
+      emailArray.push(decodeEmail(distro.email as emailType));
+    }
 
     distroCount.push({
       genre: genre,
-      count: ditroMatch.length,
+      emails: ditroMatch.length,
     });
   }
 
-  return distroCount;
+  let uniqueEmails = emailArray.filter(
+    (item, index) => emailArray.indexOf(item) === index
+  );
+  console.log("Total emails: " + emailArray.length);
+  console.log("Unique emails: " + uniqueEmails.length);
+
+  console.log(distroCount);
+
+  return uniqueEmails;
 };
 
 // @desc    Send Scheduled Email
@@ -313,7 +329,22 @@ const sendScheduledEmail = async () => {
   for (const track in tracks) {
     const singleDoc: any = tracks[track];
 
-    // console.log(await getDistributionGenre(singleDoc.genres));
+    // TODO: Add Other to genres
+    let StandardGenres: string[] = singleDoc.genres;
+    StandardGenres.push("General");
+
+    let uniqueEmails = await getDistributionGenre(StandardGenres);
+
+    // TODO: Send email based on template
+    // TODO: Separate email
+    uniqueEmails.forEach(async (email: string) => {
+      // Find alt distros
+      if (/rapzilla|kdhx/.test(email.toLocaleLowerCase())) {
+        console.log(email);
+      }
+    });
+
+    // console.log(await getDistributionGenre(StandardGenres));
 
     // generalEmail(singleDoc, "default");
     // generalEmail(singleDoc, 'Mizfitz')

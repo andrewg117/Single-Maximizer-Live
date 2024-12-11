@@ -180,14 +180,8 @@ const getGenres = asyncHandler(async (req, res, next) => {
   try {
     const genres = await Distro.distinct("tags");
 
-    const newGrenres = genres.map(genre => {
-      if (genre === "") {
-        return "Other";
-      } else {
-        return genre;
-      }
-    });
-    
+    const newGrenres = genres.filter((genre) => genre !== "General");
+
     res.status(StatusCodes.OK).json(newGrenres);
   } catch (error) {
     next(error);

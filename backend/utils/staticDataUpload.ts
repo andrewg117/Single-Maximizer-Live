@@ -110,6 +110,15 @@ export const findDefaultDistros = async (company: string) => {
   return emailArray.length > 0 ? emailArray : [];
 };
 
+// Update tags
+export const updateDistroTags = async (oldTag: string, newTag: string) => {
+  await Distro.updateMany(
+    { "tags": oldTag },
+    { $set: { "tags": newTag } }
+  );
+}
+
+
 export const deleteDistro = async (email: string) => {
   await Distro.find({}).then(async (data) => {
     const emailFound = data.find(
