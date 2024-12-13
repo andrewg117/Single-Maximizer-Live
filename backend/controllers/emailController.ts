@@ -280,9 +280,7 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
 };
 
 // Get Distribution by genre
-// TODO: Check which genres have distros
-// TODO: Separate email template by genre
-const getDistributionGenre = async (genres: string[]) => {
+const getDistributionList = async (genres: string[]) => {
   debugger;
   let distroCount: object[] = [];
   let totalCount: number = 0;
@@ -304,12 +302,25 @@ const getDistributionGenre = async (genres: string[]) => {
   let uniqueEmails = emailArray.filter(
     (item, index) => emailArray.indexOf(item) === index
   );
-  console.log("Total emails: " + emailArray.length);
-  console.log("Unique emails: " + uniqueEmails.length);
+  // console.log("Total emails: " + emailArray.length);
+  // console.log("Unique emails: " + uniqueEmails.length);
 
-  console.log(distroCount);
+  // console.log(distroCount);
 
   return uniqueEmails;
+};
+
+const getAltDistributionList = (distroList: string[], companyRegex: RegExp) => {
+  const altDistroList: string[] = [];
+
+  distroList.forEach((email: string) => {
+    // Find alt distros
+    if (companyRegex.test(email.toLocaleLowerCase())) {
+      altDistroList.push(email);
+    }
+  });
+
+  return altDistroList;
 };
 
 // @desc    Send Scheduled Email
@@ -329,29 +340,29 @@ const sendScheduledEmail = async () => {
   for (const track in tracks) {
     const singleDoc: any = tracks[track];
 
-    // TODO: Add Other to genres
-    let StandardGenres: string[] = singleDoc.genres;
+    const StandardGenres: string[] = singleDoc.genres;
     StandardGenres.push("General");
 
-    let uniqueEmails = await getDistributionGenre(StandardGenres);
+    const distroList: string[] = await getDistributionList(StandardGenres);
+    console.log("Full distros: " + distroList.length);
 
     // TODO: Send email based on template
-    // TODO: Separate email
-    uniqueEmails.forEach(async (email: string) => {
-      // Find alt distros
-      if (/rapzilla|kdhx/.test(email.toLocaleLowerCase())) {
-        console.log(email);
-      }
-    });
+    const altDistroList: string[] = getAltDistributionList(distroList, /mizfitz/);
 
-    // console.log(await getDistributionGenre(StandardGenres));
+    const filteredDistroList: string[] = distroList.filter(
+      (email: string) => !altDistroList.includes(email)
+    );
+
+    console.log("Filtered distros: " + filteredDistroList.length);
+    console.log("Alt distros: " + altDistroList);
+
 
     // generalEmail(singleDoc, "default");
-    // generalEmail(singleDoc, 'Mizfitz')
-    // generalEmail(singleDoc, 'Hop Nation')
-    // generalEmail(singleDoc, 'Brooklyn Radio')
-    // altEmail(singleDoc, 'Rapzilla')
-    // altEmail(singleDoc, 'KDHX')
+    // generalEmail(singleDoc, 'mizfitz')
+    // generalEmail(singleDoc, 'hopnation') 
+    // generalEmail(singleDoc, 'Brooklyn Radio') // TODO: Find email for Brooklyn Radio
+    // altEmail(singleDoc, 'rapzilla')
+    // altEmail(singleDoc, 'kdhx')
   }
 };
 
