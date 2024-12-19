@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { type purchaseSchemaTypes } from "../types/models/interfaces";
 
+// TODO: Move track allowance tracking to purchase
 const purchaseSchema = new mongoose.Schema<purchaseSchemaTypes>(
   {
     user: {

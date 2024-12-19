@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { emailUser } from "../features/auth/authSlice";
 import LazyBackground from "../components/LazyBackground";
 import Spinner from "../components/Spinner";
+import signupVal from "../validation/signupVal";
 import SMLogo from "../images/single-maximizer-logo-white-text-1024x717.png.webp";
 import signupImage from "../images/signupImage.png"; // TODO: replace image before deployment
 import styles from "../css/sign_in_style.module.css";
@@ -19,23 +20,38 @@ function EmailSignUp() {
 
   const [emailSent, setEmailSent] = useState(false);
 
+  const [validationError, setValidationError] = useState<any>({});
+
   const dispatch = useAppDispatch();
 
   const { isLoading, isError, message } = useAppSelector((state) => state.auth);
+
+  
 
   const onChange = (e: any) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+
+    const validationResult = signupVal({...formData, ...{[e.target.name]: e.target.value}});
+
+    if (validationResult.hasErrors()) {
+      setValidationError(validationResult.getErrors()); 
+    } else {
+      setValidationError({}); 
+    }
+    
   };
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    const validationResult = signupVal(formData);
+
     if (isError) {
       toast.error(message);
-    } else if (email === "") {
-      toast.error("Add Email");
+    } else if (validationResult.hasErrors()) {
+      toast.error("Add Valid Email");
     } else {
       dispatch(emailUser({ email, type: "register" }))
         .unwrap()
@@ -97,6 +113,7 @@ function EmailSignUp() {
                     value={email}
                     onChange={onChange}
                   />
+                  <p>{validationError.email && validationError.email}</p>
                   <section id={styles.signin_submit_section}>
                     <div className={styles.submit_div}>
                       <button

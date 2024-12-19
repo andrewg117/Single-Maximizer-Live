@@ -56,6 +56,7 @@ function NavBarLeft() {
 
   const onLogout = (e: Event) => {
     e.preventDefault();
+    // TODO: Fix logout functionality
     dispatch(logout())
       .unwrap()
       .then(() => navigate("/home"));
