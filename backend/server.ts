@@ -76,7 +76,9 @@ app.use("/api/audio", audioRoutes); // Use audio routes for /api/audio path
 app.use("/api/purchase", purchaseRoutes); // Use purchase routes for /api/purchase path
 
 // favicon.ico route to prevent 404 errors
-app.get("/favicon.ico", (req, res) => res.status(204).end());
+app.get("/favicon.ico", (req, res) => {
+  res.sendStatus(StatusCodes.OK).end();
+});
 
 app.get("/", (req, res) => {
   res.send("SingleMax Server is running..."); // Default route to test server connection

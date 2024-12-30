@@ -12,7 +12,6 @@ import User from "../models/userModel";
 import Image from "../models/imageModel";
 import Audio from "../models/audioModel";
 import Distro from "../models/distroModel";
-import e from "express";
 const EMAILTO = process.env.EMAILTO as string;
 const EMAILUSER = process.env.EMAILUSER as string;
 const MAILGUN_API = process.env.MAILGUN_API as string;
@@ -53,6 +52,7 @@ const emailSetup = ({
     .then(async (msg) => {
       console.log(msg);
 
+      // TODO: Uncomment on production
       // const updatedTrack = await Track.findByIdAndUpdate(
       //   singleDoc.id,
       //   { isDelivered: true },
@@ -65,7 +65,12 @@ const emailSetup = ({
 };
 
 // General email
-const generalEmail = async (singleDoc: any, subjectType: any) => {
+const generalEmail = async (
+  singleDoc: any,
+  subjectType: string,
+  distroList: string[]
+) => {
+  //#region Email Body Content
   let emailContent: string;
 
   const userDoc = (await User.findById(singleDoc.user)) as any;
@@ -95,6 +100,7 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
   emailContent += `<p>Cover Link: ${singleDoc?.s3ImageURL?.url || ""}</p>`;
 
   emailContent += `<p>Press Photo Link(s): </p>`;
+  //#endregion
 
   let getAttachments: Array<{ filename: string; data: any }> = [];
 
@@ -126,17 +132,21 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
 
   let subjectLine;
   switch (subjectType) {
+    case "mizfitz":
+      subjectLine = `Artist Music Submission - ${singleDoc.artist}`;
+      break;
+    case "hopnation":
+      subjectLine = `Podcast Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`;
+      break;
+    case "brooklynradio":
+      subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`;
+      break;
     case "default":
       subjectLine = `${singleDoc.artist} - ${singleDoc.trackTitle}`;
       break;
-    case "Mizfitz":
-      subjectLine = `Artist Music Submission - ${singleDoc.artist}`;
+    default:
+      subjectLine = `${singleDoc.artist} - ${singleDoc.trackTitle}`;
       break;
-    case "Hop Nation":
-      subjectLine = `Podcast Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`;
-      break;
-    case "Brooklyn Radio":
-      subjectLine = `Music Submission: ${singleDoc.artist} - ${singleDoc.trackTitle}`;
   }
 
   // const audioURL = singleDoc.s3AudioURL
@@ -185,7 +195,7 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
   const emailOptions: emailOptionsType = {
     fromEmail: EMAILUSER,
     toEmail: userDoc.email,
-    bccEmails: [],
+    bccEmails: [], // TODO: Add distribution email list
     subject: subjectLine as string,
     htmlBody: emailContent,
     attachments: getAttachments,
@@ -195,9 +205,14 @@ const generalEmail = async (singleDoc: any, subjectType: any) => {
 };
 
 // Alternate email
-const altEmail = async (singleDoc: any, subjectType: any) => {
+const altEmail = async (
+  singleDoc: any,
+  subjectType: string,
+  distroList: string[]
+) => {
   const userDoc = (await User.findById(singleDoc.user)) as any;
 
+  //#region Email Body Content
   let emailContent = `<p>Artist: ${singleDoc.artist || ""}</p>`;
   emailContent += `<br>`;
   emailContent += `<p>Song: ${singleDoc.trackTitle || ""}</p>`;
@@ -236,12 +251,14 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
   emailContent += `<br>`;
   emailContent += `<p>Bio: </p><p>${userDoc.bio_text || ""}</p>`;
 
+  // #endregion
+
   let subjectLine;
   switch (subjectType) {
-    case "Rapzilla":
+    case "rapzilla":
       subjectLine = `New Stream: ${singleDoc.artist} - ${singleDoc.trackTitle}`;
       break;
-    case "KDHX":
+    case "kdhx":
       subjectLine = `Digital Submission - ${singleDoc.artist} - ${singleDoc.trackTitle}`;
   }
 
@@ -270,7 +287,7 @@ const altEmail = async (singleDoc: any, subjectType: any) => {
   const emailOptions: emailOptionsType = {
     fromEmail: EMAILUSER,
     toEmail: userDoc.email,
-    bccEmails: [],
+    bccEmails: [], // TODO: Add distribution email list
     subject: subjectLine as string,
     htmlBody: emailContent,
     attachments: getAttachments,
@@ -333,7 +350,7 @@ const sendScheduledEmail = async () => {
   curDate.setUTCHours(23, 59, 59, 999);
 
   let tracks = await Track.find({
-    // deliveryDate: { $lt: curDate },
+    // deliveryDate: { $lt: curDate }, // TODO: Uncomment on production
     isDelivered: false,
   });
 
@@ -344,25 +361,52 @@ const sendScheduledEmail = async () => {
     StandardGenres.push("General");
 
     const distroList: string[] = await getDistributionList(StandardGenres);
-    console.log("Full distros: " + distroList.length);
 
     // TODO: Send email based on template
-    const altDistroList: string[] = getAltDistributionList(distroList, /mizfitz/);
+    const altDistroList: string[] = getAltDistributionList(
+      distroList,
+      /mizfitz|hopnation|kdhx|rapzilla|brooklynradio/
+    );
 
-    const filteredDistroList: string[] = distroList.filter(
+    let filteredDistroList: string[] = distroList.filter(
       (email: string) => !altDistroList.includes(email)
     );
 
-    console.log("Filtered distros: " + filteredDistroList.length);
-    console.log("Alt distros: " + altDistroList);
+    // console.log("Alt distros: " + altDistroList.length);
+    const mizfitzDistroList: string[] = getAltDistributionList(
+      altDistroList,
+      /mizfitz/
+    );
 
+    const hopnationDistroList: string[] = getAltDistributionList(
+      altDistroList,
+      /hopnation/
+    );
 
-    // generalEmail(singleDoc, "default");
-    // generalEmail(singleDoc, 'mizfitz')
-    // generalEmail(singleDoc, 'hopnation') 
-    // generalEmail(singleDoc, 'Brooklyn Radio') // TODO: Find email for Brooklyn Radio
-    // altEmail(singleDoc, 'rapzilla')
-    // altEmail(singleDoc, 'kdhx')
+    const brooklynRadioDistroList: string[] = getAltDistributionList(
+      altDistroList,
+      /brooklynradio/
+    );
+
+    const rapzillaDistroList: string[] = getAltDistributionList(
+      altDistroList,
+      /rapzilla/
+    );
+    const kdhxDistroList: string[] = getAltDistributionList(
+      altDistroList,
+      /kdhx/
+    );
+
+    // generalEmail(singleDoc, "default", filteredDistroList);
+    // mizfitzDistroList.length > 0 &&
+    //   generalEmail(singleDoc, "mizfitz", mizfitzDistroList);
+    // hopnationDistroList.length > 0 &&
+    //   generalEmail(singleDoc, "hopnation", hopnationDistroList);
+    // brooklynRadioDistroList.length > 0 &&
+    //   generalEmail(singleDoc, "brooklynradio", brooklynRadioDistroList); // TODO: Find email for Brooklyn Radio
+    // rapzillaDistroList.length > 0 &&
+    //   altEmail(singleDoc, "rapzilla", rapzillaDistroList);
+    // kdhxDistroList.length > 0 && altEmail(singleDoc, "kdhx", kdhxDistroList);
   }
 };
 
