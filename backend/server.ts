@@ -19,6 +19,8 @@ import purchaseRoutes from "./routes/purchaseRoutes"; // Routes for purchase-rel
 import { sendScheduledEmail } from "./controllers/emailController"; // Function to send scheduled emails
 import { errorHandler, clientErrorHandler } from "./middleware/errorMiddleware"; // Middleware for handling errors
 
+import {addDistrosToCollection} from "./utils/staticDataUpload";
+
 const MDB_URI: string = process.env.MDB_URI as string;
 const SESSION_SECRET: string = process.env.SESSION_SECRET as string;
 

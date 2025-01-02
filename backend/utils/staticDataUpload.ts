@@ -12,7 +12,7 @@ interface distroType {
   tags: Array<string>;
 }
 
-const addDistrosToCollection = async (distroData: distroType) => {
+export const addDistrosToCollection = async (distroData: distroType) => {
   await Distro.create({
     email: await encodeEmail(distroData.email),
     fname: distroData.fname,

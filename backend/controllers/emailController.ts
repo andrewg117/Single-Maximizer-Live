@@ -362,7 +362,6 @@ const sendScheduledEmail = async () => {
 
     const distroList: string[] = await getDistributionList(StandardGenres);
 
-    // TODO: Send email based on template
     const altDistroList: string[] = getAltDistributionList(
       distroList,
       /mizfitz|hopnation|kdhx|rapzilla|brooklynradio/
@@ -388,6 +387,8 @@ const sendScheduledEmail = async () => {
       /brooklynradio/
     );
 
+    console.log("brooklynradio: " + brooklynRadioDistroList.length);
+
     const rapzillaDistroList: string[] = getAltDistributionList(
       altDistroList,
       /rapzilla/
@@ -403,7 +404,7 @@ const sendScheduledEmail = async () => {
     // hopnationDistroList.length > 0 &&
     //   generalEmail(singleDoc, "hopnation", hopnationDistroList);
     // brooklynRadioDistroList.length > 0 &&
-    //   generalEmail(singleDoc, "brooklynradio", brooklynRadioDistroList); // TODO: Find email for Brooklyn Radio
+    //   generalEmail(singleDoc, "brooklynradio", brooklynRadioDistroList); // 
     // rapzillaDistroList.length > 0 &&
     //   altEmail(singleDoc, "rapzilla", rapzillaDistroList);
     // kdhxDistroList.length > 0 && altEmail(singleDoc, "kdhx", kdhxDistroList);
