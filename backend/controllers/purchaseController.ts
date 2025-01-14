@@ -236,11 +236,68 @@ const postEndpoint = asyncHandler(
           const savePurchase = await Purchase.create({
             user: sessionWithLineItems.client_reference_id,
             session: sessionWithLineItems.id,
+            isTrackCreated: false,
           });
         }
       }
 
       res.status(StatusCodes.OK).end();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// @desc    Get Track Created Status
+// @route   GET /api/purchase/trackcreated
+// @access  Private
+const getTrackCreatedStatus = asyncHandler(
+  async (req: Request, res: Response, next) => {
+    try {
+      const tracksCreated = await Purchase.find({ user: req.session.userID, isTrackCreated: false });
+
+      res.status(StatusCodes.OK).json(tracksCreated.length);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// TODO: Test client update
+// @desc    Update Track Created Status and add trackID
+// @route   PUT /api/purchase/updatepurchase
+// @access  Private
+const updateTrackCreatedStatus = asyncHandler(
+  async (req: Request, res: Response, next) => {
+    try {
+      const { id } = req.body;
+
+      const updatedPurchase = await Purchase.findOneAndUpdate({ isTrackCreated: false }, {
+        $set: { isTrackCreated: true },
+        $push: { trackID: id },
+      });
+
+      res.status(StatusCodes.OK).json(updatedPurchase);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// @desc    Update Track Created Status and delete trackID
+// @route   PUT /api/purchase/deletetrack
+// @access  Private
+const deleteTrackPurchase = asyncHandler(
+  async (req: Request, res: Response, next) => {
+    try {
+      const { id } = req.body;
+
+      const updatedPurchase = await Purchase.findOneAndUpdate({ trackID: id }, {
+        $set: { isTrackCreated: false },
+        $pull: { trackID: id },
+      });
+
+      res.status(StatusCodes.OK).json(updatedPurchase);
     } catch (error) {
       next(error);
     }
@@ -253,4 +310,7 @@ export {
   postEndpoint,
   embeddedCheckout,
   checkSessionStatus,
+  getTrackCreatedStatus,
+  updateTrackCreatedStatus,
+  deleteTrackPurchase,
 };

@@ -13,6 +13,16 @@ const purchaseSchema = new mongoose.Schema<purchaseSchemaTypes>(
       type: mongoose.Schema.Types.Mixed,
       required: true,
     },
+    isTrackCreated: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    trackID: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false,
+      ref: "Track",
+    },
   },
   {
     timestamps: true,

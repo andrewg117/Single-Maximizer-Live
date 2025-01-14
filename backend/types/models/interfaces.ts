@@ -27,6 +27,8 @@ export interface imageSchemaTypes extends mongoose.Document {
 export interface purchaseSchemaTypes extends mongoose.Document {
   user: mongoose.Schema.Types.ObjectId;
   session: mongoose.Schema.Types.Mixed;
+  isTrackCreated?: Boolean;
+  trackID: mongoose.Schema.Types.ObjectId;
 }
 
 export interface trackSchemaTypes extends mongoose.Document {
